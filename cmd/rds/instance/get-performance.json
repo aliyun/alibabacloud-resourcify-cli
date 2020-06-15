@@ -1,0 +1,22 @@
+{
+    "mapping":"rds20140815/DescribeDBInstancePerformance",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "id":{
+            "mapping":"DBInstanceId",
+            "required":true
+        },
+        "key":{
+            "mapping":"key",
+            "required":true
+        },
+        "startTime":{
+            "mapping":"startTime",
+            "required":true
+        },
+        "endTime":{
+            "mapping":"endTime",
+            "required":true
+        }
+    }
+}

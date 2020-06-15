@@ -1,0 +1,13 @@
+{
+    "mapping":"rds20140815/DescribeDBInstances",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "reigon":{
+            "mapping":"regionId",
+            "required":true
+        },
+        "id":{
+            "mapping":"DBInstanceId"
+        }
+    }
+}

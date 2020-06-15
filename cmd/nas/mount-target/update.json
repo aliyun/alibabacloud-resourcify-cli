@@ -1,0 +1,23 @@
+{
+    "mapping":"nas20170626/ModifyMountTarget",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+       "id":{
+           "mapping":"fileSystemId",
+           "required":true
+       },
+       "domain":{
+           "mapping":"mountTargetDomain"
+       },
+       "access-group-name":{
+           "mapping":"accessGroupName"
+       },
+       "status":{
+           "mapping":"status",
+           "choices":[
+               "Active",
+               "Inactive"
+           ]
+       }
+    }
+}

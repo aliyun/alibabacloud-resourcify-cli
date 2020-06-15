@@ -5,67 +5,142 @@
 'use strict';
 
 const path = require('path');
-
+const fs = require('fs');
+const yargs = require('yargs');
 const { printUsage } = require('../helper.js');
+const handler = require('../handler.js');
 
-const argv = process.argv.slice(2);
+let argv = process.argv.slice(2);
 
+let descFilePath = path.join(__dirname, '../cmd');
 if (argv.length === 0) {
     printUsage();
     process.exit(0);
 }
 
-const [command] = argv;
-
-switch (command) {
-    case 'version':
-        const pkg = require('../package.json');
-        console.log(`arc version ${pkg.version}`);
-        process.exit(0);
+for (var i in argv) {
+    let arg = argv[i];
+    if (arg.startsWith('-')) {
+        argv = argv.slice(i);
         break;
-    case 'help':
-        printUsage();
-        process.exit(0);
-        break;
-    default:
-        break;
+    }
+    let temPath = path.join(descFilePath, arg);
+    if (!fs.existsSync(temPath)) {
+        if (!fs.existsSync(`${temPath}.json`)) {
+            argv = argv.slice(i);
+            break;
+        }
+    }
+    descFilePath = temPath;
 }
 
-// arc product resource_type action --parameter-name=value
-const [product, resourceType, action, ...args] = argv;
+const buf = fs.readFileSync(`${descFilePath}.json`);
+let cmdObj = JSON.parse(buf);
+let params = cmdObj.param;
 
-const products = require('../products.js');
+// non-option 参数数量
+// if (cmdObj.args._yargsMin) {
+//     yargs.demandCommand(cmdObj.args._yargsMin)
+// }
 
-if (!products.has(product)) {
-    console.error(`product(${product}) is not registered in CLI.`);
-    process.exit(-1);
+yargs.alias('help', 'h');
+transParam('', '', params);
+
+yargs.parse(argv);
+handler(cmdObj, yargs.argv);
+
+function transParam(prefix, subType, params) {
+    for (var name in params) {
+        if (params[name].param) {
+            transParam(`${name}.`, params[name].vType, params[name].param);
+            continue;
+        }
+        let flagName = prefix + name;
+        if (params[name].shortHand) {
+            yargs.alias(flagName,params[name].shortHand);
+        }
+        if (flagName!==name){
+            yargs.alias(flagName, name);
+        }
+        switch (subType) {
+            case 'list':
+                params[name].vType = 'list';
+                break;
+        }
+
+        switch (params[name].vType) {
+            case 'jsonlist', 'list':
+                yargs.array(flagName);
+                break;
+            case 'bool':
+                yargs.boolean(flagName);
+                break;
+            case 'number':
+                yargs.number(flagName);
+                break;
+            default:
+                yargs.string(flagName);
+        }
+        if (params[name].required) {
+            yargs.demandOption(flagName);
+        }
+        if (params[name].choices) {
+            yargs.choices(flagName, params[name].choices);
+        }
+        
+        yargs.option(flagName, {});
+
+    }
 }
+// switch (command) {
+//     case 'version':
+//         const pkg = require('../package.json');
+//         console.log(`arc version ${pkg.version}`);
+//         process.exit(0);
+//         break;
+//     case 'help':
+//         printUsage();
+//         process.exit(0);
+//         break;
+//     default:
+//         break;
+// }
 
-const resourceTypes = products.get(product);
+// // arc product resource_type action --parameter-name=value
+// const [product, resourceType, action, ...args] = argv;
 
-if (!resourceTypes.has(resourceType)) {
-    console.error(`product(${product})/${resourceType} is not registered in CLI.`);
-    process.exit(-1);
-}
+// const products = require('../products.js');
 
-const actions = resourceTypes.get(resourceType);
+// if (!products.has(product)) {
+//     console.error(`product(${product}) is not registered in CLI.`);
+//     process.exit(-1);
+// }
 
-if (!actions.has(action)) {
-    console.error(`product(${product})/${resourceType}/${action} is not registered in CLI.`);
-    process.exit(-1);
-}
+// const resourceTypes = products.get(product);
 
-function loadMethod(product, resourceType, action) {
-    const m = require(path.join(__dirname, '../meta', product, resourceType));
-    return m[action];
-}
+// if (!resourceTypes.has(resourceType)) {
+//     console.error(`product(${product})/${resourceType} is not registered in CLI.`);
+//     process.exit(-1);
+// }
 
-function resolveParameters(args) {
-    return {};
-}
+// const actions = resourceTypes.get(resourceType);
 
-const method = loadMethod(product, resourceType, action);
-const parameters = resolveParameters(args);
-method(parameters).then((result) => {
-    console.log(result);
-});
+// if (!actions.has(action)) {
+//     console.error(`product(${product})/${resourceType}/${action} is not registered in CLI.`);
+//     process.exit(-1);
+// }
+
+// function loadMethod(product, resourceType, action) {
+//     const m = require(path.join(__dirname, '../meta', product, resourceType));
+//     return m[action];
+// }
+
+// function resolveParameters(args) {
+//     return {};
+// }
+
+// const method = loadMethod(product, resourceType, action);
+// const parameters = resolveParameters(args);
+// method(parameters).then((result) => {
+//     console.log(result);
+// });

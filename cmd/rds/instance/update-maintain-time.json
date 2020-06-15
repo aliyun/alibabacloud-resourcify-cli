@@ -1,0 +1,17 @@
+{
+    "mapping":"rds20140815/ModifyDBInstanceMaintainTime",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "id":{
+            "mapping":"DBInstanceId",
+            "required":true
+        },
+        "time":{
+            "mapping":"maintainTime",
+            "required":true
+        },
+        "token":{
+            "mapping":"clinetToken"
+        }
+    }
+}

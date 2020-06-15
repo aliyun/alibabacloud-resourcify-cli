@@ -1,0 +1,26 @@
+{
+    "mapping":"polardb20170801/DescribeDBNodePerformance",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "node-id":{
+            "mapping":"DBNodeId",
+            "required":true
+        },
+        "cluster-id":{
+            "mapping":"DBClusterId",
+            "required":true
+        },
+        "key":{
+            "mapping":"key",
+            "required":true
+        },
+        "startTime":{
+            "mapping":"startTime",
+            "required":true
+        },
+        "endTime":{
+            "mapping":"endTime",
+            "required":true
+        }
+    }
+}

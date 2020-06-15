@@ -1,0 +1,10 @@
+{
+    "mapping":"polardb20170801/DeleteDBCluster",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "id":{
+            "mapping":"DBClusterId",
+            "required":true
+        }
+    }
+}

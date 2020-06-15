@@ -16,6 +16,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@alicloud/pop-core": "^1.7.9"
+    "@alicloud/alidns20150109": "^1.0.0",
+    "@alicloud/cms20190101": "^1.0.0",
+    "@alicloud/eci20180808": "^1.1.0",
+    "@alicloud/ecs20140526": "^1.0.0",
+    "@alicloud/nas20170626": "^1.0.0",
+    "@alicloud/polardb20170801": "^1.0.0",
+    "@alicloud/pop-core": "^1.7.9",
+    "@alicloud/rds20140815": "^1.0.0",
+    "@alicloud/rpc-client": "^1.2.0",
+    "commander": "^5.1.0",
+    "yargs": "^15.3.1"
   }
 }

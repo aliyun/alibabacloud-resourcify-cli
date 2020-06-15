@@ -1,0 +1,17 @@
+{
+    "mapping": "ecs20140526/DescribeInstances",
+    "configPackage": "@alicloud/rpc-client",
+    "param": {
+        "id":{
+            "mapping":"instanceIds",
+            "required":true,
+            "vType":"jsonList"
+        },
+        "region": {
+            "mapping": "regionId",
+            "required": true,
+            "shortHand": "r"
+        }
+       
+    }
+}

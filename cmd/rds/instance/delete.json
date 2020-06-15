@@ -1,0 +1,10 @@
+{
+    "mapping":"rds20140815/DeleteDBInstance",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "id":{
+            "mapping":"DBInstanceId",
+            "required":true
+        }
+    }
+}

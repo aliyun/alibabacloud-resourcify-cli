@@ -1,0 +1,10 @@
+{
+    "mapping":"alidns20150109/DescribeDomainRecords",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "name":{
+            "mapping":"domainName",
+            "required":true
+        }
+    }
+}

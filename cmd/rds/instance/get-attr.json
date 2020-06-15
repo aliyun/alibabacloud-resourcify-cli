@@ -1,0 +1,17 @@
+{
+    "mapping":"rds20140815/DescribeDBInstanceAttribute",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "expired":{
+            "mapping":"expired",
+            "choices":[
+                "True",
+                "False"
+            ]
+        },
+        "id":{
+            "mapping":"DBInstanceId",
+            "required":true
+        }
+    }
+}

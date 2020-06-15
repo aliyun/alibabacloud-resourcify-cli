@@ -1,0 +1,12 @@
+{
+    "mapping":"ecs20140526/DeleteInstance",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "force":{
+            "shortHand":"f"
+        }
+    },
+    "args":{
+        "instanceId": "string"
+    }
+}

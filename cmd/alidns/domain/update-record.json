@@ -1,0 +1,22 @@
+{
+    "mapping":"alidns20150109/UpdateDomainRecord",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "rr":{
+            "mapping":"RR",
+            "required":true
+        },
+        "id":{
+            "mapping":"recordId",
+            "required":true
+        },
+        "type":{
+            "mapping":"type",
+            "required":true
+        },
+        "value":{
+            "mapping":"value",
+            "required":true
+        }
+    }
+}

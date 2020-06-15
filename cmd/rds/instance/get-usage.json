@@ -1,0 +1,10 @@
+{
+    "mapping":"rds20140815/DescribeResourceUsage",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "id":{
+            "mapping":"DBInstanceId",
+            "required":true
+        }
+    }
+}

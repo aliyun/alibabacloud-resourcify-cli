@@ -1,0 +1,26 @@
+{
+    "mapping":"polardb20170801/CreateDBNodes",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "cluster-id":{
+            "mapping":"DBClusterId",
+            "required":true
+        },
+        "token":{
+            "mapping":"clientToken"
+        },
+        "DBNode":{
+            "mapping":"DBNode",
+            "vType":"list",
+            "param":{
+                "target-class":{
+                    "mapping":"targetClass"
+                },
+                "zone-id":{
+                    "mapping":"zoneId"
+                }
+            }
+            
+        }
+    }
+}

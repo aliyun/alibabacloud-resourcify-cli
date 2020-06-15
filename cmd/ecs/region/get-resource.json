@@ -1,0 +1,27 @@
+{
+    "mapping":"ecs20140526/DescribeAvailableResource",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "resource":{
+            "mapping":"destinationResource",
+            "required":true,
+            "choices":[
+                "Zone",
+                "IoOptimized",
+                "InstanceType",
+                "SystemDist",
+                "DataDisk",
+                "Network",
+                "ddh"
+            ]
+        },
+        "region":{
+            "mapping":"regionId",
+            "required":true,
+            "shortHand":"r"
+        },
+        "zone":{
+            "mapping":"zoneId"
+        }
+    }
+}

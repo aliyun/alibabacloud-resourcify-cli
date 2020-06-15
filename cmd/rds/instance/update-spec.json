@@ -1,0 +1,26 @@
+{
+    "mapping":"rds20140815/ModifyDBInstanceSpec",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "id":{
+            "mapping":"DBInstanceId",
+            "required":true
+        },
+        "pay-type":{
+            "mapping":"payType",
+            "required":true,
+            "choices":[
+                "Postpaid",
+                "Prepaid"
+            ]
+        },
+        "storage-type":{
+            "mapping":"DBInstanceStorageType",
+            "choices":[
+                "local_ssd/ephemeral_ssd",
+                "cloud_ssd",
+                "cloud_essd"
+            ]
+        }
+    }
+}

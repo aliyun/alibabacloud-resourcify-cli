@@ -1,0 +1,21 @@
+{
+    "mapping":"ecs20140526/DescribeRegions",
+    "configPackage":"@alicloud/rpc-client",
+    "param":{
+        "charge-type":{
+            "mapping":"instanceChargeType",
+            "required":false,
+            "shortHand":"c"
+        },
+        "resource-type":{
+            "mapping":"resourceType",
+            "required":false,
+            "shortHand":"r"
+        },
+        "language":{
+            "mapping":"acceptLanguage",
+            "required":false,
+            "shortHand":"l"
+        }
+    }
+}

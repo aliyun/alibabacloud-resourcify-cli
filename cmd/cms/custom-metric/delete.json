@@ -1,0 +1,17 @@
+{
+    "mapping": "cms20190101/DeleteCustomMetric",
+    "configPackage": "@alicloud/rpc-client",
+    "param": {
+        "gid":{
+            "mapping":"groupId",
+            "required":true
+        },
+        "name":{
+            "mapping":"metricName",
+            "required":true
+        },
+        "md5":{
+            "mapping":"md5"
+        }
+    }
+}
