@@ -1,0 +1,15 @@
+{
+    "param":{
+        "profile":{
+            "shortHand":"p"
+        },
+        "mode":{
+            "shortHand":"m",
+            "choices":[
+                "AK",
+                "StsToken",
+                "EcsRamRole"
+            ]
+        }
+    }
+}

@@ -11,7 +11,7 @@ const { printUsage } = require('../helper.js');
 const handler = require('../handler.js');
 
 let argv = process.argv.slice(2);
-
+let cmds = [];
 let descFilePath = path.join(__dirname, '../cmd');
 if (argv.length === 0) {
     printUsage();
@@ -32,22 +32,24 @@ for (var i in argv) {
         }
     }
     descFilePath = temPath;
+    cmds[i] = argv[i];
 }
 
 const buf = fs.readFileSync(`${descFilePath}.json`);
 let cmdObj = JSON.parse(buf);
 let params = cmdObj.param;
 
-// non-option 参数数量
-// if (cmdObj.args._yargsMin) {
-//     yargs.demandCommand(cmdObj.args._yargsMin)
-// }
-
 yargs.alias('help', 'h');
 transParam('', '', params);
 
+if (cmdObj.mapping) {
+    yargs.option('profile', {
+        alias: 'p'
+    });
+}
+
 yargs.parse(argv);
-handler(cmdObj, yargs.argv);
+handler(cmds, cmdObj, yargs.argv);
 
 function transParam(prefix, subType, params) {
     for (var name in params) {
@@ -57,9 +59,9 @@ function transParam(prefix, subType, params) {
         }
         let flagName = prefix + name;
         if (params[name].shortHand) {
-            yargs.alias(flagName,params[name].shortHand);
+            yargs.alias(flagName, params[name].shortHand);
         }
-        if (flagName!==name){
+        if (flagName !== name) {
             yargs.alias(flagName, name);
         }
         switch (subType) {
@@ -87,9 +89,15 @@ function transParam(prefix, subType, params) {
         if (params[name].choices) {
             yargs.choices(flagName, params[name].choices);
         }
-        
-        yargs.option(flagName, {});
 
+        if (params[name].group) {
+            let group = params[name].group;
+            for (var i in group) {
+                yargs.group(flagName, group[i]);
+            }
+        }
+
+        yargs.option(flagName, {});
     }
 }
 // switch (command) {
