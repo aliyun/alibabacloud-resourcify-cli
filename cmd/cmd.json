@@ -1,0 +1,8 @@
+{
+    "short":"Alibaba Cloud Resource CLI",
+    "sub":{
+        "ecs":"云服务器ECS",
+        "config":"配置相关",
+        "cmd":""
+    }
+}

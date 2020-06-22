@@ -1,0 +1,18 @@
+{
+    "param": {
+        "profile": {
+            "shortHand": "p"
+        },
+        "mode": {
+            "shortHand": "m",
+            "choices": [
+                "AK",
+                "StsToken",
+                "EcsRamRole"
+            ]
+        }
+    },
+    "sub": {
+        "set": "非交互式设置环境变量"
+    }
+}

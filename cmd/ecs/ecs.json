@@ -1,0 +1,7 @@
+{
+    "short":"云服务器ecs",
+    "sub":{
+        "instance":"实例相关",
+        "region":"地域相关"
+    }
+}

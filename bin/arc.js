@@ -10,6 +10,9 @@ const yargs = require('yargs');
 const { printUsage } = require('../helper.js');
 const handler = require('../handler.js');
 
+
+yargs.alias('help', 'h');
+
 let argv = process.argv.slice(2);
 let cmds = [];
 let descFilePath = path.join(__dirname, '../cmd');
@@ -25,6 +28,7 @@ for (var i in argv) {
         break;
     }
     let temPath = path.join(descFilePath, arg);
+    // 目录存在，则有子命令
     if (!fs.existsSync(temPath)) {
         if (!fs.existsSync(`${temPath}.json`)) {
             argv = argv.slice(i);
@@ -35,12 +39,30 @@ for (var i in argv) {
     cmds[i] = argv[i];
 }
 
-const buf = fs.readFileSync(`${descFilePath}.json`);
+if (fs.existsSync(descFilePath)) {
+    if (cmds.length !== 0) {
+        descFilePath = path.join(descFilePath, `${cmds[cmds.length - 1]}.json`);
+    } else {
+        descFilePath = path.join(descFilePath, `cmd.json`);
+    }
+} else {
+    descFilePath = `${descFilePath}.json`;
+}
+
+const buf = fs.readFileSync(descFilePath);
 let cmdObj = JSON.parse(buf);
 let params = cmdObj.param;
 
-yargs.alias('help', 'h');
-transParam('', '', params);
+
+for (let key in cmdObj.sub) {
+    yargs.command(`${cmds.join(' ')} ${key}`, cmdObj.sub[key]);
+}
+
+yargs.usage(`\nUsage:\n$0 ${cmds.join(' ')}`, cmdObj.long);
+
+if (cmdObj.param) {
+    transParam(yargs, '', '', params);
+}
 
 if (cmdObj.mapping) {
     yargs.option('profile', {
@@ -49,9 +71,10 @@ if (cmdObj.mapping) {
 }
 
 yargs.parse(argv);
+
 handler(cmds, cmdObj, yargs.argv);
 
-function transParam(prefix, subType, params) {
+function transParam(yargs, prefix, subType, params) {
     for (var name in params) {
         if (params[name].param) {
             transParam(`${name}.`, params[name].vType, params[name].param);
