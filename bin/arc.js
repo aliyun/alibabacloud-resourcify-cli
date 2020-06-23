@@ -6,62 +6,25 @@
 
 const path = require('path');
 const fs = require('fs');
-const yargs = require('yargs');
-const { printUsage } = require('../helper.js');
+let yargs = require('yargs');
 const handler = require('../handler.js');
 
 
-yargs.alias('help', 'h');
-
-let argv = process.argv.slice(2);
-let cmds = [];
-let descFilePath = path.join(__dirname, '../cmd');
-if (argv.length === 0) {
-    printUsage();
-    process.exit(0);
-}
-
-for (var i in argv) {
-    let arg = argv[i];
-    if (arg.startsWith('-')) {
-        argv = argv.slice(i);
-        break;
-    }
-    let temPath = path.join(descFilePath, arg);
-    // 目录存在，则有子命令
-    if (!fs.existsSync(temPath)) {
-        if (!fs.existsSync(`${temPath}.json`)) {
-            argv = argv.slice(i);
-            break;
-        }
-    }
-    descFilePath = temPath;
-    cmds[i] = argv[i];
-}
-
-if (fs.existsSync(descFilePath)) {
-    if (cmds.length !== 0) {
-        descFilePath = path.join(descFilePath, `${cmds[cmds.length - 1]}.json`);
-    } else {
-        descFilePath = path.join(descFilePath, `cmd.json`);
-    }
-} else {
-    descFilePath = `${descFilePath}.json`;
-}
-
+let { cmds, descFilePath, argv } = getBasicInfo(process.argv.slice(2));
 const buf = fs.readFileSync(descFilePath);
 let cmdObj = JSON.parse(buf);
 let params = cmdObj.param;
-
 
 for (let key in cmdObj.sub) {
     yargs.command(`${cmds.join(' ')} ${key}`, cmdObj.sub[key]);
 }
 
-yargs.usage(`\nUsage:\n$0 ${cmds.join(' ')}`, cmdObj.long);
-
 if (cmdObj.param) {
     transParam(yargs, '', '', params);
+}
+
+if (cmdObj.example) {
+    yargs.example(cmdObj.example);
 }
 
 if (cmdObj.mapping) {
@@ -70,9 +33,64 @@ if (cmdObj.mapping) {
     });
 }
 
-yargs.parse(argv);
+yargs.completion('completion', false, function (current, argv) {
+    let args = [];
+    if (argv._[argv._.length - 1] === '') {
+        args = argv._.slice(0, argv._.length - 1);
+    } else {
+        args = argv._;
+    }
+    let { descFilePath } = getBasicInfo(args.slice(1));
+    const buf = fs.readFileSync(descFilePath);
+    let cmdObj = JSON.parse(buf);
+    let completWords = [];
+    for (let key in cmdObj.sub) {
+        completWords.push(key);
+    }
+    for (let key in cmdObj.param) {
+        completWords.push(`--${key}`);
+    }
+    return completWords;
+});
 
+yargs.usage(`\nUsage:\n$0 ${cmds.join(' ')}`, cmdObj.long);
+
+yargs.parse(argv);
 handler(cmds, cmdObj, yargs.argv);
+
+function getBasicInfo(argv) {
+    let cmds = [];
+    let descFilePath = path.join(__dirname, '../cmd');
+
+    for (var i in argv) {
+        let arg = argv[i];
+        if (arg.startsWith('-')) {
+            argv = argv.slice(i);
+            break;
+        }
+        let temPath = path.join(descFilePath, arg);
+        // 目录存在，则有子命令
+        if (!fs.existsSync(temPath)) {
+            if (!fs.existsSync(`${temPath}.json`)) {
+                argv = argv.slice(i);
+                break;
+            }
+        }
+        descFilePath = temPath;
+        cmds[i] = argv[i];
+    }
+
+    if (fs.existsSync(descFilePath)) {
+        if (cmds.length !== 0) {
+            descFilePath = path.join(descFilePath, `${cmds[cmds.length - 1]}.json`);
+        } else {
+            descFilePath = path.join(descFilePath, `cmd.json`);
+        }
+    } else {
+        descFilePath = `${descFilePath}.json`;
+    }
+    return { cmds, descFilePath, argv };
+}
 
 function transParam(yargs, prefix, subType, params) {
     for (var name in params) {
@@ -123,55 +141,3 @@ function transParam(yargs, prefix, subType, params) {
         yargs.option(flagName, {});
     }
 }
-// switch (command) {
-//     case 'version':
-//         const pkg = require('../package.json');
-//         console.log(`arc version ${pkg.version}`);
-//         process.exit(0);
-//         break;
-//     case 'help':
-//         printUsage();
-//         process.exit(0);
-//         break;
-//     default:
-//         break;
-// }
-
-// // arc product resource_type action --parameter-name=value
-// const [product, resourceType, action, ...args] = argv;
-
-// const products = require('../products.js');
-
-// if (!products.has(product)) {
-//     console.error(`product(${product}) is not registered in CLI.`);
-//     process.exit(-1);
-// }
-
-// const resourceTypes = products.get(product);
-
-// if (!resourceTypes.has(resourceType)) {
-//     console.error(`product(${product})/${resourceType} is not registered in CLI.`);
-//     process.exit(-1);
-// }
-
-// const actions = resourceTypes.get(resourceType);
-
-// if (!actions.has(action)) {
-//     console.error(`product(${product})/${resourceType}/${action} is not registered in CLI.`);
-//     process.exit(-1);
-// }
-
-// function loadMethod(product, resourceType, action) {
-//     const m = require(path.join(__dirname, '../meta', product, resourceType));
-//     return m[action];
-// }
-
-// function resolveParameters(args) {
-//     return {};
-// }
-
-// const method = loadMethod(product, resourceType, action);
-// const parameters = resolveParameters(args);
-// method(parameters).then((result) => {
-//     console.log(result);
-// });

@@ -3,6 +3,7 @@
     "sub":{
         "ecs":"云服务器ECS",
         "config":"配置相关",
-        "cmd":""
+        "cmd":"",
+        "completion":"自动补全"
     }
 }
