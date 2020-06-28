@@ -1,4 +1,7 @@
 {
+    "long":{
+        "zh":"查询可使用的阿里云地域"
+    },
     "mapping":"ecs20140526/DescribeRegions",
     "configPackage":"@alicloud/rpc-client",
     "param":{

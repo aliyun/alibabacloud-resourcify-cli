@@ -6,7 +6,6 @@
 
 const path = require('path');
 const fs = require('fs');
-let yargs = require('yargs');
 const handler = require('../handler.js');
 
 
@@ -14,9 +13,16 @@ let { cmds, descFilePath, argv } = getBasicInfo(process.argv.slice(2));
 const buf = fs.readFileSync(descFilePath);
 let cmdObj = JSON.parse(buf);
 let params = cmdObj.param;
+let processFilePath = path.join(__dirname, '../meta', ...cmds);
+processFilePath += '.js';
+let yargs = require('yargs/yargs')(argv);
+
+if (!cmdObj.mapping && !fs.existsSync(processFilePath) && argv[argv.length - 1] !== '') {
+    argv.push('help');
+}
 
 for (let key in cmdObj.sub) {
-    yargs.command(`${cmds.join(' ')} ${key}`, cmdObj.sub[key]);
+    yargs.command(`${cmds.join(' ')} ${key}`, cmdObj.sub[key]['zh']);
 }
 
 if (cmdObj.param) {
@@ -27,12 +33,12 @@ if (cmdObj.example) {
     yargs.example(cmdObj.example);
 }
 
-if (cmdObj.mapping) {
-    yargs.option('profile', {
-        alias: 'p'
-    });
-}
 
+let desc = '';
+if (cmdObj.long) {
+    desc = cmdObj.long['zh'];
+}
+yargs.usage(`${desc}\nUsage:\n$0 ${cmds.join(' ')}`);
 yargs.completion('completion', false, function (current, argv) {
     let args = [];
     if (argv._[argv._.length - 1] === '') {
@@ -52,13 +58,17 @@ yargs.completion('completion', false, function (current, argv) {
     }
     return completWords;
 });
-
-yargs.usage(`\nUsage:\n$0 ${cmds.join(' ')}`, cmdObj.long);
-
 yargs.parse(argv);
-handler(cmds, cmdObj, yargs.argv);
+
+if (!cmdObj.mapping && !fs.existsSync(processFilePath)) {
+    return;
+}
+
+let args = require('yargs-parser')(argv);
+handler(cmds, cmdObj, args);
 
 function getBasicInfo(argv) {
+    let flag = true;
     let cmds = [];
     let descFilePath = path.join(__dirname, '../cmd');
 
@@ -66,6 +76,7 @@ function getBasicInfo(argv) {
         let arg = argv[i];
         if (arg.startsWith('-')) {
             argv = argv.slice(i);
+            flag = false;
             break;
         }
         let temPath = path.join(descFilePath, arg);
@@ -73,13 +84,16 @@ function getBasicInfo(argv) {
         if (!fs.existsSync(temPath)) {
             if (!fs.existsSync(`${temPath}.json`)) {
                 argv = argv.slice(i);
+                flag = false;
                 break;
             }
         }
         descFilePath = temPath;
         cmds[i] = argv[i];
     }
-
+    if (flag) {
+        argv = [];
+    }
     if (fs.existsSync(descFilePath)) {
         if (cmds.length !== 0) {
             descFilePath = path.join(descFilePath, `${cmds[cmds.length - 1]}.json`);

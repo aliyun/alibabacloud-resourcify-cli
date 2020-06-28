@@ -1,4 +1,7 @@
 {
+    "long":{
+        "zh":"修改RDS实例可维护时间段\n实例可维护时间段一般设置为业务的低峰时间段。阿里云会在您设置的可维护时间段内进行实例维护，保证对业务的影响降到最低。"
+    },
     "mapping":"rds20140815/ModifyDBInstanceMaintainTime",
     "configPackage":"@alicloud/rpc-client",
     "param":{

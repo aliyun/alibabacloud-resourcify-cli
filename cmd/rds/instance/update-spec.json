@@ -1,4 +1,7 @@
 {
+    "long":{
+        "zh":"变更RDS实例（包括常规实例和只读实例，不包括灾备实例和临时实例）的规格或存储空间\n调用该接口时，实例必须满足以下条件，否则将操作失败：\n实例状态为运行中。\n实例没有正在执行的备份任务。\n请求参数中必须至少指定实例规格（DBInstanceClass）和存储空间（DBInstanceStorage）其中一个参数。\n若降低磁盘空间配置，输入的磁盘空间不能小于实际使用空间大小的1.1倍。\n当前只支持对常规实例和只读实例变更配置，不支持灾备实例和临时实例。"
+    },
     "mapping":"rds20140815/ModifyDBInstanceSpec",
     "configPackage":"@alicloud/rpc-client",
     "param":{

@@ -72,7 +72,7 @@ module.exports = async function (cmds, cmd, args) {
         let data = JSON.stringify(result, null, 2);
         console.log(data);
     }).catch(e => {
-        console.log(e.message);
+        console.error(e.message);
     });
 };
 

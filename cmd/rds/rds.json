@@ -1,0 +1,10 @@
+{
+    "long":{
+        "zh":"阿里云关系型数据库RDS（Relational Database Service）是一种稳定可靠、可弹性伸缩的在线数据库服务"
+    },
+    "sub":{
+        "instance":{
+            "zh":"RDS 实例资源"
+        }
+    }
+}

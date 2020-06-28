@@ -1,0 +1,31 @@
+{
+    "long":{
+        "zh":"支持MySQL、SQL Server、PostgreSQL、PPAS（Postgre Plus Advanced Server，高度兼容Oracle数据库）和MariaDB TX引擎"
+    },
+    "sub":{
+        "create":{
+            "zh":"创建 RDS 实例"
+        },
+        "delete":{
+            "zh":"释放 RDS 实例"
+        },
+        "get":{
+            "zh":"查看RDS实例信息(简要)"
+        },
+        "get-attr":{
+            "zh":"查看RDS实例的详细信息"
+        },
+        "get-performance":{
+            "zh":"查看实例性能数据"
+        },
+        "get-usage":{
+            "zh":"查看实例的空间利用信息"
+        },
+        "update-maintain-time":{
+            "zh":"修改RDS实例可维护时间段"
+        },
+        "update-spec":{
+            "zh":"变更RDS实例的规格或存储空间"
+        }
+    }
+}

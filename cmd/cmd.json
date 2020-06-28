@@ -1,9 +1,31 @@
 {
-    "short":"Alibaba Cloud Resource CLI",
+    "long":{
+        "zh":"  Alibaba Cloud Resource CLI  "
+    },
     "sub":{
-        "ecs":"云服务器ECS",
-        "config":"配置相关",
-        "cmd":"",
-        "completion":"自动补全"
+        "ecs":{
+            "zh":"云服务器ECS"
+        },
+        "config":{
+            "zh":"CLI 配置"
+        },
+        "completion":{
+            "zh":"自动补全"
+        },
+        "alidns":{
+            "zh":"云解析DNS"
+        },
+        "cms":{
+            "zh":"云监控"
+        },
+        "nas":{
+            "zh":"文件存储"
+        },
+        "polardb":{
+            "zh":"云数据库 PolarDB"
+        },
+        "rds":{
+            "zh":"云数据库 RDS"
+        }
     }
 }

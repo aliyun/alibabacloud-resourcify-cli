@@ -1,8 +1,13 @@
 {
-    "short": "云服务器ecs",
-    "example": "arc ecs instance",
+    "long": {
+        "zh":"云服务器ECS（Elastic Compute Service）是一种简单高效、处理能力可弹性伸缩的计算服务。帮助您构建更稳定、安全的应用，提升运维效率，降低IT成本，使您更专注于核心业务创新"
+    },
     "sub": {
-        "instance": "实例相关",
-        "region": "地域相关"
+        "instance": {
+            "zh":"实例资源操作"
+        },
+        "region": {
+            "zh":"地域资源操作"
+        }
     }
 }
