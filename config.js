@@ -5,6 +5,7 @@ const fs = require('fs');
 const USER_HOME = require('os').homedir();
 
 const configFilePath = path.join(USER_HOME, '.aliyun', 'arc.json');
+
 function getConfig() {
     if (!fs.existsSync(configFilePath)) {
         return null;
@@ -17,14 +18,12 @@ function getConfig() {
 function getProfile(name) {
     let config = getConfig();
     if (!config) {
-        return null;
+        return { name: 'default', profile: null };
     }
-    {
-        if (!name) {
-            return config.credential[config.default];
-        }
+    if (!name) {
+        return { name: config.default, profile: config.credential[config.default] };
     }
-    return config.credential[name];
+    return { name, profile: config.credential[name] };
 }
 
 function updateProfile(name, profile) {
@@ -37,6 +36,7 @@ function updateProfile(name, profile) {
     fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
 }
 
+exports.language = 'en';
 module.exports = {
     getConfig,
     getProfile,

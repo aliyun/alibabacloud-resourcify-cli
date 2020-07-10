@@ -3,155 +3,46 @@
 // AlibabaCloud Resourcify CLI
 
 'use strict';
+const { help } = require('../helper.js');
+const parse = require('yargs-parser');
+const util = require('../util');
 
-const path = require('path');
-const fs = require('fs');
-const handler = require('../handler.js');
+let {cmds, descFilePath, argv } = util.getBasicInfo(process.argv.slice(2));
+const cmd = require(descFilePath);
 
-
-let { cmds, descFilePath, argv } = getBasicInfo(process.argv.slice(2));
-const buf = fs.readFileSync(descFilePath);
-let cmdObj = JSON.parse(buf);
-let params = cmdObj.param;
-let processFilePath = path.join(__dirname, '../meta', ...cmds);
-processFilePath += '.js';
-let yargs = require('yargs/yargs')(argv);
-
-if (!cmdObj.mapping && !fs.existsSync(processFilePath) && argv[argv.length - 1] !== '') {
-    argv.push('help');
+if (cmds[cmds.length-1]==='help') {
+    help(cmd.cmdObj,argv);
+    process.exit(0);
 }
 
-for (let key in cmdObj.sub) {
-    yargs.command(`${cmds.join(' ')} ${key}`, cmdObj.sub[key]['zh']);
+let opts = util.fillYargsFlag(cmd.cmdObj);
+
+argv = parse(argv, opts);
+let errorMsg='';
+errorMsg=util.validate(cmd.cmdObj, argv);
+
+if (!errorMsg&&cmd.validate) {
+    errorMsg=cmd.validate(argv);
+} 
+
+if (errorMsg){
+    help(cmd.cmdObj,argv);
+    console.error(errorMsg);
+    process.exit(-1);
 }
 
-if (cmdObj.param) {
-    transParam(yargs, '', '', params);
+if (!cmd.run){
+    help(cmd.cmdObj,argv);
+    process.exit(0);
 }
 
-if (cmdObj.example) {
-    yargs.example(cmdObj.example);
-}
+// if (cmds&&cmds[0]!=='config'){
+//     console.log('dsfs');
+// }
 
+run();
+// 获取终端输入
 
-let desc = '';
-if (cmdObj.long) {
-    desc = cmdObj.long['zh'];
-}
-yargs.usage(`${desc}\nUsage:\n$0 ${cmds.join(' ')}`);
-yargs.completion('completion', false, function (current, argv) {
-    let args = [];
-    if (argv._[argv._.length - 1] === '') {
-        args = argv._.slice(0, argv._.length - 1);
-    } else {
-        args = argv._;
-    }
-    let { descFilePath } = getBasicInfo(args.slice(1));
-    const buf = fs.readFileSync(descFilePath);
-    let cmdObj = JSON.parse(buf);
-    let completWords = [];
-    for (let key in cmdObj.sub) {
-        completWords.push(key);
-    }
-    for (let key in cmdObj.param) {
-        completWords.push(`--${key}`);
-    }
-    return completWords;
-});
-yargs.parse(argv);
-
-if (!cmdObj.mapping && !fs.existsSync(processFilePath)) {
-    return;
-}
-
-let args = require('yargs-parser')(argv);
-handler(cmds, cmdObj, args);
-
-function getBasicInfo(argv) {
-    let flag = true;
-    let cmds = [];
-    let descFilePath = path.join(__dirname, '../cmd');
-
-    for (var i in argv) {
-        let arg = argv[i];
-        if (arg.startsWith('-')) {
-            argv = argv.slice(i);
-            flag = false;
-            break;
-        }
-        let temPath = path.join(descFilePath, arg);
-        // 目录存在，则有子命令
-        if (!fs.existsSync(temPath)) {
-            if (!fs.existsSync(`${temPath}.json`)) {
-                argv = argv.slice(i);
-                flag = false;
-                break;
-            }
-        }
-        descFilePath = temPath;
-        cmds[i] = argv[i];
-    }
-    if (flag) {
-        argv = [];
-    }
-    if (fs.existsSync(descFilePath)) {
-        if (cmds.length !== 0) {
-            descFilePath = path.join(descFilePath, `${cmds[cmds.length - 1]}.json`);
-        } else {
-            descFilePath = path.join(descFilePath, `cmd.json`);
-        }
-    } else {
-        descFilePath = `${descFilePath}.json`;
-    }
-    return { cmds, descFilePath, argv };
-}
-
-function transParam(yargs, prefix, subType, params) {
-    for (var name in params) {
-        if (params[name].param) {
-            transParam(`${name}.`, params[name].vType, params[name].param);
-            continue;
-        }
-        let flagName = prefix + name;
-        if (params[name].shortHand) {
-            yargs.alias(flagName, params[name].shortHand);
-        }
-        if (flagName !== name) {
-            yargs.alias(flagName, name);
-        }
-        switch (subType) {
-            case 'list':
-                params[name].vType = 'list';
-                break;
-        }
-
-        switch (params[name].vType) {
-            case 'jsonlist', 'list':
-                yargs.array(flagName);
-                break;
-            case 'bool':
-                yargs.boolean(flagName);
-                break;
-            case 'number':
-                yargs.number(flagName);
-                break;
-            default:
-                yargs.string(flagName);
-        }
-        if (params[name].required) {
-            yargs.demandOption(flagName);
-        }
-        if (params[name].choices) {
-            yargs.choices(flagName, params[name].choices);
-        }
-
-        if (params[name].group) {
-            let group = params[name].group;
-            for (var i in group) {
-                yargs.group(flagName, group[i]);
-            }
-        }
-
-        yargs.option(flagName, {});
-    }
+async function run(){
+    cmd.run(argv);
 }

@@ -1,7 +1,35 @@
 'use strict';
+
+exports.cmdObj = {
+    use: 'arc config',
+    desc: {
+        zh: '交互式配置CLI，根据提示输入参数值，完成后自动将现有配置作为默认配置'
+    },
+    flags: {
+        profile: {
+            alias: 'p',
+            desc: {
+                zh: '指定配置的名称'
+            }
+        },
+        mode: {
+            alias: 'm',
+            desc: {
+                zh: '指定凭证类型'
+            },
+            choices: [
+                'AK',
+                'StsToken',
+                'EcsRamRole'
+            ]
+        }
+    }
+};
+
 const readline = require('readline-sync');
 const { updateProfile } = require('../config.js');
-function Run(cmd, args) {
+
+exports.run = function (args) {
     let profile = {};
     let name;
     if (!args.profile) {
@@ -27,13 +55,4 @@ function Run(cmd, args) {
     }
     profile['region'] = readline.question('Default Region ID: ');
     updateProfile(name, profile);
-}
-
-function flagPrepare() {
-    // TODO 
-}
-
-module.exports = {
-    Run,
-    flagPrepare
 };
