@@ -2,21 +2,16 @@
 
 const { default: Credential, Config } = require('@alicloud/credentials');
 const { RuntimeOptions } = require('@alicloud/tea-util');
-const { getProfile } = require('./config.js');
+const cliConfig = require('./config.js');
 
 
-exports.getConfigOption=async function (args) {
+exports.getConfigOption = async function (args) {
     let name;
     if (args.profile) {
         name = args.profile;
     }
-    let {profile} = getProfile(name);
-    if (!profile) {
-        profile = {};
-        profile.access_key_id = process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID;
-        profile.access_key_secret = process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE;
-        profile.region = 'cn-hangzhou';
-    }
+    cliConfig.getProfile(name);
+    let profile = cliConfig.profile;
     profile.region = args.region || profile.region;
     let config;
     switch (profile.mode) {
@@ -45,13 +40,13 @@ exports.getConfigOption=async function (args) {
             break;
     }
     const cred = new Credential(config);
-    profile.type=config.type;
+    profile.type = config.type;
     profile.access_key_id = await cred.getAccessKeyId();
     profile.access_key_secret = await cred.getAccessKeySecret();
     profile.sts_token = await cred.getSecurityToken();
     return profile;
 };
 
-exports.getRuntimeOption=function (args){
+exports.getRuntimeOption = function (args) {
     return new RuntimeOptions({});
 };

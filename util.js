@@ -10,7 +10,7 @@ function getBasicInfo(argv) {
 
     for (var i in argv) {
         let arg = argv[i];
-        if (arg==='help'){
+        if (arg === 'help') {
             cmds[i] = argv[i];
             argv = argv.slice(i);
             flag = false;
@@ -36,7 +36,7 @@ function getBasicInfo(argv) {
         argv = [];
     }
     descFilePath = `${descFilePath}.js`;
-   
+
     return { cmds, descFilePath, argv };
 }
 
@@ -118,29 +118,29 @@ function validate(cmdObj, argv) {
     }
 
     //可选值检测
-    let index=0;
-    for (index in argv._){
-        let ok=true;
+    let index = 0;
+    for (index in argv._) {
+        let ok = true;
         let arg;
-        if (cmdObj.args[index]){
-            arg=cmdObj.args[index];
-            if (arg.choices){
-                ok=arg.choices.includes(argv._[index]);
+        if (cmdObj.args[index]) {
+            arg = cmdObj.args[index];
+            if (arg.choices) {
+                ok = arg.choices.includes(argv._[index]);
             }
-        }else{
-            arg=cmdObj.args[cmdObj.args.length-1];
-            if (arg.choices){
-                ok=arg.choices.includes(argv._[index]);
+        } else {
+            arg = cmdObj.args[cmdObj.args.length - 1];
+            if (arg.choices) {
+                ok = arg.choices.includes(argv._[index]);
             }
         }
-        if (!ok){
+        if (!ok) {
             return `Position parameter '${arg.name}' has optional values: ${arg.choices} `;
         }
     }
 
-    if (cmdObj.required){
-        for (let name of cmdObj.required){
-            if (!argv[name]){
+    if (cmdObj.required) {
+        for (let name of cmdObj.required) {
+            if (!argv[name]) {
                 return `The required option '--${name}' is not specified`;
             }
         }

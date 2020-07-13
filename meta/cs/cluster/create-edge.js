@@ -1,9 +1,9 @@
 'use strict';
 
 // TODO
-exports.cmdObj={
-    use:'arc cs cluster create-edge',
-    flags:{
+exports.cmdObj = {
+    use: 'arc cs cluster create-edge',
+    flags: {
         'vpcid': {
             desc: {
                 zh: '可空。如果不设置，系统会自动创建VPC，系统创建的VPC网段为192.168.0.0/16。VpcId和vswitchid只能同时为空或者同时都设置相应的值'
@@ -53,7 +53,7 @@ exports.cmdObj={
             desc: {
                 zh: 'Worker节点系统盘大小，单位为GiB'
             }
-        },   
+        },
         'container-cidr': {
             desc: {
                 zh: '容器网段，不能和VPC网段冲突。当选择系统自动创建VPC时，默认使用172.16.0.0/16网段。当创建flannel网络类型的集群时，该字段为必填'
@@ -86,7 +86,7 @@ exports.cmdObj={
                 'ipvs'
             ]
         },
-        
+
         'service-cidr': {
             desc: {
                 zh: 'Service网络的网段，不能和VPC网段及Pod网络网段冲突。当选择系统自动创建VPC时，默认使用172.19.0.0/20网段'
@@ -98,8 +98,8 @@ exports.cmdObj={
                 zh: '集群资源栈创建超时时间，以分钟为单位，默认值 60'
             }
         },
-        
-        
+
+
         'worker-data-disk': {
             vtype: 'boolean',
             desc: {
@@ -118,7 +118,7 @@ exports.cmdObj={
             },
             example: `[{"category":"cloud","size":"40","encrypted":"false"}]`
         },
-        
+
         // TODO maplist类型输入问题，暂时以string输入json字符串
         tags: {
             desc: {

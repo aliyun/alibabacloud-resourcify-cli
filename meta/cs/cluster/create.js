@@ -3,6 +3,7 @@
 // const runtime=require('');
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
+let output = require('../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster create',
     long: {
@@ -380,15 +381,15 @@ exports.validate = function (argv) {
     return '';
 };
 
-exports.run =async function ( argv) {
-    let profile=await runtime.getConfigOption(argv);
-    let {Config}=require('@alicloud/roa-client');
+exports.run = async function (argv) {
+    let profile = await runtime.getConfigOption(argv);
+    let { Config } = require('@alicloud/roa-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
         securityToken: profile.sts_token,
         regionId: profile.region,
-        type:profile.type
+        type: profile.type
     });
     let CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
     let request = new CreateClusterRequest({});
@@ -407,9 +408,9 @@ exports.run =async function ( argv) {
 
     client.createClusterWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
         let data = JSON.stringify(result, null, 2);
-        console.log(data);
+        output.result = data;
     }).catch(e => {
-        console.error(e.message);
+        output.error = e;
     });
 };
 

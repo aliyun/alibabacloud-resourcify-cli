@@ -23,6 +23,17 @@ exports.cmdObj = {
                 'EcsRamRole'
             ]
         }
+    },
+    sub: {
+        delete: {
+            zh: '删除配置'
+        },
+        get: {
+            zh: '获取配置详细信息'
+        },
+        list: {
+            zh: '获取所有配置信息'
+        }
     }
 };
 
@@ -53,6 +64,7 @@ exports.run = function (args) {
             profile['sts_token'] = readline.question('Sts Token: ');
             break;
     }
-    profile['region'] = readline.question('Default Region ID: ');
+    profile['region'] = readline.question('Default Region ID: ') || 'cn-hangzhou';
+    profile['language'] = readline.question('Default language: ') || 'zh';
     updateProfile(name, profile);
 };

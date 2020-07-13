@@ -6,43 +6,52 @@
 const { help } = require('../helper.js');
 const parse = require('yargs-parser');
 const util = require('../util');
+let config = require('../config.js');
+let output = require('../output.js');
 
-let {cmds, descFilePath, argv } = util.getBasicInfo(process.argv.slice(2));
+config.getProfile();
+let { cmds, descFilePath, argv } = util.getBasicInfo(process.argv.slice(2));
 const cmd = require(descFilePath);
 
-if (cmds[cmds.length-1]==='help') {
-    help(cmd.cmdObj,argv);
+// help
+if (cmds[cmds.length - 1] === 'help') {
+    help(cmd.cmdObj, config.profile.language);
     process.exit(0);
 }
 
+// 填充flag
 let opts = util.fillYargsFlag(cmd.cmdObj);
 
+// 解析flag
 argv = parse(argv, opts);
-let errorMsg='';
-errorMsg=util.validate(cmd.cmdObj, argv);
+let errorMsg = '';
 
-if (!errorMsg&&cmd.validate) {
-    errorMsg=cmd.validate(argv);
-} 
+// 验证flag
+errorMsg = util.validate(cmd.cmdObj, argv);
 
-if (errorMsg){
-    help(cmd.cmdObj,argv);
+if (!errorMsg && cmd.validate) {
+    errorMsg = cmd.validate(argv);
+}
+
+if (errorMsg) {
+    help(cmd.cmdObj, config.profile.language);
     console.error(errorMsg);
     process.exit(-1);
 }
 
-if (!cmd.run){
-    help(cmd.cmdObj,argv);
+if (!cmd.run) {
+    help(cmd.cmdObj, config.profile.language);
     process.exit(0);
 }
 
-// if (cmds&&cmds[0]!=='config'){
-//     console.log('dsfs');
-// }
-
+// 运行
 run();
-// 获取终端输入
 
-async function run(){
-    cmd.run(argv);
+async function run() {
+    await cmd.run(argv);
+    if (output.errorMsg) {
+        console.error(output.errorMsg);
+    } else {
+        console.log(output.result);
+    }
 }

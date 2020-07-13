@@ -1,8 +1,8 @@
 'use strict';
 // TODO 文档不全，暂停
-exports.cmdObj={
-    use:'arc cs cluster create-sandbox',
-    flags:{
+exports.cmdObj = {
+    use: 'arc cs cluster create-sandbox',
+    flags: {
         region: {
             alias: 'r',
             required: true,
@@ -36,16 +36,16 @@ exports.cmdObj={
             desc: {
                 zh: 'Worker节点数。范围是[0，100]'
             }
-        }, 
+        },
         'pod-vswitch-ids': {
-            required:true,
-            vtype:'array',
-            desc:{
-                zh:'Pod使用的虚拟交换机的ID'
+            required: true,
+            vtype: 'array',
+            desc: {
+                zh: 'Pod使用的虚拟交换机的ID'
             }
         },
         'runtime': {
-            require:true,
+            require: true,
             desc: {
                 zh: 'name：安全容器运行时的名称，目前支持Sandboxed-Container.runv，version：当前版本1.0.0'
             },
@@ -53,7 +53,7 @@ exports.cmdObj={
         },
         'snat-entry': {
             required: true,
-            vtype:'boolean',
+            vtype: 'boolean',
             desc: {
                 zh: `是否为网络配置SNAT：当已有VPC能访问公网环境时，设置为 false。当已有VPC不能访问公网环境时：设置为true，表示配置SNAT，此时可以访问公网环境。设置为false，表示不配置SNAT，此时不能访问公网环境。`
             }
@@ -84,7 +84,7 @@ exports.cmdObj={
             },
             example: `[{"category":"cloud","size":"40","encrypted":"false"}]`
         },
-        
+
         'worker-instance-types': {
             required: true,
             vtype: 'array',

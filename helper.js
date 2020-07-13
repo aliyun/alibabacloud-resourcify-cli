@@ -3,15 +3,40 @@
 
 var ui = require('cliui')();
 
+let lang;
+
+const cueWord = {
+    command: {
+        zh: '子命令',
+        en: 'command'
+    },
+    options: {
+        zh: '选项',
+        en: 'options'
+    },
+    required: {
+        zh: '必选',
+        en: 'required'
+    },
+    optionValue: {
+        zh: '可选值',
+        en: 'optional value'
+    },
+    example: {
+        zh: '示例值',
+        en: 'example'
+    }
+};
+
 exports.printUsage = function (cmdObj) {
     let message = '';
     if (cmdObj.sub) {
         ui.div({
-            text:`${cmdObj.use} [command]`,
-            padding:[0,0,0,4]
+            text: `${cmdObj.use} [${cueWord.command[lang]}]`,
+            padding: [0, 0, 0, 4]
         });
     }
-    if (cmdObj.args||cmdObj.flags){
+    if (cmdObj.args || cmdObj.flags) {
         message += cmdObj.use + ' ';
     }
     if (cmdObj.args) {
@@ -34,12 +59,12 @@ exports.printUsage = function (cmdObj) {
     }
 
     if (cmdObj.flags) {
-        message += '[options]';
+        message += `[${cueWord.options[lang]}]`;
     }
-    if (message){
+    if (message) {
         ui.div({
-            text:message,
-            padding:[0,0,0,4]
+            text: message,
+            padding: [0, 0, 0, 4]
         });
     }
 };
@@ -49,9 +74,9 @@ exports.printDesc = function (desc) {
         return;
     }
     ui.div({
-       text:desc['zh'],
-       padding:[1,0,1,4],
-       width:50
+        text: desc[lang],
+        padding: [1, 0, 1, 4],
+        width: 50
     });
 };
 
@@ -59,16 +84,16 @@ exports.printSubcmd = function (sub) {
     if (!sub) {
         return;
     }
-    ui.div('command:');
+    ui.div(`${cueWord.command[lang]}:`);
     for (let name in sub) {
         ui.div(
             {
                 text: name,
                 width: 20,
-                padding:[0,0,0,4]
+                padding: [0, 0, 0, 4]
             },
             {
-                text: sub[name]['zh'],
+                text: sub[name][lang],
                 width: 30
             }
         );
@@ -80,36 +105,36 @@ exports.printFlags = function (group, flags) {
         return;
     }
     if (group) {
-        ui.div(`options of ${name}:`);
+        ui.div(`${name} ${cueWord.options[lang]}:`);
     } else {
-        ui.div(`options:`);
+        ui.div(`${cueWord.options[lang]}:`);
     }
-    if (flags.required){
+    if (flags.required) {
         for (let flagName of flags.required) {
-            exports.printFlag(flagName,flags.flags[flagName], true);
+            exports.printFlag(flagName, flags.flags[flagName], true);
             delete flags.flags[flagName];
         }
     }
     for (let flagName in flags.flags) {
-        exports.printFlag(flagName,flags.flags[flagName], false);
+        exports.printFlag(flagName, flags.flags[flagName], false);
     }
 };
 
-exports.printFlag = function (flagName,flag, required) {
+exports.printFlag = function (flagName, flag, required) {
     flagName = `--${flagName}`;
     let desc = '';
     let vtype = flag.vtype || 'string';
     let choices = '';
     let requiredTip = '';
     if (required) {
-        requiredTip = '<必选>';
+        requiredTip = `<${cueWord.required[lang]}>`;
     }
     if (flag.desc) {
-        desc = flag.desc['zh'] || '';
+        desc = flag.desc[lang] || '';
     }
     if (flag.choices) {
         let str = flag.choices.join(' , ');
-        choices = `[可选值：${str}]`;
+        choices = `[${cueWord.optionValue[lang]}: ${str}]`;
     }
     if (flag.alias) {
         flagName = `-${flag.alias},${flagName}`;
@@ -118,7 +143,7 @@ exports.printFlag = function (flagName,flag, required) {
     }
 
     if (flag.example) {
-        desc += '\n示例值：\n' + flag.example;
+        desc += `\n${cueWord.example[lang]}：\n` + flag.example;
     }
     {
         ui.div(
@@ -158,7 +183,8 @@ exports.printHelp = function () {
     console.log(ui.toString());
 };
 
-exports.help = function (cmdObj) {
+exports.help = function (cmdObj, language) {
+    lang = language || 'zh';
     ui.div('usage:');
     exports.printUsage(cmdObj);
     exports.printDesc(cmdObj.desc);

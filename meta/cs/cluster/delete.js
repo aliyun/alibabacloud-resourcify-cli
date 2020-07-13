@@ -2,9 +2,13 @@
 
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
+let output = require('../../../output.js');
 
 exports.cmdObj = {
     use: 'arc cs cluster delete',
+    desc: {
+        zh: '根据集群ID删除集群'
+    },
     args: [
         {
             name: 'clusterId',
@@ -28,11 +32,11 @@ exports.run = async function (argv) {
     let request = new DeleteClusterRequest({});
     let client = new Client(config);
     for (let id of argv._) {
-        client.deleteClusterWithOptions(id,request, runtime.getRuntimeOption(argv)).then(result => {
+        client.deleteClusterWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
             let data = JSON.stringify(result, null, 2);
-            console.log(data);
+            output.log(data);
         }).catch(e => {
-            console.error(e.message);
+            output.error(e.message);
         });
     }
 };

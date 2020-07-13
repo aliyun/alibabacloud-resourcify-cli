@@ -4,11 +4,12 @@
 
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
+let output = require('../../../output.js');
 
 exports.cmdObj = {
     use: 'arc cs cluster get',
-    long:{
-        zh:'根据集群ID，查看集群的详细信息'
+    desc: {
+        zh: '根据集群ID，查看集群的详细信息'
     },
     args: [
         {
@@ -32,11 +33,11 @@ exports.run = async function (argv) {
     let request = new DescribeClusterDetailRequest({});
     let client = new Client(config);
     for (let id of argv._) {
-        client.describeClusterDetailWithOptions(id,request, runtime.getRuntimeOption(argv)).then(result => {
+        client.describeClusterDetailWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
             let data = JSON.stringify(result, null, 2);
-            console.log(data);
+            output.log(data);
         }).catch(e => {
-            console.error(e.message);
+            output.error(e.message);
         });
     }
 };

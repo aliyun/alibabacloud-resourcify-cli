@@ -1,26 +1,24 @@
 'use strict';
 
-
-
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
-
+let output = require('../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster get',
-    long:{
-        zh:'查看您在容器服务中创建的所有集群（包括Swarm和Kubernetes集群）'
+    desc: {
+        zh: '查看您在容器服务中创建的所有集群（包括Swarm和Kubernetes集群）'
     },
-    flags:{
-        name:{
-            mapping:'name',
-            desc:{
-                zh:'根据集群Name进行模糊匹配查询'
+    flags: {
+        name: {
+            mapping: 'name',
+            desc: {
+                zh: '根据集群Name进行模糊匹配查询'
             }
         },
-        'cluster-type':{
-            mapping:'clusterType',
-            desc:{
-                zh:'集群类型'
+        'cluster-type': {
+            mapping: 'clusterType',
+            desc: {
+                zh: '集群类型'
             }
         }
     }
@@ -38,7 +36,7 @@ exports.run = async function (argv) {
     });
     let DescribeClustersRequest = require(`@alicloud/cs20151215`).DescribeClustersRequest;
     let request = new DescribeClustersRequest({});
-    let DescribeClustersQuery=require(`@alicloud/cs20151215`).DescribeClustersQuery;
+    let DescribeClustersQuery = require(`@alicloud/cs20151215`).DescribeClustersQuery;
     let query = new DescribeClustersQuery({});
 
     let flags = exports.cmdObj.flags;
@@ -50,11 +48,10 @@ exports.run = async function (argv) {
     }
 
     let client = new Client(config);
-        client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
-            let data = JSON.stringify(result, null, 2);
-            console.log(data);
-        }).catch(e => {
-            console.error(e.message);
-        });
-    
+    client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
+        let data = JSON.stringify(result, null, 2);
+        output.log(data);
+    }).catch(e => {
+        output.error(e.message);
+    });
 };
