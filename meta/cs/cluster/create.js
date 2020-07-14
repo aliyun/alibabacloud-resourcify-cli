@@ -14,6 +14,7 @@ exports.cmdObj = {
         region: {
             mapping: 'regionId',
             alias: 'r',
+            hide: true,
             desc: {
                 zh: '集群所在地域ID',
             }
@@ -324,7 +325,6 @@ exports.cmdObj = {
         taints: {},
     },
     required: [
-        'region',
         'snat-entry',
         'worker-vswitch-ids',
         'master-vswitch-ids',

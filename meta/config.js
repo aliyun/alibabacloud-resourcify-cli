@@ -33,6 +33,9 @@ exports.cmdObj = {
         },
         list: {
             zh: '获取所有配置信息'
+        },
+        set: {
+            zh: '设置配置字段值'
         }
     }
 };

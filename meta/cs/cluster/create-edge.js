@@ -11,7 +11,7 @@ exports.cmdObj = {
         },
         region: {
             alias: 'r',
-            required: true,
+            hide: true,
             desc: {
                 zh: '集群所在地域ID',
             }

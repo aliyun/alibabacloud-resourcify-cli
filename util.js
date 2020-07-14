@@ -40,17 +40,19 @@ function getBasicInfo(argv) {
     return { cmds, descFilePath, argv };
 }
 
-function fillYargsFlag(cmdObj) {
+function fillYargsFlag(cmdObj, opts) {
     // 填充flag
-    let opts = {
-        number: [],
-        boolean: [],
-        string: [],
-        array: [],
-        configuration: {
-            'unknown-options-as-args': true
-        }
-    };
+    if (!opts) {
+        opts = {
+            number: [],
+            boolean: [],
+            string: [],
+            array: [],
+            configuration: {
+                'unknown-options-as-args': true
+            }
+        };
+    }
     opts = fillGroup(opts, cmdObj.group);
     opts = fillflags(opts, cmdObj.flags);
     return opts;
@@ -71,6 +73,9 @@ function fillflags(opts, flagObj) {
         return opts;
     }
     for (let name in flagObj) {
+        if (flagObj[name].hide) {
+            continue;
+        }
         switch (flagObj[name].vtype) {
             case 'number':
                 opts['number'].push(name);
@@ -156,3 +161,4 @@ module.exports = {
     fillflags,
     fillGroup
 };
+
