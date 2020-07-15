@@ -8,7 +8,6 @@ const configFilePath = path.join(USER_HOME, '.aliyun', 'arc.json');
 
 exports.profileName = 'default';
 exports.profile = {
-    mode: 'AK',
     access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
     access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
     region: 'cn-hangzhou',
@@ -30,7 +29,7 @@ exports.getProfile = function (name) {
         return;
     }
     if (!name) {
-        exports.profileName = config.credential[config.default];
+        exports.profileName = config.default;
         exports.profile = config.credential[config.default];
         return;
     }
@@ -53,10 +52,10 @@ exports.delete = function (name) {
     if (!config) {
         return;
     }
-    delete config.credential[name];
     if (name === config.default) {
         console.error('cannot delete default profile');
         process.exit(-1);
     }
+    delete config.credential[name];
     fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
 };

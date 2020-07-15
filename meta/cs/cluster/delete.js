@@ -19,7 +19,7 @@ exports.cmdObj = {
 };
 
 exports.run = async function (argv) {
-    let profile = await runtime.getConfigOption(argv);
+    let profile = await runtime.getConfigOption();
     let { Config } = require('@alicloud/roa-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,

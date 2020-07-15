@@ -3,18 +3,26 @@
 const { default: Credential, Config } = require('@alicloud/credentials');
 const { RuntimeOptions } = require('@alicloud/tea-util');
 const cliConfig = require('./config.js');
+const output=require('output.js');
 
 
-exports.getConfigOption = async function (args) {
-    let name;
-    if (args.profile) {
-        name = args.profile;
+exports.getConfigOption = async function () {
+    let profile=exports.profile;
+    if (cliConfig.profile.access_key_id!==''&&cliConfig.profile.access_key_secret!==''){
+        profile['mode']='AK';
+        if (cliConfig.profile.sts_token!==''){
+            profile['mode']='StsToken';
+        }else if(cliConfig.profile.ram_role_arn!==''){
+            profile['mode']='RamRoleArn';
+        }
+    }else if(cliConfig.profile.ecs_ram_role!==''){
+        profile['mode']='EcsRamRole';
     }
-    cliConfig.getProfile(name);
-    let profile = cliConfig.profile;
-    profile.region = args.region || profile.region;
     let config;
-    switch (profile.mode) {
+    if (!profile.mode){
+        output.error('The current profile is incomplete and cannot be invoked\n');
+    }
+    switch (profile['mode']) {
         case 'AK':
             config = new Config({
                 type: 'access_key',

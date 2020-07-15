@@ -25,7 +25,7 @@ exports.cmdObj = {
 };
 
 exports.run = async function (argv) {
-    let profile = await runtime.getConfigOption(argv);
+    let profile = await runtime.getConfigOption();
     let { Config } = require('@alicloud/roa-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
@@ -46,11 +46,11 @@ exports.run = async function (argv) {
         }
         query[flags[key].mapping] = argv[key];
     }
-
     let client = new Client(config);
-    client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
+    await client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
         let data = JSON.stringify(result, null, 2);
         output.log(data);
+        // console.log(data);
     }).catch(e => {
         output.error(e.message);
     });

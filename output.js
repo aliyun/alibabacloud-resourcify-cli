@@ -8,6 +8,5 @@ exports.log = function (data) {
 };
 
 exports.error = function (message) {
-    console.log(message);
     exports.errorMsg += message;
 };

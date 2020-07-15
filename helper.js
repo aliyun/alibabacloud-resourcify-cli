@@ -29,6 +29,15 @@ const cueWord = {
 };
 
 exports.printUsage = function (cmdObj) {
+    if (cmdObj.usage){
+        for (let value of cmdObj.usage){
+            ui.div({
+                text: value,
+                padding: [0, 0, 0, 4]
+            });
+        }
+        return;
+    }
     let message = '';
     if (cmdObj.sub) {
         ui.div({

@@ -5,15 +5,12 @@ const output = require('../../output.js');
 
 exports.cmdObj = {
     use: 'arc config get',
-    args: [
-        {
-            name: 'profile'
-        }
+    usage:[
+        'arc config get [--profile profileName]'
     ]
 };
 
 exports.run = function (args) {
-    config.getProfile(args._[0]);
-    let data = JSON.stringify(config.profile, null, 2);
+    let data=JSON.stringify(config.profile,null,2);
     output.log(data);
 };
