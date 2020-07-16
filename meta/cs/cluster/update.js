@@ -55,7 +55,6 @@ exports.cmdObj = {
     },
     required: [
         'api-server-eip',
-        'api-server-eip-id',
         'deletion-protection',
         'ingress-domain-rebinding',
         'ingress-loadbalancer-id',

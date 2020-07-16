@@ -14,17 +14,18 @@ exports.cmdObj = {
             required:true,
         },
         {
-            name:'value'
+            name:'value',
+            required:true
         }
     ]
 };
 
 exports.run = function (args) {
+    console.log(args._);
     if (!args._[1]){
-        config.profile.delete[args._[0]];
+        delete config.profile[args._[0]];
     }else{
         config.profile[args._[0]]=args._[1];
     }
-    console.log(config.profileName);
     config.updateProfile(config.profileName,config.profile);
 };

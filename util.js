@@ -48,6 +48,7 @@ function fillYargsFlag(cmdObj, opts) {
             boolean: [],
             string: [],
             array: [],
+            alias:{},
             configuration: {
                 'unknown-options-as-args': true
             }
@@ -91,6 +92,9 @@ function fillflags(opts, flagObj) {
                 break;
             default:
                 opts['string'].push(name);
+        }
+        if (flagObj[name].alias){
+            opts.alias[name]=[flagObj[name].alias];
         }
     }
     return opts;
@@ -145,7 +149,7 @@ function validate(cmdObj, argv) {
 
     if (cmdObj.required) {
         for (let name of cmdObj.required) {
-            if (!argv[name]) {
+            if (argv[name]===undefined) {
                 return `The required option '--${name}' is not specified`;
             }
         }

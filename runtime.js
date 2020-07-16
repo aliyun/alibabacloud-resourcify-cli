@@ -3,19 +3,18 @@
 const { default: Credential, Config } = require('@alicloud/credentials');
 const { RuntimeOptions } = require('@alicloud/tea-util');
 const cliConfig = require('./config.js');
-const output=require('output.js');
-
+const output=require('./output.js');
 
 exports.getConfigOption = async function () {
-    let profile=exports.profile;
-    if (cliConfig.profile.access_key_id!==''&&cliConfig.profile.access_key_secret!==''){
+    let profile=cliConfig.profile;
+    if (profile.access_key_id&&cliConfig.profile.access_key_secret){
         profile['mode']='AK';
-        if (cliConfig.profile.sts_token!==''){
+        if (profile.sts_token){
             profile['mode']='StsToken';
-        }else if(cliConfig.profile.ram_role_arn!==''){
+        }else if(profile.ram_role_arn){
             profile['mode']='RamRoleArn';
         }
-    }else if(cliConfig.profile.ecs_ram_role!==''){
+    }else if(profile.ecs_ram_role){
         profile['mode']='EcsRamRole';
     }
     let config;

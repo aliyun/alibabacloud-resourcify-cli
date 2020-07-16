@@ -28,9 +28,8 @@
     "@alicloud/rds20140815": "^1.0.0",
     "@alicloud/rpc-client": "^1.2.0",
     "cliui": "^6.0.0",
-    "commander": "^5.1.0",
+    "inquirer": "^7.3.2",
     "readline-sync": "^1.4.10",
-    "yargs": "^15.3.1",
     "yargs-parser": "^18.1.3"
   }
 }

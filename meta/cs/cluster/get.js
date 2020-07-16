@@ -14,7 +14,8 @@ exports.cmdObj = {
     args: [
         {
             name: 'clusterId',
-            required: true
+            required: true,
+            variable:true
         }
     ]
 };
@@ -33,7 +34,7 @@ exports.run = async function (argv) {
     let request = new DescribeClusterDetailRequest({});
     let client = new Client(config);
     for (let id of argv._) {
-        client.describeClusterDetailWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
+       await client.describeClusterDetailWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
             let data = JSON.stringify(result, null, 2);
             output.log(data);
         }).catch(e => {

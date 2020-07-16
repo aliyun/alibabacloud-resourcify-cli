@@ -11,6 +11,9 @@ exports.cmdObj={
         },
         cs:{
             zh:'容器服务'
+        },
+        completion:{
+            zh:'自动补全'
         }
     },
     flags:{
@@ -26,6 +29,7 @@ exports.cmdObj={
         },
         interaction:{
             vtype:'boolean',
+            alias:'i',
             desc:{
                 zh:'交互式填充参数'
             }

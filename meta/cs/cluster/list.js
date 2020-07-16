@@ -4,7 +4,7 @@ let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
 exports.cmdObj = {
-    use: 'arc cs cluster get',
+    use: 'arc cs cluster list',
     desc: {
         zh: '查看您在容器服务中创建的所有集群（包括Swarm和Kubernetes集群）'
     },
@@ -50,7 +50,6 @@ exports.run = async function (argv) {
     await client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
         let data = JSON.stringify(result, null, 2);
         output.log(data);
-        // console.log(data);
     }).catch(e => {
         output.error(e.message);
     });

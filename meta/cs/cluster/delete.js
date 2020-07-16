@@ -32,7 +32,7 @@ exports.run = async function (argv) {
     let request = new DeleteClusterRequest({});
     let client = new Client(config);
     for (let id of argv._) {
-        client.deleteClusterWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
+        await client.deleteClusterWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
             let data = JSON.stringify(result, null, 2);
             output.log(data);
         }).catch(e => {
