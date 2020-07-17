@@ -6,13 +6,16 @@ const USER_HOME = require('os').homedir();
 
 const configFilePath = path.join(USER_HOME, '.aliyun', 'arc.json');
 
-exports.profileName = 'default';
-exports.profile = {
+const initProfileName = 'default';
+exports.profileName = initProfileName;
+const initProfile = {
     access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
     access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
     region: 'cn-hangzhou',
     language: 'zh'
 };
+
+exports.profile = initProfile;
 
 exports.getConfig = function () {
     if (!fs.existsSync(configFilePath)) {
@@ -34,7 +37,12 @@ exports.getProfile = function (name) {
         return;
     }
     exports.profileName = name;
-    exports.profile = config.credential[name];
+    if (!config.credential[name]) {
+        exports.profile = initProfile;
+    } else {
+        exports.profile = config.credential[name];
+    }
+
 };
 
 exports.updateProfile = function (name, profile) {

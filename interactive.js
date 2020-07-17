@@ -22,15 +22,14 @@ exports.runInteractively = async function (cmdObj, argv) {
             }
             questions.push(question);
         }
-        await inquirer.prompt(questions).then(answers => {
-            for (let arg in cmdObj.args) {
-                if (answers[arg.name]) {
-                    args.push(`${answers[arg.name]}`);
-                }
+        let answers = await inquirer.prompt(questions);
+        for (let arg in cmdObj.args) {
+            if (answers[arg.name]) {
+                args.push(`${answers[arg.name]}`);
             }
-        });
+        }
     }
-    questions=[];
+    questions = [];
     if (cmdObj.required) {
         for (let key of cmdObj.required) {
             let question = {
@@ -47,6 +46,9 @@ exports.runInteractively = async function (cmdObj, argv) {
                 question['type'] = 'list';
                 question['choices'] = cmdObj.flags[key].choices;
             }
+            if (cmdObj.flags[key].default) {
+                question['default'] = cmdObj.flags[key].default;
+            }
             question['validate'] = function (val) {
                 if (val === '') {
                     return '该字段不能为空';
@@ -54,11 +56,10 @@ exports.runInteractively = async function (cmdObj, argv) {
                 return true;
             };
             questions.push(question);
-            delete cmdObj.flags[key];
         }
     }
     for (let key in cmdObj.flags) {
-        if (cmdObj.flags[key].hide) {
+        if (cmdObj.required.includes(key) || cmdObj.flags[key].hide) {
             continue;
         }
         let question = {
@@ -75,31 +76,33 @@ exports.runInteractively = async function (cmdObj, argv) {
             question['type'] = 'list';
             question['choices'] = cmdObj.flags[key].choices;
         }
+        if (cmdObj.flags[key].default) {
+            question['default'] = cmdObj.flags[key].default;
+        }
         questions.push(question);
+    }
+
+    let answers = await inquirer.prompt(questions);
+    for (let key in answers) {
+        if (answers[key]) {
+            args.push(`--${key}=${answers[key]}`);
+        }
     }
     if (argv.profile) {
         args.push(`--profile=${argv.profile}`);
     }
-    if (argv.region) {
+    if (argv.region && !answers['region']) {
         args.push(`--region=${argv.region}`);
     }
-    await inquirer.prompt(questions).then(answers => {
-        for (let key in answers) {
-            if (answers[key]) {
-                args.push(`--${key}=${answers[key]}`);
-            }
-        }
-    });
-    let isRun;
-    await inquirer.prompt([
+
+    answers = await inquirer.prompt([
         {
             type: 'confirm',
             name: 'isRun',
             message: 'Do you want run now?',
             default: false
-        }
-    ]).then(answers => {
-        isRun = answers.isRun;
-    });
+        }]);
+    let isRun = answers.isRun;
+
     return { args, isRun };
 };

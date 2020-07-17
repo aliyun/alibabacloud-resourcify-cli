@@ -44,6 +44,16 @@ async function run() {
     let argv = parse(args, opts);
 
     // // 处理全局选项
+    if (argv.profile) {
+        config.getProfile(argv.profile);
+    }
+
+    if (argv.region) {
+        config.profile.region = argv.region;
+    } else {
+        argv.region = config.profile.region;
+    }
+
     if (argv['interaction']) {
         let result = await runInteractively(cmd.cmdObj, argv);
         let command = ['arc'];
@@ -51,7 +61,7 @@ async function run() {
         command.push.apply(command, cmds);
         command.push.apply(command, args);
         console.log(command.join(' '));
-        if (result.isRun !== 'y') {
+        if (!result.isRun) {
             return;
         }
     }
@@ -67,21 +77,10 @@ async function run() {
     if (!errorMsg && cmd.validate) {
         errorMsg = cmd.validate(argv);
     }
-
     if (errorMsg) {
         help(cmd.cmdObj, config.profile.language);
         console.error(errorMsg);
         process.exit(-1);
-    }
-
-    if (argv.profile) {
-        config.getProfile();
-    }
-
-    if (argv.region) {
-        config.profile.region = argv.region;
-    }else{
-        argv.region=config.profile.region;
     }
 
     if (!cmd.run) {

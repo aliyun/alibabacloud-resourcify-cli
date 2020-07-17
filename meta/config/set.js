@@ -1,31 +1,36 @@
 'use strict';
 
 const config = require('../../config.js');
-const output = require('../../output.js');
 
 exports.cmdObj = {
     use: 'arc config set',
-    usage:[
-        'arc config set <key> [value] [--profile profileName]'
+    desc: {
+        zh: '设置配置中的字段，当字段不存在时添加；当value为空时，代表删除指定字段；若只是指定profile，则表示更改默认配置'
+    },
+    usage: [
+        'arc config set [<key> <value>] [--profile profileName]'
     ],
     args: [
         {
-            name:'key',
-            required:true,
+            name: 'key',
         },
         {
-            name:'value',
-            required:true
+            name: 'value',
         }
     ]
 };
 
-exports.run = function (args) {
-    console.log(args._);
-    if (!args._[1]){
-        delete config.profile[args._[0]];
-    }else{
-        config.profile[args._[0]]=args._[1];
+exports.validate = function (args) {
+    if (args._[0] && args._[1] === undefined) {
+        return 'value master be set';
     }
-    config.updateProfile(config.profileName,config.profile);
+};
+
+exports.run = function (args) {
+    if (!args._[1]) {
+        delete config.profile[args._[0]];
+    } else {
+        config.profile[args._[0]] = args._[1];
+    }
+    config.updateProfile(config.profileName, config.profile);
 };

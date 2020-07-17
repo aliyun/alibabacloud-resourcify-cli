@@ -29,8 +29,8 @@ const cueWord = {
 };
 
 exports.printUsage = function (cmdObj) {
-    if (cmdObj.usage){
-        for (let value of cmdObj.usage){
+    if (cmdObj.usage) {
+        for (let value of cmdObj.usage) {
             ui.div({
                 text: value,
                 padding: [0, 0, 0, 4]
@@ -177,15 +177,6 @@ exports.printFlag = function (flagName, flag, required) {
             }
         );
     }
-};
-exports.printFlagGroup = function (group) {
-    if (!group) {
-        return;
-    }
-    for (let name in group) {
-        this.printFlags(name, group[name]);
-    }
-
 };
 
 exports.printHelp = function () {

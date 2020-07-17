@@ -12,7 +12,6 @@ exports.cmdObj = {
     args: [
         {
             name: 'clusterId',
-            variable: true,
             required: true
         }
     ]
@@ -31,12 +30,13 @@ exports.run = async function (argv) {
     let DeleteClusterRequest = require(`@alicloud/cs20151215`).DeleteClusterRequest;
     let request = new DeleteClusterRequest({});
     let client = new Client(config);
-    for (let id of argv._) {
-        await client.deleteClusterWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
-            let data = JSON.stringify(result, null, 2);
-            output.log(data);
-        }).catch(e => {
-            output.error(e.message);
-        });
+    let result;
+    try {
+        result = await client.deleteClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        console.log(result);
+    } catch (e) {
+        output.error(e);
     }
+    let data = JSON.stringify(result, null, 2);
+    output.log(data);
 };

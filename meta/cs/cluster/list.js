@@ -46,11 +46,14 @@ exports.run = async function (argv) {
         }
         query[flags[key].mapping] = argv[key];
     }
+    request.query = query;
     let client = new Client(config);
-    await client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
-        let data = JSON.stringify(result, null, 2);
-        output.log(data);
-    }).catch(e => {
+    let result;
+    try {
+        result = await client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv));
+    } catch (e) {
         output.error(e.message);
-    });
+    }
+    let data = JSON.stringify(result, null, 2);
+    output.log(data);
 };

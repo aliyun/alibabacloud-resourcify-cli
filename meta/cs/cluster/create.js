@@ -352,7 +352,7 @@ exports.cmdObj = {
             example: `key=tier,value=backend`
         },
         'addons': {
-            vtype:'array',
+            vtype: 'array',
             desc: {
                 zh: `Kubernetes集群的addon插件的组合
 addons的参数：
@@ -366,10 +366,10 @@ addons的参数：
 Ingress：默认开启安装Ingress组件nginx-ingress-controller`
             },
             example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
-            sub:{
-                name:'string',
-                config:'string',
-                disabled:'boolean'
+            sub: {
+                name: 'string',
+                config: 'string',
+                disabled: 'boolean'
             }
         },
         // TODO
@@ -446,7 +446,7 @@ exports.run = async function (argv) {
     let request = new CreateClusterRequest({});
     let CreateClusterBody = require('@alicloud/cs20151215').CreateClusterBody;
     let body = new CreateClusterBody({});
-    body.clusterType='Kubernetes';
+    body.clusterType = 'Kubernetes';
     let flags = exports.cmdObj.flags;
     for (let key in flags) {
         if (!argv[key] || !flags[key].mapping) {
@@ -475,10 +475,10 @@ exports.run = async function (argv) {
             let pair = value.split('=');
             data[pair[0]] = pair[1];
         }
-        body['runtime']=data;
+        body['runtime'] = data;
     }
 
-    if (argv['tags']){
+    if (argv['tags']) {
         let CreateClusterBodyTags = require('@alicloud/cs20151215').CreateClusterBodyTags;
         let tagsObj = new CreateClusterBodyTags({});
         for (let value of argv['tags']) {
@@ -491,21 +491,17 @@ exports.run = async function (argv) {
         }
     }
 
-    if (argv['addons']){
+    if (argv['addons']) {
         let CreateClusterBodyAddons = require('@alicloud/cs20151215').CreateClusterBodyAddons;
         let addonsObj = new CreateClusterBodyAddons({});
-        body['addons']=[];
+        body['addons'] = [];
         for (let value of argv['addons']) {
             let values = value.split(',');
             for (let data of values) {
                 let pair = data.split('=');
-                if (pair[0]==='disabled'){
-                    if (pair[1]==='false'){
-                        addonsObj[pair[0]]=false;
-                    }else{
-                        addonsObj[pair[0]]=true;
-                    }
-                }else{
+                if (pair[0] === 'disabled') {
+                    addonsObj[pair[0]] = pair[1] === 'false' ? false : true;
+                } else {
                     addonsObj[pair[0]] = pair[1];
                 }
             }
@@ -514,11 +510,14 @@ exports.run = async function (argv) {
     }
     request.body = body;
     let client = new Client(config);
-    await client.createClusterWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
-        let data = JSON.stringify(result, null, 2);
-        output.log(data);
-    }).catch(e => {
+    let result;
+    try {
+        result = await client.createClusterWithOptions(request, runtime.getRuntimeOption(argv));
+    } catch (e) {
         output.error(e.message);
-    });
+
+    }
+    let data = JSON.stringify(result, null, 2);
+    output.log(data);
 };
 

@@ -15,7 +15,6 @@ exports.cmdObj = {
         {
             name: 'clusterId',
             required: true,
-            variable:true
         }
     ]
 };
@@ -33,12 +32,12 @@ exports.run = async function (argv) {
     let DescribeClusterDetailRequest = require(`@alicloud/cs20151215`).DescribeClusterDetailRequest;
     let request = new DescribeClusterDetailRequest({});
     let client = new Client(config);
-    for (let id of argv._) {
-       await client.describeClusterDetailWithOptions(id, request, runtime.getRuntimeOption(argv)).then(result => {
-            let data = JSON.stringify(result, null, 2);
-            output.log(data);
-        }).catch(e => {
-            output.error(e.message);
-        });
+    let result;
+    try {
+        result = await client.describeClusterDetailWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+    } catch (e) {
+        output.error(e.message);
     }
+    let data = JSON.stringify(result, null, 2);
+    output.log(data);
 };

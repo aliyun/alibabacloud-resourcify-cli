@@ -1,5 +1,5 @@
 'use strict';
-
+const config = require('../config.js');
 exports.cmdObj = {
     use: 'arc config',
     desc: {
@@ -18,25 +18,54 @@ exports.cmdObj = {
         set: {
             zh: '设置配置字段值'
         }
-    }
+    },
+    flags: {
+        'access-key-id': {
+            default: function () {
+                return config.profile.access_key_id;
+            },
+            desc: {
+                zh: '凭证ID'
+            }
+        },
+        'access-key-secret': {
+            default: function () {
+                return config.profile.access_key_secret || undefined;
+            },
+            desc: {
+                zh: '凭证密钥'
+            }
+        },
+        'region': {
+            default: function () {
+                return config.profile.region || 'cn-hangzhou';
+            },
+            desc: {
+                zh: '阿里云区域'
+            }
+        },
+        'language': {
+            default: function () {
+                return config.profile.language || 'zh';
+            },
+            desc: {
+                zh: 'CLI语言'
+            }
+        }
+    },
+    required: [
+        'access-key-id',
+        'access-key-secret',
+        'region',
+        'language'
+    ]
 };
 
-const readline = require('readline-sync');
-const config = require('../config.js');
-
-exports.run = function () {
+exports.run = function (argv) {
     let profile = {};
-    profile['access_key_id'] = readline.question(`Access Key ID [${mixed(config.profile.access_key_id)}]: `);
-    profile['access_key_secret'] = readline.question(`Access Key Secret [${mixed(config.profile.access_key_secret)}]: `);
-    profile['region'] = readline.question('Default Region ID: ') || 'cn-hangzhou';
-    profile['language'] = readline.question('Default language: ') || 'zh';
+    profile['access_key_id'] = argv['access-key-id'];
+    profile['access_key_secret'] = argv['access-key-secret'];
+    profile['region'] = argv['region'];
+    profile['language'] = argv['language'];
     config.updateProfile(config.profileName, profile);
 };
-
-function mixed(value){
-    if (!value){
-        return 'None';
-    }
-    value=('*').repeat(6)+value.substring(3);
-    return value;
-}

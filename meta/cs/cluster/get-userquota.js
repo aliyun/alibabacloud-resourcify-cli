@@ -23,10 +23,13 @@ exports.run = async function (argv) {
     let DescribeUserQuotaRequest = require(`@alicloud/cs20151215`).DescribeUserQuotaRequest;
     let request = new DescribeUserQuotaRequest({});
     let client = new Client(config);
-    await client.describeUserQuotaWithOptions(request, runtime.getRuntimeOption(argv)).then(result => {
-        let data = JSON.stringify(result, null, 2);
-        output.log(data);
-    }).catch(e => {
+    let result;
+    try {
+        result = await client.describeUserQuotaWithOptions(request, runtime.getRuntimeOption(argv));
+    } catch (e) {
         output.error(e.message);
-    });
+
+    }
+    let data = JSON.stringify(result, null, 2);
+    output.log(data);
 };

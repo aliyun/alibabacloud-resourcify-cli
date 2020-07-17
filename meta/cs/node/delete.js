@@ -74,10 +74,13 @@ exports.run = async function (argv) {
     request.body = body;
 
     let client = new Client(config);
-    client.removeClusterNodesWithOptions(argv._[0], request, runtime.getRuntimeOption(argv)).then(result => {
-        let data = JSON.stringify(result, null, 2);
-        output.log(data);
-    }).catch(e => {
+    let result;
+    try {
+        result = await client.removeClusterNodesWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+    } catch (e) {
         output.error(e.message);
-    });
+
+    }
+    let data = JSON.stringify(result, null, 2);
+    output.log(data);
 };

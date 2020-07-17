@@ -58,7 +58,8 @@ exports.cmdObj = {
         'deletion-protection',
         'ingress-domain-rebinding',
         'ingress-loadbalancer-id',
-        'resource-group-id'
+        'resource-group-id',
+        'api-server-eip-id'
     ],
     args: [
         {
@@ -94,10 +95,13 @@ exports.run = async function (argv) {
     request.body = body;
 
     let client = new Client(config);
-    client.modifyClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv)).then(result => {
-        let data = JSON.stringify(result, null, 2);
-        output.log(data);
-    }).catch(e => {
+    let result;
+    try {
+        result = await client.modifyClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+    } catch (e) {
         output.error(e.message);
-    });
+
+    }
+    let data = JSON.stringify(result, null, 2);
+    output.log(data);
 };

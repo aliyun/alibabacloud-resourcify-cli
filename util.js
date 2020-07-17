@@ -48,24 +48,13 @@ function fillYargsFlag(cmdObj, opts) {
             boolean: [],
             string: [],
             array: [],
-            alias:{},
+            alias: {},
             configuration: {
                 'unknown-options-as-args': true
             }
         };
     }
-    opts = fillGroup(opts, cmdObj.group);
     opts = fillflags(opts, cmdObj.flags);
-    return opts;
-}
-
-function fillGroup(opts, group) {
-    if (!group) {
-        return opts;
-    }
-    for (let name in group) {
-        opts = this.fillflags(opts, group[name]);
-    }
     return opts;
 }
 
@@ -93,8 +82,8 @@ function fillflags(opts, flagObj) {
             default:
                 opts['string'].push(name);
         }
-        if (flagObj[name].alias){
-            opts.alias[name]=[flagObj[name].alias];
+        if (flagObj[name].alias) {
+            opts.alias[name] = [flagObj[name].alias];
         }
     }
     return opts;
@@ -149,7 +138,7 @@ function validate(cmdObj, argv) {
 
     if (cmdObj.required) {
         for (let name of cmdObj.required) {
-            if (argv[name]===undefined) {
+            if (argv[name] === undefined) {
                 return `The required option '--${name}' is not specified`;
             }
         }
@@ -163,6 +152,5 @@ module.exports = {
     fillYargsFlag,
     validate,
     fillflags,
-    fillGroup
 };
 
