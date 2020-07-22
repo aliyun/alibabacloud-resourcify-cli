@@ -18,6 +18,11 @@ exports.cmdObj = {
                 zh: '集群所在地域ID',
             }
         },
+        'cluster-type': {
+            mapping: 'clusterType',
+            unchanged: true,
+            default: 'DedicatedKubernetes'
+        },
         name: {
             mapping: 'name',
             desc: {
@@ -298,7 +303,14 @@ exports.cmdObj = {
             vtype: 'number',
             desc: {
                 zh: '包年包月时长，当master_instance_charge_type取值为PrePaid时才生效且为必选值，取值范围： PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”，“6”，“12”}'
-            }
+            },
+            choices: [
+                1,
+                2,
+                3,
+                6,
+                12
+            ]
         },
         'master-auto-renew': {
             mapping: 'masterAutoRenew',
@@ -371,9 +383,7 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller`
                 config: 'string',
                 disabled: 'boolean'
             }
-        },
-        // TODO
-        // taints: {},
+        }
     },
     required: [
         'snat-entry',
@@ -387,7 +397,89 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller`
         'vpcid',
         'worker-system-disk-size',
         'worker-system-disk-category'
-    ]
+    ],
+    conflicts: [
+        {
+            required: true,
+            flags: [
+                'key-pair',
+                'login-password'
+            ]
+        }
+    ],
+    relationship: {
+        'worker-data-disk': [
+            {
+                symbol: 'equal',
+                value: 'true',
+                sufficient: [
+                    'worker-data-disks'
+                ]
+            }
+        ],
+        'master-instance-charge-type': [
+            {
+                symbol: 'equal',
+                value: 'PrePaid',
+                sufficient: [
+                    'master-period',
+                    'master-auto-renew',
+                    'master-period-unit'
+                ],
+            }
+        ],
+        'master-auto-renew': [
+            {
+                symbol: 'equal',
+                value: 'true',
+                sufficient: [
+                    'master-auto-renew-period'
+                ]
+            }
+        ],
+        'worker-instance-charge-type': [
+            {
+                symbol: 'equal',
+                value: 'PrePaid',
+                sufficient: [
+                    'worker-period',
+                    'worker-auto-renew',
+                    'worker-period-unit'
+                ],
+            }
+        ],
+        'worker-auto-renew': [
+            {
+                symbol: 'equal',
+                value: 'true',
+                sufficient: [
+                    'worker-auto-renew-period'
+                ]
+            }
+        ],
+        'addons': [
+            {
+                symbol: 'contain',
+                value: 'name=flannel',
+                sufficient: [
+                    'container-cidr'
+                ],
+                necessary: [
+                    'container-cidr'
+                ]
+            },
+            {
+                symbol: 'contain',
+                value: 'name=terway-eni',
+                sufficient: [
+                    'pod-vswitch-ids'
+                ],
+                necessary: [
+                    'pod-vswitch-ids'
+                ]
+            }
+        ]
+    },
 };
 
 exports.validate = function (argv) {
@@ -446,11 +538,13 @@ exports.run = async function (argv) {
     let request = new CreateClusterRequest({});
     let CreateClusterBody = require('@alicloud/cs20151215').CreateClusterBody;
     let body = new CreateClusterBody({});
-    body.clusterType = 'Kubernetes';
     let flags = exports.cmdObj.flags;
     for (let key in flags) {
         if (!argv[key] || !flags[key].mapping) {
             continue;
+        }
+        if (flags[key].unchanged) {
+            body[flags[key].mapping] = flags[key].default;
         }
         body[flags[key].mapping] = argv[key];
     }

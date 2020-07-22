@@ -50,8 +50,6 @@ async function run() {
 
     if (argv.region) {
         config.profile.region = argv.region;
-    } else {
-        argv.region = config.profile.region;
     }
 
     if (argv['interaction']) {
@@ -69,6 +67,8 @@ async function run() {
     // // 解析命令option
     opts = util.fillYargsFlag(cmd.cmdObj, opts);
     argv = parse(args, opts);
+    argv.region = config.profile.region;
+
     let errorMsg = '';
 
     // // 验证flag

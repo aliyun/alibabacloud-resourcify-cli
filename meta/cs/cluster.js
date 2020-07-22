@@ -9,6 +9,9 @@ exports.cmdObj = {
         'create': {
             zh: '创建专有版集群'
         },
+        'create-edge': {
+            zh: '创建边缘版集群'
+        },
         'delete': {
             zh: '删除集群'
         },

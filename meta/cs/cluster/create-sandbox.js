@@ -4,8 +4,9 @@ exports.cmdObj = {
     use: 'arc cs cluster create-sandbox',
     flags: {
         region: {
-            alias: 'r',
+            mapping: 'regionId',
             required: true,
+            hide: true,
             desc: {
                 zh: '集群所在地域ID',
             }
