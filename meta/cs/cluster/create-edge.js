@@ -1,10 +1,9 @@
 'use strict';
 
 // TODO
-// profile 字段未定义于pop
 exports.cmdObj = {
     use: 'arc cs cluster create-edge',
-    flags: {
+    options: {
         region: {
             mapping: 'regionId',
             alias: 'r',
@@ -19,19 +18,27 @@ exports.cmdObj = {
             default: 'ManagedKubernetes'
         },
         'cluster-profile': {
-            mapping: '',
+            mapping: 'profile',
             unchanged: true,
             default: 'Edge'
         },
         'key-pair': {
+            required:true,
             desc: {
                 zh: 'key_pair名称，和login_pwd二选一。'
             },
+            conflicts:[
+                'login-password'
+            ]
         },
         'login-password': {
+            required:true,
             desc: {
                 zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号），和key_pair 二选一。'
-            }
+            },
+            conflicts:[
+                'key-pair'
+            ]
         },
         name: {
             desc: {
@@ -50,6 +57,7 @@ exports.cmdObj = {
                 zh: `是否为网络配置SNAT。如果是自动创建VPC必须设置为true。如果使用已有VPC则根据是否具备出网能力来设置`
             }
         },
+        // 存疑，比较文档与sdk
         'vswitch-ids': {
             vtype: 'array',
             desc: {

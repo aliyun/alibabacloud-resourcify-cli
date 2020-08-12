@@ -9,7 +9,7 @@ exports.cmdObj = {
     desc: {
         zh: '列举集群节点信息'
     },
-    flags: {
+    options: {
         'page-size': {
             mapping: 'pageSize',
             desc: {
@@ -57,15 +57,8 @@ exports.run = async function (argv) {
     let request = new DescribeClusterNodesRequest({});
 
     let DescribeClusterNodesQuery = require('@alicloud/cs20151215').DescribeClusterNodesQuery;
-    let query = new DescribeClusterNodesQuery({});
+    let query = new DescribeClusterNodesQuery(argv._mappingValue);
 
-    let flags = exports.cmdObj.flags;
-    for (let key in flags) {
-        if (!argv[key] || !flags[key].mapping) {
-            continue;
-        }
-        query[flags[key].mapping] = argv[key];
-    }
     request.query = query;
     let client = new Client(config);
     let result;

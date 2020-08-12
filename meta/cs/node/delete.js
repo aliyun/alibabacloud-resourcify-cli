@@ -9,7 +9,7 @@ exports.cmdObj = {
     desc: {
         zh: '移除指定集群额外节点'
     },
-    flags: {
+    options: {
         'release-node': {
             mapping: 'releaseNode',
             vtype: 'boolean',
@@ -24,12 +24,23 @@ exports.cmdObj = {
                 zh: '是否排空节点上的Pod'
             }
         },
-        'nodes': {
+        nodes: {
+            mapping: 'nodes',
             vtype: 'array',
+            subType: 'map',
+            mappingType: require('@alicloud/cs20151215').RemoveClusterNodesBodyNodes,
             desc: {
                 zh: '要移除的node_name数组'
+            },
+            example: `key=tier,value=backend`,
+            options: {
+                nodeName: {
+                    desc: {
+                        zh: '节点名称'
+                    }
+                }
             }
-        }
+        },
     },
     args: [
         {
@@ -53,24 +64,8 @@ exports.run = async function (argv) {
     let request = new RemoveClusterNodesRequest({});
 
     let RemoveClusterNodesBody = require('@alicloud/cs20151215').RemoveClusterNodesBody;
-    let body = new RemoveClusterNodesBody({});
+    let body = new RemoveClusterNodesBody(argv._mappingValue);
 
-    let flags = exports.cmdObj.flags;
-    for (let key in flags) {
-        if (!argv[key] || !flags[key].mapping) {
-            continue;
-        }
-        body[flags[key].mapping] = argv[key];
-    }
-    if (argv['nodes']) {
-        let nodes = [];
-        for (let value of argv['nodes']) {
-            let RemoveClusterNodesBodyNodes = require('@alicloud/cs20151215').RemoveClusterNodesBodyNodes;
-            let node = new RemoveClusterNodesBodyNodes({ nodeName: value });
-            nodes.push(node);
-        }
-        body.nodes = nodes;
-    }
     request.body = body;
 
     let client = new Client(config);
@@ -79,7 +74,6 @@ exports.run = async function (argv) {
         result = await client.removeClusterNodesWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

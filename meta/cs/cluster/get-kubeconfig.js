@@ -3,25 +3,27 @@
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
+
 exports.cmdObj = {
-    use: 'arc cs cluster list',
+    use: 'arc cs cluster get-kubeconfig',
     desc: {
-        zh: '查看您在容器服务中创建的所有集群（包括Swarm和Kubernetes集群）'
+        zh: '返回包含当前登录用户身份信息的Kubernetes集群访问kubeconfig'
     },
     options: {
-        name: {
-            mapping: 'name',
+        'private-ip-address': {
+            mapping:'privateIpAddress',
+            vtype: 'boolean',
             desc: {
-                zh: '根据集群Name进行模糊匹配查询'
-            }
-        },
-        'cluster-type': {
-            mapping: 'clusterType',
-            desc: {
-                zh: '集群类型'
+                zh: '当前用户对应的集群访问kubeconfig'
             }
         }
-    }
+    },
+    args: [
+        {
+            name: 'clusterId',
+            required: true
+        }
+    ]
 };
 
 exports.run = async function (argv) {
@@ -34,10 +36,11 @@ exports.run = async function (argv) {
         regionId: profile.region,
         type: profile.type
     });
-    let DescribeClustersRequest = require(`@alicloud/cs20151215`).DescribeClustersRequest;
-    let request = new DescribeClustersRequest({});
-    let DescribeClustersQuery = require(`@alicloud/cs20151215`).DescribeClustersQuery;
-    let query = new DescribeClustersQuery({});
+    let DescribeClusterUserKubeconfigRequest = require(`@alicloud/cs20151215`).DescribeClusterUserKubeconfigRequest;
+    let request = new DescribeClusterUserKubeconfigRequest({});
+
+    let DescribeClusterUserKubeconfigQuery = require('@alicloud/cs20151215').DescribeClusterUserKubeconfigQuery;
+    let query = new DescribeClusterUserKubeconfigQuery({});
 
     let flags = exports.cmdObj.flags;
     for (let key in flags) {
@@ -47,12 +50,14 @@ exports.run = async function (argv) {
         query[flags[key].mapping] = argv[key];
     }
     request.query = query;
+
     let client = new Client(config);
     let result;
     try {
-        result = await client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv));
+        result = await client.describeClusterUserKubeconfig(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
+
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

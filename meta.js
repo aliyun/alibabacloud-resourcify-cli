@@ -19,7 +19,7 @@ exports.cmdObj = {
             zh: '用于测试arc代码逻辑'
         }
     },
-    flags: {
+    options: {
         profile: {
             desc: {
                 zh: '指定要使用的配置文件'

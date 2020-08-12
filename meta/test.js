@@ -13,13 +13,36 @@ exports.cmdObj = {
             }
         },
         tflag2: {
+            vtype: 'number',
             desc: {
                 zh: '第二个flag'
             }
         },
         tflag3: {
+            vtype: 'boolean',
             desc: {
                 zh: '第三个flag'
+            }
+        },
+        tflag4: {
+            vtype: 'array',
+            mapping:'workerDataDisks',
+            mappingType: require('@alicloud/cs20151215').CreateClusterBodyWorkerDataDisks,
+            sub:{
+                category:{
+                    choices:[
+                        'cloud',
+                        'cloud_efficiency',
+                        'cloud_ssd'
+                    ],
+                },
+                size:{},
+                encrypted:{
+                    choices:[
+                        'true',
+                        'false'
+                    ]
+                }
             }
         }
     },

@@ -4,12 +4,12 @@ let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
 
-exports.cmdObj = {
-    use: 'arc cs cluster delete',
-    desc: {
-        zh: '根据集群ID删除集群'
+exports.cmdObj={
+    use:'arc cs cluster get-agent',
+    desc:{
+        zh:'获取一个agent YAML文件，您可以将改YAML文件部署到自己的集群用于访问apiServer'
     },
-    args: [
+    args:[
         {
             name: 'clusterId',
             required: true
@@ -27,15 +27,16 @@ exports.run = async function (argv) {
         regionId: profile.region,
         type: profile.type
     });
-    let DeleteClusterRequest = require(`@alicloud/cs20151215`).DeleteClusterRequest;
-    let request = new DeleteClusterRequest({});
+    let DescribeExternalAgentRequest = require(`@alicloud/cs20151215`).DescribeExternalAgentRequest;
+    let request = new DescribeExternalAgentRequest({});
+
     let client = new Client(config);
     let result;
     try {
-        result = await client.deleteClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
-        output.log(result);
+        result = await client.describeExternalAgentWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
-        output.error(e);
+        output.error(e.message);
+
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

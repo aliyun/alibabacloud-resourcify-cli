@@ -58,6 +58,6 @@ exports.getConfigOption = async function () {
     return profile;
 };
 
-exports.getRuntimeOption = function (args) {
+exports.getRuntimeOption = function (argv) {
     return new RuntimeOptions({});
 };

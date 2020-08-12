@@ -5,11 +5,11 @@ let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster create',
-    long: {
+    desc: {
         en: 'Create a cluster',
         zh: '创建 k8s 集群'
     },
-    flags: {
+    options: {
         region: {
             mapping: 'regionId',
             alias: 'r',
@@ -21,7 +21,7 @@ exports.cmdObj = {
         'cluster-type': {
             mapping: 'clusterType',
             unchanged: true,
-            default: 'DedicatedKubernetes'
+            default: 'Kubernetes'
         },
         name: {
             mapping: 'name',
@@ -30,18 +30,27 @@ exports.cmdObj = {
             }
         },
         'key-pair': {
+            required: true,
             mapping: 'keyPair',
             desc: {
-                zh: 'key_pair名称，和login_pwd二选一。'
+                zh: 'key_pair名称'
             },
+            conflicts: [
+                'login-password'
+            ]
         },
         'login-password': {
+            required: true,
             mapping: 'loginPassword',
             desc: {
-                zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号），和key_pair 二选一。'
-            }
+                zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号）'
+            },
+            conflicts: [
+                'key-pair'
+            ]
         },
         'snat-entry': {
+            required: true,
             mapping: 'snatEntry',
             vtype: 'boolean',
             desc: {
@@ -49,6 +58,7 @@ exports.cmdObj = {
             }
         },
         'worker-system-disk-category': {
+            required: true,
             mapping: 'workerSystemDiskCategory',
             desc: {
                 zh: 'Worker节点系统盘类型'
@@ -59,6 +69,7 @@ exports.cmdObj = {
             ]
         },
         'worker-system-disk-size': {
+            required: true,
             mapping: 'workerSystemDiskSize',
             vtype: 'number',
             desc: {
@@ -67,6 +78,7 @@ exports.cmdObj = {
         },
         'container-cidr': {
             mapping: 'containerCidr',
+            dependency: true,
             desc: {
                 zh: '容器网段，不能和VPC网段冲突。当选择系统自动创建VPC时，默认使用172.16.0.0/16网段。当创建flannel网络类型的集群时，该字段为必填'
             }
@@ -106,6 +118,13 @@ exports.cmdObj = {
             mapping: 'securityGroupId',
             desc: {
                 zh: '指定集群ECS实例所属于的安全组ID'
+            },
+            sufficient: function (val) {
+                let optList = {};
+                if (!val) {
+                    optList['is-enterprise'] = false;
+                }
+                return optList;
             }
         },
         'service-cidr': {
@@ -122,6 +141,7 @@ exports.cmdObj = {
             }
         },
         'vpcid': {
+            required: true,
             mapping: 'vpcid',
             desc: {
                 zh: 'vpcId和vswitchid只能同时都设置对应的值'
@@ -130,12 +150,21 @@ exports.cmdObj = {
         'worker-auto-renew': {
             mapping: 'workerAutoRenew',
             vtype: 'boolean',
+            dependency: true,
             desc: {
                 zh: '是否开启Worker节点自动续费'
+            },
+            sufficient: function (val) {
+                let optList = {};
+                if (val) {
+                    optList['worker-auto-renew-period'] = true;
+                }
+                return optList;
             }
         },
         'worker-auto-renew-period': {
             mapping: 'workerAutoRenewPeriod',
+            dependency: true,
             vtype: 'number',
             desc: {
                 zh: 'Worker节点自动续费周期，当选择预付费和自动续费时才生效，'
@@ -146,20 +175,51 @@ exports.cmdObj = {
             vtype: 'boolean',
             desc: {
                 zh: '表示worker节点是否挂载数据盘'
+            },
+            sufficient: function (val) {
+                let optList = {};
+                if (val) {
+                    optList['worker-data-disks'] = true;
+                }
+                return optList;
             }
         },
         'worker-data-disks': {
+            mapping: 'workerDataDisks',
+            dependency: true,
             vtype: 'array',
+            subType: 'map',
+            mappingType: require('@alicloud/cs20151215').CreateClusterBodyWorkerDataDisks,
             desc: {
-                zh: `Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效，包含以下参数：
-                category：数据盘类型。取值范围：
-                cloud：普通云盘。
-                cloud_efficiency：高效云盘。
-                cloud_ssd：SSD云盘。
-                size：数据盘大小，单位为GiB。
-                encrypted:是否对数据盘加密，true|false`
+                zh: `Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效`
             },
-            example: `category=cloud,size=40,encrypted=false`
+            example: `category=cloud,size=40,encrypted=false`,
+            options: {
+                category: {
+                    desc: {
+                        zh: '数据盘类型'
+                    },
+                    choices: [
+                        'cloud',
+                        'cloud_efficiency',
+                        'cloud_ssd'
+                    ]
+                },
+                size: {
+                    desc: {
+                        zh: '数据盘大小，单位为GiB'
+                    }
+                },
+                encrypted: {
+                    desc: {
+                        zh: '是否对数据盘加密'
+                    },
+                    choices: [
+                        'true',
+                        'false'
+                    ]
+                }
+            }
         },
         'worker-instance-charge-type': {
             mapping: 'workerInstanceChargeType',
@@ -169,26 +229,46 @@ exports.cmdObj = {
             choices: [
                 'PrePaid',
                 'PostPaid'
-            ]
+            ],
+            sufficient: function (val) {
+                let optList = {};
+                if (val === 'PrePaid') {
+                    optList['worker-period'] = true;
+                    optList['worker-auto-renew'] = true;
+                    optList['worker-period-unit'] = true;
+                }
+                return optList;
+            }
         },
         'worker-period': {
             mapping: 'workerPeriod',
             vtype: 'number',
+            dependency: true,
             desc: {
                 zh: '包年包月时长，当worker_instance_charge_type取值为PrePaid时才生效且为必选值，取值范围：PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”， “6”， “12”}'
             }
         },
         'worker-period-unit': {
             mapping: 'workerPeriodUnit',
+            dependency: true,
             desc: {
                 zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位'
             }
         },
         'worker-instance-types': {
+            required: true,
             mapping: 'workerInstanceTypes',
             vtype: 'array',
+            subType: 'string',
             desc: {
                 zh: 'Worker节点ECS规格类型代码'
+            },
+            options: {
+                element: {
+                    desc: {
+                        zh: 'ECS规格类型代码'
+                    }
+                }
             }
         },
         'cpu-policy': {
@@ -198,10 +278,24 @@ exports.cmdObj = {
             }
         },
         'runtime': {
+            mapping: 'runtime',
+            vtype: 'map',
             desc: {
                 zh: '容器运行时，一般为docker，包括2个信息：name和version'
             },
-            example: `{"name":"docker","version":"19.03.5"}`
+            example: `name=docker,version=19.03.5`,
+            options: {
+                name: {
+                    desc: {
+                        zh: '容器运行时名称'
+                    }
+                },
+                version: {
+                    desc: {
+                        zh: '容器运行时版本'
+                    }
+                }
+            }
         },
         platform: {
             mapping: 'platform',
@@ -229,6 +323,7 @@ exports.cmdObj = {
             }
         },
         'master-system-disk-category': {
+            required: true,
             mapping: 'masterSystemDiskCategory',
             desc: {
                 zh: 'Master节点系统盘类型'
@@ -239,6 +334,7 @@ exports.cmdObj = {
             ]
         },
         'master-system-disk-size': {
+            required: true,
             mapping: 'masterSystemDiskSize',
             vtype: 'number',
             desc: {
@@ -246,31 +342,68 @@ exports.cmdObj = {
             }
         },
         'num-of-nodes': {
+            required: true,
             mapping: 'numOfNodes',
             vtype: 'number',
             desc: {
                 zh: 'Worker节点数。范围是[0，100]'
+            },
+            validate: function (val) {
+                if (val < 0 || val > 100) {
+                    return false;
+                }
+                return true;
             }
         },
         'master-instance-types': {
+            required: true,
             mapping: 'masterInstanceTypes',
             vtype: 'array',
+            subType: 'string',
             desc: {
                 zh: 'Master节点ECS规格类型代码'
+            },
+            options: {
+                element: {
+                    desc: {
+                        zh: 'ECS规格类型代码'
+                    }
+                }
             }
         },
         'master-vswitch-ids': {
+            required: true,
             mapping: 'masterVswitchIds',
             vtype: 'array',
+            maxindex: 3,
+            subType: 'string',
             desc: {
                 zh: 'Master节点交换机ID列表，交换机个数取值范围为1~3。为确保集群的高可用性，推荐您选择3个交换机，且分布在不同的可用区。'
+            },
+            options: {
+                element: {
+                    required: true,
+                    desc: {
+                        zh: '交换机ID'
+                    }
+                }
             }
         },
         'worker-vswitch-ids': {
+            required: true,
             mapping: 'workerVswitchIds',
             vtype: 'array',
+            maxindex: 3,
+            subType: 'string',
             desc: {
                 zh: 'Worker节点的虚拟交换机ID列表'
+            },
+            options: {
+                element: {
+                    desc: {
+                        zh: '交换机ID'
+                    }
+                }
             }
         },
         'ssh-flags': {
@@ -295,12 +428,22 @@ exports.cmdObj = {
             choices: [
                 'PrePaid',
                 'PostPaid'
-            ]
+            ],
+            sufficient: function (val) {
+                let optList = {};
+                if (val === 'PrePaid') {
+                    optList['master-period'] = true;
+                    optList['master-period-unit'] = true;
+                    optList['master-auto-renew'] = true;
+                }
+                return optList;
+            }
         },
 
         'master-period': {
             mapping: 'masterPeriod',
             vtype: 'number',
+            dependency: true,
             desc: {
                 zh: '包年包月时长，当master_instance_charge_type取值为PrePaid时才生效且为必选值，取值范围： PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”，“6”，“12”}'
             },
@@ -315,19 +458,29 @@ exports.cmdObj = {
         'master-auto-renew': {
             mapping: 'masterAutoRenew',
             vtype: 'boolean',
+            dependency: true,
             desc: {
                 zh: 'Master节点是否自动续费，当master_instance_charge_type取值为PrePaid时才生效'
+            },
+            sufficient: function (val) {
+                let optList = {};
+                if (val) {
+                    optList['master-auto-renew-period'] = true;
+                }
+                return optList;
             }
         },
         'master-auto-renew-period': {
             mapping: 'masterAutoRenewPeriod',
             vtype: 'number',
+            dependency: true,
             desc: {
                 zh: 'Master节点自动续费周期，当选择预付费和自动续费时才生效，且为必选值'
             }
         },
         'master-period-unit': {
             mapping: 'masterPeriodUnit',
+            dependency: true,
             desc: {
                 zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位'
             }
@@ -346,8 +499,17 @@ exports.cmdObj = {
         'pod-vswitch-ids': {
             mapping: 'podVswitchIds',
             vtype: 'array',
+            dependency: true,
+            subType: 'string',
             desc: {
                 zh: 'Pod的虚拟交换机列表，在ENI多网卡模式下，需要传额外的vswitchid给addon。当创建terway网络类型的集群时，该字段为必填。'
+            },
+            options: {
+                element: {
+                    desc: {
+                        zh: '交换机ID'
+                    }
+                }
             }
         },
         'node-cidr-mask': {
@@ -357,20 +519,33 @@ exports.cmdObj = {
             }
         },
         tags: {
+            mapping: 'tags',
             vtype: 'array',
+            subType: 'map',
+            mappingType: require('@alicloud/cs20151215').CreateClusterBodyTags,
             desc: {
                 zh: '给集群打tag标签：key：标签名称；value：标签值'
             },
-            example: `key=tier,value=backend`
+            example: `key=tier,value=backend`,
+            options: {
+                key: {
+                    desc: {
+                        zh: '标签名称'
+                    }
+                },
+                value: {
+                    desc: {
+                        zh: '标签值'
+                    }
+                }
+            }
         },
         'addons': {
             vtype: 'array',
+            subType: 'map',
+            mappingType: require('@alicloud/cs20151215').CreateClusterBodyAddons,
             desc: {
                 zh: `Kubernetes集群的addon插件的组合
-addons的参数：
-    name：必填，addon插件的名称。
-    version：可选，取值为空时默认取最新版本。
-    config：可选，取值为空时表示无需配置。
 网络插件：包含Flannel和Terway网络插件，二选一。
     当选择flannel类型网络时："container-cidr"为必传参数，且addons值必须包含flannel，例如:[{"name":"flannel"}]。
     当选择terway类型网络时："pod-vswitch-ids"为必传参数，且addons值必须包含terway-eni,例如： [{"name": "terway-eni"}]。
@@ -378,150 +553,66 @@ addons的参数：
 Ingress：默认开启安装Ingress组件nginx-ingress-controller`
             },
             example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
-            sub: {
-                name: 'string',
-                config: 'string',
-                disabled: 'boolean'
-            }
-        }
-    },
-    required: [
-        'snat-entry',
-        'worker-vswitch-ids',
-        'master-vswitch-ids',
-        'master-instance-types',
-        'num-of-nodes',
-        'master-system-disk-size',
-        'master-system-disk-category',
-        'worker-instance-types',
-        'vpcid',
-        'worker-system-disk-size',
-        'worker-system-disk-category'
-    ],
-    conflicts: [
-        {
-            required: true,
-            flags: [
-                'key-pair',
-                'login-password'
-            ]
-        }
-    ],
-    relationship: {
-        'worker-data-disk': [
-            {
-                symbol: 'equal',
-                value: 'true',
-                sufficient: [
-                    'worker-data-disks'
-                ]
-            }
-        ],
-        'master-instance-charge-type': [
-            {
-                symbol: 'equal',
-                value: 'PrePaid',
-                sufficient: [
-                    'master-period',
-                    'master-auto-renew',
-                    'master-period-unit'
-                ],
-            }
-        ],
-        'master-auto-renew': [
-            {
-                symbol: 'equal',
-                value: 'true',
-                sufficient: [
-                    'master-auto-renew-period'
-                ]
-            }
-        ],
-        'worker-instance-charge-type': [
-            {
-                symbol: 'equal',
-                value: 'PrePaid',
-                sufficient: [
-                    'worker-period',
-                    'worker-auto-renew',
-                    'worker-period-unit'
-                ],
-            }
-        ],
-        'worker-auto-renew': [
-            {
-                symbol: 'equal',
-                value: 'true',
-                sufficient: [
-                    'worker-auto-renew-period'
-                ]
-            }
-        ],
-        'addons': [
-            {
-                symbol: 'contain',
-                value: 'name=flannel',
-                sufficient: [
-                    'container-cidr'
-                ],
-                necessary: [
-                    'container-cidr'
-                ]
+            sufficient: function (val) {
+                let optList = {
+                    'container-cidr': false,
+                    'pod-vswitch-ids': false
+                };
+                for (let value of val) {
+                    if (value.name === 'flannel') {
+                        optList['container-cidr'] = true;
+                    }
+                    if (value.name === 'terway') {
+                        optList['pod-vswitch-ids'] = true;
+                    }
+                }
+                return optList;
             },
-            {
-                symbol: 'contain',
-                value: 'name=terway-eni',
-                sufficient: [
-                    'pod-vswitch-ids'
-                ],
-                necessary: [
-                    'pod-vswitch-ids'
-                ]
+            options: {
+                name: {
+                    required: true,
+                    desc: {
+                        zh: 'addon插件名称'
+                    }
+                },
+                disable: {
+                    vtype: 'boolean',
+                    desc: {
+                        zh: '取值为空时默认取最新版本'
+                    }
+                },
+                config: {
+                    desc: {
+                        zh: '取值为空时表示无需配置'
+                    }
+                }
             }
-        ]
+        },
+        'private-zone': {
+            mapping: 'privateZone',
+            desc: {
+                zh: '是否开启PrivateZone用于服务发现'
+            },
+            choices: [
+                'true',
+                'false'
+            ]
+        },
+        'cluster-profile': {
+            mapping: 'profile',
+            desc: {
+                zh: '边缘集群标识，默认取值为Edge。当创建集群类型为边缘托管版时，该参数必填'
+            }
+        },
+        'is-enterprise': {
+            mapping: 'isEnterpriseSecurityGroup',
+            vtype: 'boolean',
+            dependency: true,
+            desc: {
+                zh: '是否创建企业安全组'
+            }
+        }
     },
-};
-
-exports.validate = function (argv) {
-    if (argv['key-pair'] && argv['login-password']) {
-        return `Only one option can be set for options '--key-pair' and 'login-password'`;
-    }
-    if (argv['num-of-nodes']) {
-        if (argv['num-of-nodes'] > 100 || argv['num-of-nodes'] < 1) {
-            return `option '--num-of-nodes' can range of 1-100`;
-        }
-    }
-    if (argv['master-instance-charge-type'] && argv['master-instance-charge-type'] === 'PrePaid') {
-        if (!argv['master-period']) {
-            return `When ‘master-instance-charge-type=PrePaid’, ‘--master-period’ is required`;
-        } else {
-            if (![1, 2, 3, 6, 12].includes(argv['master-period'])) {
-                return `--master-period optional values are [1, 2, 3, 6, 12]`;
-            }
-        }
-        if (!argv['master-period-unit']) {
-            return `When ‘--master-instance-charge-type=PrePaid’, ‘--master-period-unit’ is required`;
-        }
-        if (argv['master-auto-renew']) {
-            if (!argv['master-auto-renew-period']) {
-                return `When '--master-instance-charge-type=PrePaid' and '--master-auto-renew=true', '--master-auto-renew-period' is required`;
-            }
-        }
-    }
-    if (argv['worker-instance-charge-type'] && argv['worker-instance-charge-type'] === 'PrePaid') {
-        if (!argv['master-period']) {
-            return `When worker-instance-charge-type=PrePaid’, ‘--worker-period’ is required`;
-        }
-        if (!argv['worker-period-unit']) {
-            return `When worker-instance-charge-type=PrePaid’, ‘--worker-period-unit’ is required`;
-        }
-        if (argv['worker-auto-renew']) {
-            if (!argv['worker-auto-renew-period']) {
-                return `When '--worker-instance-charge-type=PrePaid' and '--worker-auto-renew=true', '--worker-auto-renew-period' is required`;
-            }
-        }
-    }
-    return '';
 };
 
 exports.run = async function (argv) {
@@ -537,71 +628,8 @@ exports.run = async function (argv) {
     let CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
     let request = new CreateClusterRequest({});
     let CreateClusterBody = require('@alicloud/cs20151215').CreateClusterBody;
-    let body = new CreateClusterBody({});
-    let flags = exports.cmdObj.flags;
-    for (let key in flags) {
-        if (!argv[key] || !flags[key].mapping) {
-            continue;
-        }
-        if (flags[key].unchanged) {
-            body[flags[key].mapping] = flags[key].default;
-        }
-        body[flags[key].mapping] = argv[key];
-    }
+    let body = new CreateClusterBody(argv._mappingValue);
 
-    if (argv['worker-data-disks']) {
-        let CreateClusterBodyWorkerDataDisks = require('@alicloud/cs20151215').CreateClusterBodyWorkerDataDisks;
-        let WorkerDataDisks = new CreateClusterBodyWorkerDataDisks({});
-        for (let value of argv['worker-data-disks']) {
-            let values = value.split(',');
-            for (let data of values) {
-                let pair = data.split('=');
-                WorkerDataDisks[pair[0]] = pair[1];
-            }
-            body['workerDataDisks'].push(WorkerDataDisks);
-        }
-    }
-
-    if (argv['runtime']) {
-        let data = {};
-        let values = argv['runtime'].split(',');
-        for (let value of values) {
-            let pair = value.split('=');
-            data[pair[0]] = pair[1];
-        }
-        body['runtime'] = data;
-    }
-
-    if (argv['tags']) {
-        let CreateClusterBodyTags = require('@alicloud/cs20151215').CreateClusterBodyTags;
-        let tagsObj = new CreateClusterBodyTags({});
-        for (let value of argv['tags']) {
-            let values = value.split(',');
-            for (let data of values) {
-                let pair = data.split('=');
-                tagsObj[pair[0]] = pair[1];
-            }
-            body['tags'].push(tagsObj);
-        }
-    }
-
-    if (argv['addons']) {
-        let CreateClusterBodyAddons = require('@alicloud/cs20151215').CreateClusterBodyAddons;
-        let addonsObj = new CreateClusterBodyAddons({});
-        body['addons'] = [];
-        for (let value of argv['addons']) {
-            let values = value.split(',');
-            for (let data of values) {
-                let pair = data.split('=');
-                if (pair[0] === 'disabled') {
-                    addonsObj[pair[0]] = pair[1] === 'false' ? false : true;
-                } else {
-                    addonsObj[pair[0]] = pair[1];
-                }
-            }
-            body['addons'].push(addonsObj);
-        }
-    }
     request.body = body;
     let client = new Client(config);
     let result;
@@ -609,7 +637,6 @@ exports.run = async function (argv) {
         result = await client.createClusterWithOptions(request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

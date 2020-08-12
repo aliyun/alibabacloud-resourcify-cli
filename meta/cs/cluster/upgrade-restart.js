@@ -5,14 +5,14 @@ let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
 
 exports.cmdObj = {
-    use: 'arc cs cluster delete',
+    use: 'arc cs cluster upgrade-restart',
     desc: {
-        zh: '根据集群ID删除集群'
+        zh: '重新开始集群升级'
     },
     args: [
         {
             name: 'clusterId',
-            required: true
+            required: true,
         }
     ]
 };
@@ -27,15 +27,14 @@ exports.run = async function (argv) {
         regionId: profile.region,
         type: profile.type
     });
-    let DeleteClusterRequest = require(`@alicloud/cs20151215`).DeleteClusterRequest;
-    let request = new DeleteClusterRequest({});
+    let ResumeUpgradeClusterRequest = require(`@alicloud/cs20151215`).ResumeUpgradeClusterRequest;
+    let request = new ResumeUpgradeClusterRequest({});
     let client = new Client(config);
     let result;
     try {
-        result = await client.deleteClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
-        output.log(result);
+        result = await client.resumeUpgradeClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
-        output.error(e);
+        output.error(e.message);
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

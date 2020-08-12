@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
@@ -11,16 +9,24 @@ exports.cmdObj = {
     desc: {
         zh: '修改集群信息'
     },
-    flags: {
+    options: {
         'api-server-eip': {
             mapping: 'apiServerEip',
             vtype: 'boolean',
             desc: {
                 zh: '集群是否开启EIP'
+            },
+            sufficient: function (val) {
+                let optList = {};
+                if (!val) {
+                    optList['api-server-eip-id'] = true;
+                }
+                return optList;
             }
         },
         'api-server-eip-id': {
             mapping: 'apiServerEipId',
+            dependency:true,
             desc: {
                 zh: 'Kubernetes集群的apiServer的弹性IP（EIP）ID'
             }
@@ -53,14 +59,6 @@ exports.cmdObj = {
             }
         }
     },
-    required: [
-        'api-server-eip',
-        'deletion-protection',
-        'ingress-domain-rebinding',
-        'ingress-loadbalancer-id',
-        'resource-group-id',
-        'api-server-eip-id'
-    ],
     args: [
         {
             name: 'clusterId',
@@ -83,15 +81,8 @@ exports.run = async function (argv) {
     let request = new ModifyClusterRequest({});
 
     let ModifyClusterBody = require('@alicloud/cs20151215').ModifyClusterBody;
-    let body = new ModifyClusterBody({});
+    let body = new ModifyClusterBody(argv._mappingValue);
 
-    let flags = exports.cmdObj.flags;
-    for (let key in flags) {
-        if (!argv[key] || !flags[key].mapping) {
-            continue;
-        }
-        body[flags[key].mapping] = argv[key];
-    }
     request.body = body;
 
     let client = new Client(config);

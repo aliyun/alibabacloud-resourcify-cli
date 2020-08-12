@@ -112,28 +112,13 @@ function validate(cmdObj, argv) {
         }
     }
     if (!variablelen && argv._.length > len) {
-        return `Unknown positional parameters, expect ${len} positional parameters`;
+        return `Unknown positional parameters '${argv._.slice(len)}', expect ${len} positional parameters`;
     }
 
     //可选值检测
-    let index = 0;
-    for (index in argv._) {
-        let ok = true;
-        let arg;
-        if (cmdObj.args[index]) {
-            arg = cmdObj.args[index];
-            if (arg.choices) {
-                ok = arg.choices.includes(argv._[index]);
-            }
-        } else {
-            arg = cmdObj.args[cmdObj.args.length - 1];
-            if (arg.choices) {
-                ok = arg.choices.includes(argv._[index]);
-            }
-        }
-        if (!ok) {
-            return `Position parameter '${arg.name}' has optional values: ${arg.choices} `;
-        }
+    let error=argValidate(cmdObj.args, argv._);
+    if (error){
+        return error;
     }
 
     if (cmdObj.required) {
@@ -143,8 +128,49 @@ function validate(cmdObj, argv) {
             }
         }
     }
-    // TODO group flag 检测
-    return '';
+
+    //flag 检测
+    for (let key in cmdObj.flags){
+        if (argv[key]){
+            flagValidate(cmdObj.flags[key],argv[key]);
+        }
+    }
+}
+
+function argValidate(args, argv) {
+    let index = 0;
+    for (index in argv) {
+        let ok = true;
+        let arg;
+        if (args[index]) {
+            arg = args[index];
+            if (arg.choices) {
+                ok = arg.choices.includes(argv[index]);
+            }
+        } else {
+            arg = args[args.length - 1];
+            if (arg.choices) {
+                ok = arg.choices.includes(argv[index]);
+            }
+        }
+        if (!ok) {
+            return `Position parameter '${arg.name}' has optional values: ${arg.choices} `;
+        }
+    }
+}
+
+function flagValidate(flag,value){
+    if (flag.vtype&&flag.vtype==='number'){
+        if (isNaN(value)){
+            return `Value should be of type number`;
+        }
+    }
+    if (flag.choices){
+        let ok=flag.choices.includes(value);
+        if (!ok){
+            return `flag has optional values: ${flag.choices}`;
+        }
+    }
 }
 
 module.exports = {
