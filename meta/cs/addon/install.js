@@ -5,33 +5,41 @@ let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
 
 exports.cmdObj = {
-    use: 'arc cs node list',
+    use: 'arc cs addon install',
     desc: {
-        zh: '列举集群节点信息'
+        zh: '安装集群插件'
     },
     options: {
-        'page-size': {
-            mapping: 'pageSize',
+        'name': {
+            mapping: 'name',
             desc: {
-                zh: '分页大小'
+                zh: 'addon名称'
             }
         },
-        'page-number': {
-            mapping: 'pageNumber',
+        'version': {
+            mapping: 'version',
             desc: {
-                zh: '共计展示多少页'
+                zh: '插件版本'
             }
         },
-        'nodepool-id': {
-            mapping: 'nodepoolId',
+        'disabled': {
+            mapping: 'disabled',
+            vtype: 'boolean',
             desc: {
-                zh: '节点池ID'
+                zh: '是否禁止默认安装'
             }
         },
-        'state': {
-            mapping: 'state',
+        'required': {
+            mapping: 'required',
             desc: {
-                zh: '状态信息'
+                zh: '是否默认安装'
+            }
+        },
+        'config': {
+            mapping: 'config',
+            desc: {
+                zh: '配置信息',
+                en: ''
             }
         }
     },
@@ -53,19 +61,21 @@ exports.run = async function (argv) {
         regionId: profile.region,
         type: profile.type
     });
-    let DescribeClusterNodesRequest = require(`@alicloud/cs20151215`).DescribeClusterNodesRequest;
-    let request = new DescribeClusterNodesRequest({});
+    let InstallClusterAddonsRequest = require(`@alicloud/cs20151215`).InstallClusterAddonsRequest;
+    let request = new InstallClusterAddonsRequest({});
 
-    let DescribeClusterNodesQuery = require('@alicloud/cs20151215').DescribeClusterNodesQuery;
-    let query = new DescribeClusterNodesQuery(argv._mappingValue);
+    let InstallClusterAddonsBody = require('@alicloud/cs20151215').InstallClusterAddonsBody;
+    let body = new InstallClusterAddonsBody(argv._mappingValue);
 
-    request.query = query;
+    request.body = body;
+
     let client = new Client(config);
     let result;
     try {
-        result = await client.describeClusterNodesWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        result = await client.installClusterAddonsWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
+
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

@@ -1,5 +1,7 @@
 'use strict';
 
+const parser = require('./parser.js');
+
 
 var ui = require('cliui')();
 
@@ -45,7 +47,7 @@ exports.printUsage = function (cmdObj) {
             padding: [0, 0, 0, 4]
         });
     }
-    if (cmdObj.args || cmdObj.flags) {
+    if (cmdObj.args || cmdObj.options) {
         message += cmdObj.use + ' ';
     }
     if (cmdObj.args) {
@@ -67,7 +69,7 @@ exports.printUsage = function (cmdObj) {
         message += argsUsage;
     }
 
-    if (cmdObj.flags) {
+    if (cmdObj.options) {
         message += `[${cueWord.options[lang]}]`;
     }
     if (message) {
@@ -109,23 +111,30 @@ exports.printSubcmd = function (sub) {
     }
 };
 
-exports.printFlags = function (group, flags) {
-    if (!flags.flags) {
+exports.printFlags = function (opts) {
+    if (opts._transed.length===0) {
         return;
     }
-    if (group) {
-        ui.div(`${name} ${cueWord.options[lang]}:`);
-    } else {
-        ui.div(`${cueWord.options[lang]}:`);
-    }
-    if (flags.required) {
-        for (let flagName of flags.required) {
-            exports.printFlag(flagName, flags.flags[flagName], true);
-            delete flags.flags[flagName];
+    ui.div(`${cueWord.options[lang]}:`);
+    if (opts._required) {
+        for (let flagName of opts._required) {
+            if (Array.isArray(flagName)){
+                for (let flag of flagName){
+                    exports.printFlag(flag, opts[flag], false);
+                    delete opts[flag];
+                }
+                continue;
+            }
+            exports.printFlag(flagName, opts[flagName], true);
+            delete opts[flagName];
         }
     }
-    for (let flagName in flags.flags) {
-        exports.printFlag(flagName, flags.flags[flagName], false);
+    for (let flagName of opts._transed){
+        if (!opts[flagName]){
+            continue;
+        }
+        exports.printFlag(flagName, opts[flagName], false);
+        delete opts[flagName];
     }
 };
 
@@ -184,12 +193,13 @@ exports.printHelp = function () {
 };
 
 exports.help = function (cmdObj, language) {
+    let opts = parser.transOpts(cmdObj.options);
     lang = language || 'zh';
     ui.div('usage:');
     exports.printUsage(cmdObj);
     exports.printDesc(cmdObj.desc);
     exports.printSubcmd(cmdObj.sub);
-    exports.printFlags('', cmdObj);
+    exports.printFlags(opts);
     exports.printHelp();
 };
 

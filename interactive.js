@@ -112,6 +112,9 @@ async function processString(optionName, optionObj, required) {
         name: optionName,
         message: optionObj.desc[config.profile.language] + '\n' + optionName
     };
+    if (optionObj.default){
+        question.default=optionObj.default;
+    }
     if (optionObj.choices) {
         question['type'] = 'list';
         question['choices'] = [...optionObj.choices];
@@ -145,6 +148,9 @@ async function processNumber(optionName, optionObj, required) {
         name: optionName,
         message: optionObj.desc[config.profile.language] + '\n' + optionName
     };
+    if (optionObj.default){
+        question.default=optionObj.default;
+    }
     if (optionObj.choices) {
         question['type'] = 'list';
         question['choices'] = optionObj.choices;
@@ -191,6 +197,9 @@ async function processBoolean(optionName, optionObj, required) {
         name: optionName,
         message: optionObj.desc[config.profile.language] + '\n' + optionName
     };
+    if (optionObj.default){
+        question.default=optionObj.default;
+    }
     question['type'] = 'list';
     question['choices'] = [
         'true',
@@ -305,74 +314,6 @@ async function argsInteractively(cmd) {
     let answers = await inquirer.prompt(questions);
     return answers;
 }
-
-// async function relationInteract(key, value) {
-//     let meet = false;
-//     for (let index in cmd.relationship[key]) {
-//         let relation = cmd.relationship[key][index];
-//         switch (relation.symbol) {
-//             case 'equal':
-//                 if (value === relation.value) {
-//                     meet = true;
-//                 }
-//                 break;
-//             case 'contain':
-//                 if (value.includes(relation.value)) {
-//                     meet = true;
-//                 }
-//         }
-//         for (let flag of relation.sufficient) {
-//             if (meet) {
-//                 let tempValue = await flagInteract(flag, cmd.flags[flag], true);
-//                 if (cmd.relationship[flag]) {
-//                     await relationInteract(flag, tempValue);
-//                 }
-//             } else {
-//                 if (relation.necessary && relation.necessary.includes(flag)) {
-//                     let tempValue = await flagInteract(flag, cmd.flags[flag]);
-//                     if (cmd.relationship[flag]) {
-//                         await relationInteract(flag, tempValue);
-//                     }
-//                 } else {
-//                     deleteSufficient(flag, index);
-//                 }
-//             }
-//         }
-//     }
-// }
-
-
-
-// async function conflictInteract(conflict) {
-//     if (!conflict.required) {
-//         conflict.flags.push('NONE');
-//     }
-//     let question = {
-//         type: 'list',
-//         name: 'conflict',
-//         message: '以下选项具有冲突，请选择其中一项',
-//         choices: conflict.flags,
-//         askAnswered: true
-//     };
-//     let answer = await inquirer.prompt([question]);
-//     if (answer.conflict === 'NONE') {
-//         return;
-//     }
-//     let value = await flagInteract(answer.conflict, cmd.flags[answer.conflict], conflict.required);
-//     if (cmd.relationship && cmd.relationship[answer.conflict]) {
-//         await relationInteract(answer.conflict, value);
-//     }
-// }
-
-
-// function deleteSufficient(key, index) {
-//     delete cmd.flags[key];
-//     if (cmd.relationship && cmd.relationship[key]) {
-//         for (let flag of cmd.relationship[key][index].sufficient) {
-//             deleteSufficient(flag);
-//         }
-//     }
-// }
 
 function isEmpty(val) {
     if (!val || val === '') {

@@ -2,10 +2,12 @@
 
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
 const rootCmd = require('./meta.js');
 let config = require('./config.js');
+let i18n = require('./i18n.js');
 
-exports.argv = { _: [], _args: [], _cmds: [], _next: true, _err: '', _descFilePath: path.join(__dirname, 'meta'), _help: false, _mappingValue: {}, _parsedValue: {}, _inputCmd:'' };
+exports.argv = { _: [], _args: [], _cmds: [], _next: true, _err: '', _descFilePath: path.join(__dirname, 'meta'), _help: false, _mappingValue: {}, _parsedValue: {}, _inputCmd: '' };
 exports.opts;
 exports.parser = function (args) {
     exports.argv._args = args;
@@ -28,17 +30,17 @@ exports.parser = function (args) {
     // 解析终端所有flag
     flagsParser();
 
-    if (exports.argv._parsedValue.profile){
+    if (exports.argv._parsedValue.profile) {
         config.getProfile(exports.argv._parsedValue.profile);
     }
-    if (exports.argv._parsedValue.region){
-        config.profile.region=exports.argv._parsedValue.region;
+    if (exports.argv._parsedValue.region) {
+        config.profile.region = exports.argv._parsedValue.region;
     }
-    for (let key of opts._unchanged){
-        if (opts[key].mapping){
-            exports.argv._mappingValue[opts[key].mapping]=opts[key].default;
-        }else{
-            exports.argv._parsedValue[key]=opts[key].default;
+    for (let key of opts._unchanged) {
+        if (opts[key].mapping) {
+            exports.argv._mappingValue[opts[key].mapping] = opts[key].default;
+        } else {
+            exports.argv._parsedValue[key] = opts[key].default;
         }
     }
     exports.argv._opts = exports.opts;
@@ -47,13 +49,44 @@ exports.parser = function (args) {
     }
 
     // 位置参数校验
-    let err=argsValidate(cmd.cmdObj.args,exports.argv._);
-    if (err){
-        exports.argv._err=err;
+    let err = argsValidate(cmd.cmdObj.args, exports.argv._);
+    if (err) {
+        exports.argv._err = err;
+        return;
+    }
+
+    //flag校验
+    err=optionsValidate(exports.opts,exports.argv._parsedValue);
+    if (err) {
+        exports.argv._err = err;
+        return;
     }
 };
-
-function argsValidate(argsOption,argv){
+function optionsValidate(opts,values){
+    for (let opt of opts._required){
+        let optName=opt;
+        if (Array.isArray(opt)) {
+            let has=false;
+            for (let option of opt){
+                if (values[option]){
+                    if (!has){
+                        has=true;
+                        optName=option;
+                    }else{
+                        return `选项冲突，${opt} 只能选择其中一个`;
+                    }
+                }
+            }
+            if (!has){
+                return `缺少必选参数：${opt.join('|')}`;
+            }
+        }
+        if (!values[optName]){
+            return `缺少必选参数：${opt}`;
+        }
+    }
+}
+function argsValidate(argsOption, argv) {
     let needLen = 0;
     let len = 0;
     let variablelen = false;
@@ -67,10 +100,10 @@ function argsValidate(argsOption,argv){
         }
     }
     if (argv.length < needLen) {
-        return 'Missing required position parameter';
+        return i18n.missPositionArgErr[config.profile.language];
     }
     if (!variablelen && argv.length > len) {
-        return `Unknown positional parameters '${argv.slice(len)}', expect ${len} positional parameters`;
+        return util.format(i18n.unknowPositionArgErr[config.profile.language], argv.slice(len), len);
     }
     let index = 0;
     for (index in argv) {
@@ -88,9 +121,10 @@ function argsValidate(argsOption,argv){
             }
         }
         if (!ok) {
-            return `Position parameter '${arg.name}' has optional values: ${arg.choices} `;
+            return util.format(i18n.positionArgValueErr[config.profile.language], arg.name, arg.choices.join('|'));
         }
     }
+
 }
 
 function flagsParser() {
@@ -111,7 +145,7 @@ exports.parseOne = function () {
     let arg = args[0];
     if (arg.length === 1 || !arg.startsWith('-')) {
         exports.argv._next = false;
-        exports.argv._err = `${arg} is not flag option`;
+        exports.argv._err = util.format(i18n.unknowSyntax[config.profile.language], arg);
         return;
     }
     let miners = 1;
@@ -122,14 +156,14 @@ exports.parseOne = function () {
     let argSlice = arg.split('=', 2);
     let flagName = argSlice[0];
     if (!exports.opts[flagName]) {
-        exports.argv._err = `Unknow flag option '${'-'.repeat(miners) + flagName}'`;
+        exports.argv._err = util.format(i18n.unknowFlag[config.profile.language], '-'.repeat(miners) + flagName);
         return;
     }
 
     exports.opts[flagName]['_input'] = [];
     if (argSlice.length === 2) {
         if (argSlice[1] === '') {
-            exports.argv._err = `Flag syntax error: '${'-'.repeat(miners) + arg}'`;
+            exports.argv._err = util.format(i18n.syntaxErr[config.profile.language], '-'.repeat(miners) + arg);
             return;
         }
         exports.opts[flagName]._input.push(argSlice[1]);
@@ -175,7 +209,7 @@ function processValue(flagName) {
             value = processArray(flagName);
             break;
         default:
-            exports.argv._err = 'Unrecognized parameter value type';
+            exports.argv._err = i18n.unrecognizedVType[config.profile.language];
     }
     return value;
 }
@@ -183,7 +217,7 @@ function processString(flagName) {
     let input;
     input = exports.opts[flagName]._input;
     if (input.length !== 1) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     return input[0];
@@ -201,22 +235,22 @@ function processBoolean(flagName) {
             case 'false':
                 return false;
             default:
-                exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+                exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         }
     } else {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
     }
 }
 
 function processNumber(flagName) {
     let input = exports.opts[flagName]._input;
     if (input.length !== 1) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     let value = +input[0];
     if (isNaN(value)) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     return value;
@@ -225,7 +259,7 @@ function processNumber(flagName) {
 function processMap(flagName, flag) {
     let input = exports.opts[flagName]._input;
     if (input.length !== 1) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     let value;
@@ -234,13 +268,13 @@ function processMap(flagName, flag) {
         value = processComplex(flagName);
     } else if (input[0].startsWith('{')) {
         if (input.length !== 1) {
-            exports.argv._err = `The mixed input of flag '${flagName}' cannot be recognized`;
+            exports.argv._err = util.format(i18n.mixInputErr[config.profile.language], flagName);
             return;
         }
         try {
             value = JSON.parse(input[0]);
         } catch (err) {
-            exports.argv._err = `The parameter value of flag '${flagName}' cannot be resolved\n${err.message}`;
+            exports.argv._err = util.format(i18n.resolveErr[config.profile.language], flagName, err.message);
         }
     } else {
         let values = input[0].split(',');
@@ -255,7 +289,7 @@ function processMap(flagName, flag) {
     if (flag.mappingType) {
         let mappingObj = new flag.mappingType(value);
         if (Object.keys(value).length !== Object.keys(mappingObj).length) {
-            exports.argv._err = `The parameter value field of flag '${flagName}' is incorrect`;
+            exports.argv._err = util.format(i18n.filedErr[config.profile.language], flagName);
         }
         mappingValue = mappingObj;
     } else {
@@ -284,7 +318,7 @@ function processArray(flagName) {
                 for (let val of value) {
                     let mappingObj = new flag.mappingType(val);
                     if (Object.keys(val).length !== Object.keys(mappingObj).length) {
-                        exports.argv._err = `The parameter value field of flag '${flagName}' is incorrect`;
+                        exports.argv._err = util.format(i18n.filedErr[config.profile.language], flagName);
                     }
                     mappingValue.push(mappingObj);
                 }
@@ -292,9 +326,9 @@ function processArray(flagName) {
                 mappingValue = value;
             }
     }
-    if (flag.maxindex){
-        if (mappingValue.length>flag.maxindex){
-            exports.argv._err=`The number of '${flagName}' values is too long, the longest should be ${flag.maxindex}`;
+    if (flag.maxindex) {
+        if (mappingValue.length > flag.maxindex) {
+            exports.argv._err = util.format(i18n.outOfIndex[config.profile.language], flagName, flag.maxindex);
         }
     }
     return mappingValue;
@@ -305,17 +339,17 @@ function processStringArray(flagName) {
     let value;
     if (input[0].startsWith('[')) {
         if (input.length !== 1) {
-            exports.argv._err = `The mixed input of flag '${flagName}' cannot be recognized`;
+            exports.argv._err = util.format(i18n.mixInputErr[config.profile.language], flagName);
             return;
         }
         try {
             value = JSON.parse(input[0]);
         } catch (err) {
-            exports.argv._err = `The parameter value of flag '${flagName}' cannot be resolved\n${err.message}`;
+            exports.argv._err = util.format(i18n.resolveErr[config.profile.language], flagName, err.message);
         }
     }
     if (input.length === 0) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     return value;
@@ -324,31 +358,31 @@ function processStringArray(flagName) {
 function processNumberArray(flagName) {
     let input = exports.opts[flagName]._input;
     if (input.length === 0) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     let value = [];
     if (input[0].startsWith('[')) {
         if (input.length !== 1) {
-            exports.argv._err = `The mixed input of flag '${flagName}' cannot be recognized`;
+            exports.argv._err = util.format(i18n.mixInputErr[config.profile.language], flagName);
             return;
         }
         try {
             value = JSON.parse(input[0]);
         } catch (err) {
-            exports.argv._err = `The parameter value of flag '${flagName}' cannot be resolved\n${err.message}`;
+            exports.argv._err = util.format(i18n.resolveErr[config.profile.language], flagName, err.message);
         }
-    }else{
-        value=input;
+    } else {
+        value = input;
     }
     for (let val of input) {
         let num = +val;
         if (isNaN(num)) {
-            exports.argv._err = `The input of flag '${flagName}' does not match the value type: number`;
+            exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
             return;
         }
         value.push(num);
-    }  
+    }
     return value;
 }
 
@@ -356,19 +390,19 @@ function processMapArray(flagName) {
     let flag = exports.opts[flagName];
     let input = flag._input;
     if (input.length === 0) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     let value = [];
     if (input[0].startsWith('[')) {
         if (input.length !== 1) {
-            exports.argv._err = `The mixed input of flag '${flagName}' cannot be recognized`;
+            exports.argv._err = util.format(i18n.mixInputErr[config.profile.language], flagName);
             return;
         }
         try {
             value = JSON.parse(input[0]);
         } catch (err) {
-            exports.argv._err = `The parameter value of flag '${flagName}' cannot be resolved\n${err.message}`;
+            exports.argv._err = util.format(i18n.resolveErr[config.profile.language], flagName, err.message);
         }
     } else {
         for (let data of input) {
@@ -386,7 +420,7 @@ function processMapArray(flagName) {
         for (let val of value) {
             let mappingObj = new flag.mappingType(val);
             if (Object.keys(val).length !== Object.keys(mappingObj).length) {
-                exports.argv._err = `The parameter value field of flag '${flagName}' is incorrect`;
+                exports.argv._err = util.format(i18n.filedErr[config.profile.language], flagName);
             }
             mappingValue.push(mappingObj);
         }
@@ -399,14 +433,14 @@ function processMapArray(flagName) {
 function processComplex(flagName) {
     let input = exports.opts[flagName]._input;
     if (input.length !== 1) {
-        exports.argv._err = `The input of flag '${flagName}' does not match the value type`;
+        exports.argv._err = util.format(i18n.vTypeMatchErr[config.profile.language], flagName);
         return;
     }
     let value;
     try {
         value = JSON.parse(input[0]);
     } catch (err) {
-        exports.argv._err = `The parameter value of flag '${flagName}' cannot be resolved\n${err.message}`;
+        exports.argv._err = util.format(i18n.resolveErr[config.profile.language], flagName, err.message);
     }
     return value;
 }
@@ -416,7 +450,7 @@ exports.transOpts = function (options, opts) {
         opts = { _required: [], _optional: [], _transed: [], _unchanged: [] };
     }
     for (let optionName in options) {
-        let optObj = options[optionName]; 
+        let optObj = options[optionName];
         optObj['name'] = optionName;
         opts[optionName] = optObj;
         if (optObj.alias) {
@@ -425,22 +459,19 @@ exports.transOpts = function (options, opts) {
         if (opts._transed.indexOf(optionName) !== -1) {
             continue;
         }
+        opts._transed.push(optionName);
         if (optObj.unchanged) {
             opts._unchanged.push(optionName);
-            opts._transed.push(optionName);
             continue;
         }
         if (optObj.dependency) {
-            opts._transed.push(optionName);
             continue;
         }
         if (optObj.conflicts) {
-            if (optObj.conflicts.indexOf(optionName) === -1) {
+            if (optObj.conflicts.indexOf(optionName)===-1){
                 optObj.conflicts.push(optionName);
             }
             opts._transed.push(...optObj.conflicts);
-        } else {
-            opts._transed.push(optionName);
         }
 
         if (optObj.required) {
@@ -477,17 +508,17 @@ function cmdParser() {
         }
         break;
     }
-    if (args.length===exports.argv._cmds.length) {
+    if (args.length === exports.argv._cmds.length) {
         exports.argv._args = [];
-    }else{
+    } else {
         exports.argv._args = args.slice(index);
     }
 }
 
 function argsParse() {
     let args = exports.argv._args;
-    if (args.length===0){
-       return;
+    if (args.length === 0) {
+        return;
     }
     let index = 0;
     for (index in args) {
@@ -496,10 +527,9 @@ function argsParse() {
         }
         exports.argv._.push(args[index]);
     }
-    if (args.length===exports.argv._.length) {
+    if (args.length === exports.argv._.length) {
         exports.argv._args = [];
-    }else{
+    } else {
         exports.argv._args = args.slice(index);
     }
-    
 }

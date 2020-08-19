@@ -1,5 +1,5 @@
 {
-  "name": "arc",
+  "name": "@ali/arc",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,9 @@
   "repository": {
     "type": "git",
     "url": "git@gitlab.alibaba-inc.com:alicloud-sdk/ARC.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npm.alibaba-inc.com"
   },
   "author": "",
   "license": "ISC",
@@ -28,8 +31,6 @@
     "@alicloud/rds20140815": "^1.0.0",
     "@alicloud/rpc-client": "^1.2.0",
     "cliui": "^6.0.0",
-    "inquirer": "^7.3.2",
-    "readline-sync": "^1.4.10",
-    "yargs-parser": "^18.1.3"
+    "inquirer": "^7.3.2"
   }
 }

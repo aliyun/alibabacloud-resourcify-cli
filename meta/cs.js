@@ -11,6 +11,9 @@ exports.cmdObj = {
         },
         node: {
             zh: '集群节点操作'
+        },
+        addon:{
+            zh:'集群插件操作'
         }
     }
 };
