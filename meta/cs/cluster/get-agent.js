@@ -4,12 +4,12 @@ let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
 
-exports.cmdObj={
-    use:'arc cs cluster get-agent',
-    desc:{
-        zh:'获取一个agent YAML文件，您可以将改YAML文件部署到自己的集群用于访问apiServer'
+exports.cmdObj = {
+    use: 'arc cs cluster get-agent',
+    desc: {
+        zh: '获取一个agent YAML文件，您可以将改YAML文件部署到自己的集群用于访问apiServer'
     },
-    args:[
+    args: [
         {
             name: 'clusterId',
             required: true
@@ -36,7 +36,9 @@ exports.run = async function (argv) {
         result = await client.describeExternalAgentWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
+    }
+    if (result) {
+        result = result.body;
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

@@ -54,15 +54,8 @@ exports.run = async function (argv) {
     let request = new ListTagResourcesRequest({});
 
     let ListTagResourcesQuery = require('@alicloud/cs20151215').ListTagResourcesQuery;
-    let query = new ListTagResourcesQuery({});
+    let query = new ListTagResourcesQuery(argv._mappingValue);
 
-    let flags = exports.cmdObj.flags;
-    for (let key in flags) {
-        if (!argv[key] || !flags[key].mapping) {
-            continue;
-        }
-        query[flags[key].mapping] = argv[key];
-    }
     request.query = query;
 
     let client = new Client(config);
@@ -71,7 +64,6 @@ exports.run = async function (argv) {
         result = await client.listTagResourcesWithOptions(request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

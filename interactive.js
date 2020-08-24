@@ -7,7 +7,7 @@ exports.runInteractively = async function () {
     let cmd = require(cliParser.argv._descFilePath).cmdObj;
     if (cmd.args) {
         let answer = await argsInteractively(cmd);
-        for (let arg in cmd.args) {
+        for (let arg of cmd.args) {
             if (answer[arg.name]) {
                 cliParser.argv._.push(`${answer[arg.name]}`);
             }
@@ -19,12 +19,12 @@ exports.runInteractively = async function () {
     for (let key in values) {
         let value;
         if (typeof values[key] === 'object') {
-            value =`'${JSON.stringify(values[key])}'`;
+            value = `'${JSON.stringify(values[key])}'`;
         } else {
             value = values[key];
         }
         cmdStr = cmdStr + `--${key} ${value} `;
-        
+
         if (cmd.options[key].mapping) {
             mappingValues[cmd.options[key].mapping] = values[key];
         } else {
@@ -33,14 +33,15 @@ exports.runInteractively = async function () {
     }
     cliParser.argv._parsedValue = values;
     cliParser.argv._mappingValue = mappingValues;
-    // let question = {
-    //     type: 'confirm',
-    //     name: 'isRun',
-    //     message: '是否执行',
-    //     default:false
-    // };
-    console.log(cmdStr);
-    cliParser.argv._inputCmd = cmdStr;
+    cliParser.argv._inputCmd=cmdStr;
+    let question = {
+        type: 'confirm',
+        name: 'isRun',
+        message: '是否执行',
+        default: false
+    };
+    let answer = await inquirer.prompt([question]);
+    return answer.isRun;
 };
 
 async function optionsInteract(options) {
@@ -112,8 +113,8 @@ async function processString(optionName, optionObj, required) {
         name: optionName,
         message: optionObj.desc[config.profile.language] + '\n' + optionName
     };
-    if (optionObj.default){
-        question.default=optionObj.default;
+    if (optionObj.default) {
+        question.default = optionObj.default;
     }
     if (optionObj.choices) {
         question['type'] = 'list';
@@ -148,8 +149,8 @@ async function processNumber(optionName, optionObj, required) {
         name: optionName,
         message: optionObj.desc[config.profile.language] + '\n' + optionName
     };
-    if (optionObj.default){
-        question.default=optionObj.default;
+    if (optionObj.default) {
+        question.default = optionObj.default;
     }
     if (optionObj.choices) {
         question['type'] = 'list';
@@ -197,8 +198,8 @@ async function processBoolean(optionName, optionObj, required) {
         name: optionName,
         message: optionObj.desc[config.profile.language] + '\n' + optionName
     };
-    if (optionObj.default){
-        question.default=optionObj.default;
+    if (optionObj.default) {
+        question.default = optionObj.default;
     }
     question['type'] = 'list';
     question['choices'] = [

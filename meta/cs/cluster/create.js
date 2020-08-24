@@ -3,6 +3,7 @@
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../runtime.js');
 let output = require('../../../output.js');
+
 exports.cmdObj = {
     use: 'arc cs cluster create',
     desc: {
@@ -638,7 +639,9 @@ exports.run = async function (argv) {
     } catch (e) {
         output.error(e.message);
     }
+    if (result) {
+        result = result.body;
+    }
     let data = JSON.stringify(result, null, 2);
     output.log(data);
 };
-

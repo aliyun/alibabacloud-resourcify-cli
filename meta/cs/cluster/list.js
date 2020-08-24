@@ -37,15 +37,8 @@ exports.run = async function (argv) {
     let DescribeClustersRequest = require(`@alicloud/cs20151215`).DescribeClustersRequest;
     let request = new DescribeClustersRequest({});
     let DescribeClustersQuery = require(`@alicloud/cs20151215`).DescribeClustersQuery;
-    let query = new DescribeClustersQuery({});
+    let query = new DescribeClustersQuery(argv._mappingValue);
 
-    let flags = exports.cmdObj.flags;
-    for (let key in flags) {
-        if (!argv[key] || !flags[key].mapping) {
-            continue;
-        }
-        query[flags[key].mapping] = argv[key];
-    }
     request.query = query;
     let client = new Client(config);
     let result;
@@ -53,6 +46,9 @@ exports.run = async function (argv) {
         result = await client.describeClustersWithOptions(request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
+    }
+    if (result) {
+        result = result.body;
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

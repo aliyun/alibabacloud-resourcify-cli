@@ -31,8 +31,8 @@ exports.run = async function (argv) {
         regionId: profile.region,
         type: profile.type
     });
-    let upgradeClusterWithOptions = require(`@alicloud/cs20151215`).upgradeClusterWithOptions;
-    let request = new upgradeClusterWithOptions({});
+    let UpgradeClusterRequest = require(`@alicloud/cs20151215`).UpgradeClusterRequest;
+    let request = new UpgradeClusterRequest({});
 
     let UpgradeClusterBody = require('@alicloud/cs20151215').UpgradeClusterBody;
     let body = new UpgradeClusterBody({});
@@ -46,7 +46,6 @@ exports.run = async function (argv) {
         result = await client.upgradeClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

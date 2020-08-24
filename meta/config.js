@@ -19,16 +19,18 @@ exports.cmdObj = {
             zh: '设置配置字段值'
         }
     },
-    flags: {
+    options: {
         'access-key-id': {
+            required: true,
             default: function () {
-                return config.profile.access_key_id;
+                return config.profile.access_key_id || undefined;
             },
             desc: {
                 zh: '凭证ID'
             }
         },
         'access-key-secret': {
+            required: true,
             default: function () {
                 return config.profile.access_key_secret || undefined;
             },
@@ -50,22 +52,20 @@ exports.cmdObj = {
             },
             desc: {
                 zh: 'CLI语言'
-            }
+            },
+            choices: [
+                'zh',
+                'en'
+            ]
         }
-    },
-    required: [
-        'access-key-id',
-        'access-key-secret',
-        'region',
-        'language'
-    ]
+    }
 };
 
 exports.run = function (argv) {
     let profile = {};
-    profile['access_key_id'] = argv['access-key-id'];
-    profile['access_key_secret'] = argv['access-key-secret'];
-    profile['region'] = argv['region'];
-    profile['language'] = argv['language'];
+    profile['access_key_id'] = argv._parsedValue['access-key-id'];
+    profile['access_key_secret'] = argv._parsedValue['access-key-secret'];
+    profile['region'] = argv._parsedValue['region'] || config.profile.region;
+    profile['language'] = argv._parsedValue['language'] || config.profile.language;
     config.updateProfile(config.profileName, profile);
 };

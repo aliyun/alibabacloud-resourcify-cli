@@ -61,7 +61,6 @@ exports.run = async function (argv) {
         result = await client.attachInstancesWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

@@ -57,7 +57,9 @@ exports.run = async function (argv) {
         result = await client.modifyClusterTagsWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
+    }
+    if (result) {
+        result = result.body;
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

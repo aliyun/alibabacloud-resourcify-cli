@@ -33,9 +33,11 @@ exports.run = async function (argv) {
     let result;
     try {
         result = await client.deleteClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
-        output.log(result);
     } catch (e) {
         output.error(e);
+    }
+    if (result) {
+        result = result.body;
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);

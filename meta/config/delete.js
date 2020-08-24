@@ -9,9 +9,15 @@ exports.cmdObj = {
     ],
     desc: {
         'zh': '删除配置'
-    }
+    },
+    args:[
+        {
+            name:'profileName',
+            required:true
+        }
+    ]
 };
 
-exports.run = function () {
-    config.delete(config.profileName);
+exports.run = function (argv) {
+    config.delete(argv._[0]);
 };

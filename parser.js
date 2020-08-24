@@ -48,6 +48,10 @@ exports.parser = function (args) {
         return;
     }
 
+    if (exports.argv._parsedValue.interaction){
+        return;
+    }
+    
     // 位置参数校验
     let err = argsValidate(cmd.cmdObj.args, exports.argv._);
     if (err) {

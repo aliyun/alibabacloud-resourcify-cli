@@ -39,7 +39,11 @@ async function run() {
 
     // 交互开启
     if (cliParser.argv._parsedValue['interaction']){
-        await runInteractively();
+        let isRun=await runInteractively();
+        console.log(cliParser.argv._inputCmd);
+        if (!isRun){
+            return;
+        }
     }
     
     await cmd.run(cliParser.argv);

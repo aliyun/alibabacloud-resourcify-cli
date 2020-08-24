@@ -54,10 +54,12 @@ exports.run = async function (argv) {
     let client = new Client(config);
     let result;
     try {
-        result = await client.describeClusterUserKubeconfig(argv._[0], request, runtime.getRuntimeOption(argv));
+        result = await client.describeClusterUserKubeconfigWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
-
+    }
+    if (result) {
+        result = result.body;
     }
     let data = JSON.stringify(result, null, 2);
     output.log(data);
