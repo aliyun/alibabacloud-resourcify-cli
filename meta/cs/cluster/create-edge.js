@@ -15,7 +15,10 @@ exports.cmdObj = {
         'cluster-type': {
             mapping: 'clusterType',
             unchanged: true,
-            default: 'ManagedKubernetes'
+            default: 'ManagedKubernetes',
+            desc: {
+                zh: '集群类型'
+            }
         },
         'cluster-profile': {
             mapping: 'profile',

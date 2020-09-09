@@ -244,12 +244,18 @@ async function processArray(optionName, optionObj, required) {
     for (; ;) {
         let value;
         let val = await optionsInteract(optionObj.options);
-        if (optionObj.mappingType) {
-            value = new optionObj.mappingType(val);
+        if (optionObj.subType==='map') {
+            if (optionObj.mappingType){
+                value = new optionObj.mappingType(val);
+            }else{
+                value=val;
+            }
         } else {
             value = val.element;
         }
-        values.push(value);
+        if (value!==undefined){
+                values.push(value);
+        }
         if (optionObj.maxindex) {
             if (index >= optionObj.maxindex) {
                 break;
@@ -290,7 +296,6 @@ async function processMap(optionName, optionObj, required) {
     } else {
         value = val;
     }
-
     return value;
 }
 

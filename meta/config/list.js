@@ -4,7 +4,7 @@ let output = require('../../output.js');
 
 exports.cmdObj = {
     use: 'arc config list',
-    usage:'arc config list [--profile profileName]',
+    usage:['arc config list [--profile profileName]'],
     desc: {
         zh: '列举指定配置所有信息，未指定则返回默认'
     }

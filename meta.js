@@ -15,8 +15,8 @@ exports.cmdObj = {
         completion: {
             zh: '自动补全'
         },
-        test: {
-            zh: '用于测试arc代码逻辑'
+        html:{
+            zh:'生成网页版帮助信息'
         }
     },
     options: {

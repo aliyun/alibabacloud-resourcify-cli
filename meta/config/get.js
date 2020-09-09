@@ -7,7 +7,10 @@ exports.cmdObj = {
     use: 'arc config get',
     usage:[
         'arc config get [--profile profileName]'
-    ]
+    ],
+    desc:{
+        zh:'获取指定配置信息'
+    }
 };
 
 exports.run = function (args) {

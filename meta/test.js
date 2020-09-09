@@ -3,68 +3,14 @@
 exports.cmdObj = {
     use: 'arc test',
     desc: {
-        zh: '逻辑测试'
+        zh: '测试命令'
     },
-    flags: {
-        tflag: {
-            vtype: 'boolean',
-            desc: {
-                zh: '第一个flag'
-            }
+    sub:{
+        'option-type':{
+            zh:'测试各个类型的参数'
         },
-        tflag2: {
-            vtype: 'number',
-            desc: {
-                zh: '第二个flag'
-            }
-        },
-        tflag3: {
-            vtype: 'boolean',
-            desc: {
-                zh: '第三个flag'
-            }
-        },
-        tflag4: {
-            vtype: 'array',
-            mapping:'workerDataDisks',
-            mappingType: require('@alicloud/cs20151215').CreateClusterBodyWorkerDataDisks,
-            sub:{
-                category:{
-                    choices:[
-                        'cloud',
-                        'cloud_efficiency',
-                        'cloud_ssd'
-                    ],
-                },
-                size:{},
-                encrypted:{
-                    choices:[
-                        'true',
-                        'false'
-                    ]
-                }
-            }
+        'relation':{
+            zh:'测试类型间关系逻辑'
         }
-    },
-    relationship: {
-        'tflag': [
-            {
-                symbol: 'equal',
-                value: 'true',
-                sufficient: [
-                    'tflag2'
-                ]
-            }
-        ],
-        'tflag2': [
-            {
-                symbol: 'equal',
-                value: 'true',
-                sufficient: [
-                    'tflag3'
-                ]
-            }
-        ]
-
     }
 };

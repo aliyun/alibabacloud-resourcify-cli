@@ -22,7 +22,10 @@ exports.cmdObj = {
         'cluster-type': {
             mapping: 'clusterType',
             unchanged: true,
-            default: 'Kubernetes'
+            default: 'Kubernetes',
+            desc: {
+                zh: '集群类型'
+            }
         },
         name: {
             mapping: 'name',
@@ -559,6 +562,9 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller`
                     'container-cidr': false,
                     'pod-vswitch-ids': false
                 };
+                if (!val){
+                    return optList;
+                }
                 for (let value of val) {
                     if (value.name === 'flannel') {
                         optList['container-cidr'] = true;
