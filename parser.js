@@ -3,11 +3,11 @@
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
-const rootCmd = require('./meta.js');
+const rootCmd = require('./cmds/meta.js');
 let config = require('./config.js');
 let i18n = require('./i18n.js');
 
-exports.argv = { _: [], _args: [], _cmds: [], _next: true, _err: '', _descFilePath: path.join(__dirname, 'meta'), _help: false, _mappingValue: {}, _parsedValue: {}, _inputCmd: '' };
+exports.argv = { _: [], _args: [], _cmds: [], _next: true, _err: '', _descFilePath: __dirname, _help: false, _mappingValue: {}, _parsedValue: {}, _inputCmd: '' };
 exports.opts;
 exports.parser = function (args) {
     exports.argv._args = args;
@@ -48,10 +48,10 @@ exports.parser = function (args) {
         return;
     }
 
-    if (exports.argv._parsedValue.interaction){
+    if (exports.argv._parsedValue.interaction) {
         return;
     }
-    
+
     // 位置参数校验
     let err = argsValidate(cmd.cmdObj.args, exports.argv._);
     if (err) {
@@ -60,32 +60,32 @@ exports.parser = function (args) {
     }
 
     //flag校验
-    err=optionsValidate(exports.opts,exports.argv._parsedValue);
+    err = optionsValidate(exports.opts, exports.argv._parsedValue);
     if (err) {
         exports.argv._err = err;
         return;
     }
 };
-function optionsValidate(opts,values){
-    for (let opt of opts._required){
-        let optName=opt;
+function optionsValidate(opts, values) {
+    for (let opt of opts._required) {
+        let optName = opt;
         if (Array.isArray(opt)) {
-            let has=false;
-            for (let option of opt){
-                if (values[option]){
-                    if (!has){
-                        has=true;
-                        optName=option;
-                    }else{
+            let has = false;
+            for (let option of opt) {
+                if (values[option]) {
+                    if (!has) {
+                        has = true;
+                        optName = option;
+                    } else {
                         return `选项冲突，${opt} 只能选择其中一个`;
                     }
                 }
             }
-            if (!has){
+            if (!has) {
                 return `缺少必选参数：${opt.join('|')}`;
             }
         }
-        if (!values[optName]){
+        if (!values[optName]) {
             return `缺少必选参数：${opt}`;
         }
     }
@@ -472,7 +472,7 @@ exports.transOpts = function (options, opts) {
             continue;
         }
         if (optObj.conflicts) {
-            if (optObj.conflicts.indexOf(optionName)===-1){
+            if (optObj.conflicts.indexOf(optionName) === -1) {
                 optObj.conflicts.push(optionName);
             }
             opts._transed.push(...optObj.conflicts);

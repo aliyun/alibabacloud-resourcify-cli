@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "arc": "bin/arc.js"
+    "arc": "bin/arc.js",
+    "arc-tool": "bin/arc-tool.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
