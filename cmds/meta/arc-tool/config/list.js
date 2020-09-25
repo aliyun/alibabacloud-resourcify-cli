@@ -1,6 +1,6 @@
 'use strict';
-const config = require('../../config.js');
-let output = require('../../output.js');
+const config = require('../../../../config.js');
+let output = require('../../../../output.js');
 
 exports.cmdObj = {
     use: 'arc config list',

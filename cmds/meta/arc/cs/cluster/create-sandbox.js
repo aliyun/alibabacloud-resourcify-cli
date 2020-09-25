@@ -170,7 +170,6 @@ exports.cmdObj = {
                 }
             }
         },
-        // sdk无字段
         'worker-instance-type': {
             required: true,
             vtype: 'array',

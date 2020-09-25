@@ -28,7 +28,7 @@ exports.cmdObj = {
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -37,24 +37,12 @@ exports.run = async function (argv) {
         type: profile.type
     });
     let DescribeClusterUserKubeconfigRequest = require(`@alicloud/cs20151215`).DescribeClusterUserKubeconfigRequest;
-    let request = new DescribeClusterUserKubeconfigRequest({});
-
-    let DescribeClusterUserKubeconfigQuery = require('@alicloud/cs20151215').DescribeClusterUserKubeconfigQuery;
-    let query = new DescribeClusterUserKubeconfigQuery({});
-
-    let flags = exports.cmdObj.flags;
-    for (let key in flags) {
-        if (!argv[key] || !flags[key].mapping) {
-            continue;
-        }
-        query[flags[key].mapping] = argv[key];
-    }
-    request.query = query;
+    let request = new DescribeClusterUserKubeconfigRequest(argv._mappingValue);
 
     let client = new Client(config);
     let result;
     try {
-        result = await client.describeClusterUserKubeconfigWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        result = await client.describeClusterUserKubeconfigWithOptions(argv._[0], request,{}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }

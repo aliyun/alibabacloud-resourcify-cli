@@ -1,6 +1,6 @@
 'use strict';
 
-const output=require('../output.js');
+const output=require('../../../output.js');
 exports.cmdObj = {
   use: 'arc completion',
   desc:{

@@ -37,14 +37,6 @@ exports.getConfigOption = async function () {
                 securityToken: profile.sts_token
             });
             break;
-        case 'EcsRamRole':
-            config = new Config({
-                type: 'ecs_ram_role',
-                accessKeyId: profile.access_key_id,
-                accessKeySecret: profile.access_key_secret,
-                securityToken: profile.sts_token
-            });
-            break;
         default:
             console.error('The credential information is incomplete, please confirm the credential information');
             console.log(cliConfig.profile);

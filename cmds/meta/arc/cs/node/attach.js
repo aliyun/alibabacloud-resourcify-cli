@@ -11,22 +11,22 @@ exports.cmdObj = {
     },
     options: {
         'key-pair': {
-            required:true,
+            required: true,
             mapping: 'keyPair',
             desc: {
                 zh: 'key-pair名称'
             },
-            conflicts:[
+            conflicts: [
                 'password'
             ]
         },
         'password': {
-            required:true,
+            required: true,
             mapping: 'password',
             desc: {
                 zh: '扩容的worker节点密码。密码规则为8~30 个字符，且同时包含三项（大、小写字母，数字和特殊符号）'
             },
-            conflicts:[
+            conflicts: [
                 'key-pair'
             ]
         },
@@ -53,13 +53,13 @@ exports.cmdObj = {
         'instances': {
             mapping: 'instances',
             vtype: 'array',
-            subType:'string',
+            subType: 'string',
             desc: {
                 zh: '实例列表'
             },
-            options:{
+            options: {
                 element: {
-                    required:true,
+                    required: true,
                     desc: {
                         zh: 'ECS规格类型代码'
                     }
@@ -70,7 +70,7 @@ exports.cmdObj = {
             mapping: 'tags',
             vtype: 'array',
             subType: 'map',
-            mappingType: require('@alicloud/cs20151215').AttachInstancesBodyTags,
+            mappingType: require('@alicloud/cs20151215').AttachInstancesRequestTags,
             desc: {
                 zh: '自定义节点标签'
             },
@@ -99,7 +99,7 @@ exports.cmdObj = {
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -108,17 +108,12 @@ exports.run = async function (argv) {
         type: profile.type
     });
     let AttachInstancesRequest = require(`@alicloud/cs20151215`).AttachInstancesRequest;
-    let request = new AttachInstancesRequest({});
-
-    let AttachInstancesBody = require('@alicloud/cs20151215').AttachInstancesBody;
-    let body = new AttachInstancesBody(argv._mappingValue);
-
-    request.body = body;
+    let request = new AttachInstancesRequest(argv._mappingValue);
 
     let client = new Client(config);
     let result;
     try {
-        result = await client.attachInstancesWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        result = await client.attachInstancesWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }

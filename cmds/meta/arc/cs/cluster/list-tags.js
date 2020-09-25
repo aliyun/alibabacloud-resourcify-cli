@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO 
+// sdk2.0.0版本无此接口，待确认。
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');

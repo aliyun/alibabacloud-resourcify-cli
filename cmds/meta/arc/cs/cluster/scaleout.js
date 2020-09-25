@@ -3,7 +3,7 @@
 let { default: Client } = require(`@alicloud/cs20151215`);
 const runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
-// TODO
+
 exports.cmdObj = {
     use: 'arc cs cluster scaleout',
     desc: {
@@ -19,27 +19,27 @@ exports.cmdObj = {
             }
         },
         'key-pair': {
-            required:true,
+            required: true,
             mapping: 'keyPair',
             desc: {
                 zh: 'key_pair名称'
             },
-            conflicts:[
+            conflicts: [
                 'login-password'
             ]
         },
         'login-password': {
-            required:true,
+            required: true,
             mapping: 'loginPassword',
             desc: {
                 zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号），和key_pair 二选一。'
             },
-            conflicts:[
+            conflicts: [
                 'key-pair'
             ]
         },
         'worker-data-disk': {
-            required:true,
+            required: true,
             mapping: 'workerDataDisk',
             vtype: 'boolean',
             desc: {
@@ -47,21 +47,41 @@ exports.cmdObj = {
             }
         },
         'worker-data-disks': {
-            mapping:'workerDataDisks',
+            mapping: 'workerDataDisks',
             dependency: true,
             vtype: 'array',
             subType: 'map',
-            mappingType:require('@alicloud/cs20151215').ScaleOutClusterBodyWorkerDataDisks,
+            mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestWorkerDataDisks,
             desc: {
-                zh: `Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效，包含以下参数：
-                category：数据盘类型。取值范围：
-                cloud：普通云盘。
-                cloud_efficiency：高效云盘。
-                cloud_ssd：SSD云盘。
-                size：数据盘大小，单位为GiB。
-                encrypted:是否对数据盘加密，true|false`
+                zh: `Worker数据盘类型、大小等配置的组合`
             },
-            example: `category=cloud,size=40,encrypted=false`
+            example: `category=cloud,size=40,encrypted=false`,
+            options: {
+                category: {
+                    desc: {
+                        zh: '数据盘类型'
+                    },
+                    choices: [
+                        'cloud',
+                        'cloud_efficiency',
+                        'cloud_ssd'
+                    ]
+                },
+                size: {
+                    desc: {
+                        zh: '数据盘大小，单位为GiB'
+                    }
+                },
+                encrypted: {
+                    desc: {
+                        zh: '是否对数据盘加密'
+                    },
+                    choices: [
+                        'true',
+                        'false'
+                    ]
+                }
+            }
         },
         'worker-instance-types': {
             required: true,
@@ -176,16 +196,16 @@ exports.cmdObj = {
         'vswitch-ids': {
             mapping: 'vswitchIds',
             vtype: 'array',
-            subType:'string',
-            maxindex:3,
+            subType: 'string',
+            maxindex: 3,
             desc: {
                 zh: 'Worker节点的虚拟交换机ID列表'
             },
-            options:{
-                element:{
-                    required:true,
-                    desc:{
-                        zh:'节点交换机ID'
+            options: {
+                element: {
+                    required: true,
+                    desc: {
+                        zh: '节点交换机ID'
                     }
                 }
             }
@@ -194,7 +214,7 @@ exports.cmdObj = {
             mapping: 'tags',
             vtype: 'array',
             subType: 'map',
-            mappingType: require('@alicloud/cs20151215').ScaleOutClusterBodyTags,
+            mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestTags,
             desc: {
                 zh: '给集群打tag标签：key：标签名称；value：标签值'
             },
@@ -216,7 +236,7 @@ exports.cmdObj = {
             mapping: 'taints',
             vtype: 'array',
             subType: 'map',
-            mappingType: require('@alicloud/cs20151215').ScaleOutClusterBodyTaints,
+            mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestTaints,
             desc: {
                 zh: '用于给节点做污点标记，通常用于Pods的调度策略。与之相对应的概念为：容忍（tolerance），若Pods上有相对应的tolerance标记，则可以容忍节点上的污点，并调度到该节点。'
             },
@@ -232,9 +252,9 @@ exports.cmdObj = {
                         zh: 'taints值'
                     }
                 },
-                effect:{
-                    desc:{
-                        zh:''
+                effect: {
+                    desc: {
+                        zh: ''
                     }
                 }
             }
@@ -249,9 +269,9 @@ exports.cmdObj = {
     ]
 };
 
-exports.run =async function (argv) {
+exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -260,15 +280,12 @@ exports.run =async function (argv) {
         type: profile.type
     });
     let ScaleOutClusterRequest = require(`@alicloud/cs20151215`).ScaleOutClusterRequest;
-    let request = new ScaleOutClusterRequest({});
-    let ScaleOutClusterBody = require('@alicloud/cs20151215').ScaleOutClusterBody;
-    let body = new ScaleOutClusterBody(argv._mappingValue);
-    
-    request.body = body;
+    let request = new ScaleOutClusterRequest(argv._mappingValue);
+
     let client = new Client(config);
     let result;
     try {
-        result = await client.scaleOutClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        result = await client.scaleOutClusterWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }

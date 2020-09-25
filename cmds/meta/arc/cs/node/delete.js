@@ -27,14 +27,12 @@ exports.cmdObj = {
         nodes: {
             mapping: 'nodes',
             vtype: 'array',
-            subType: 'map',
-            mappingType: require('@alicloud/cs20151215').RemoveClusterNodesBodyNodes,
+            subType: 'string',
             desc: {
                 zh: '要移除的node_name数组'
             },
-            example: `key=tier,value=backend`,
             options: {
-                nodeName: {
+                element: {
                     desc: {
                         zh: '节点名称'
                     }
@@ -52,7 +50,7 @@ exports.cmdObj = {
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -61,20 +59,13 @@ exports.run = async function (argv) {
         type: profile.type
     });
     let RemoveClusterNodesRequest = require(`@alicloud/cs20151215`).RemoveClusterNodesRequest;
-    let request = new RemoveClusterNodesRequest({});
-
-    let RemoveClusterNodesBody = require('@alicloud/cs20151215').RemoveClusterNodesBody;
-    let body = new RemoveClusterNodesBody(argv._mappingValue);
-
-    request.body = body;
+    let request = new RemoveClusterNodesRequest(argv._mappingValue);
 
     let client = new Client(config);
-    let result;
     try {
-        result = await client.removeClusterNodesWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        await client.removeClusterNodesWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }
-    let data = JSON.stringify(result, null, 2);
-    output.log(data);
+
 };

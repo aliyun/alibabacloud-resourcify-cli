@@ -9,17 +9,34 @@ exports.cmdObj = {
     desc: {
         zh: '根据集群ID删除集群'
     },
+    options:{
+        'retain-resources':{
+            mapping: 'retainResources',
+            vtype: 'array',
+            subType: 'string',
+            desc: {
+                zh: '资源名称'
+            },
+            options: {
+                element: {
+                    desc: {
+                        zh: '资源名称'
+                    }
+                }
+            }
+        }
+    },
     args: [
         {
             name: 'clusterId',
-            required: true
+            required:true
         }
     ]
 };
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -28,17 +45,11 @@ exports.run = async function (argv) {
         type: profile.type
     });
     let DeleteClusterRequest = require(`@alicloud/cs20151215`).DeleteClusterRequest;
-    let request = new DeleteClusterRequest({});
+    let request = new DeleteClusterRequest(argv._mappingValue);
     let client = new Client(config);
-    let result;
     try {
-        result = await client.deleteClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        await client.deleteClusterWithOptions(argv._[0], request,{} ,runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e);
     }
-    if (result) {
-        result = result.body;
-    }
-    let data = JSON.stringify(result, null, 2);
-    output.log(data);
 };

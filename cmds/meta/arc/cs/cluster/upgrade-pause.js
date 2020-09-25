@@ -3,7 +3,8 @@
 let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
-
+// TODO
+// sdk2.0.0版本无此接口，待确认。
 exports.cmdObj = {
     use: 'arc cs cluster upgrade-pause',
     desc: {

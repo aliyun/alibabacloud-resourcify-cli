@@ -9,13 +9,29 @@ exports.cmdObj = {
     desc: {
         zh: '升级指定用户集群版本'
     },
+    options: {
+        'component-name': {
+            mapping: 'componentName',
+            desc: {
+                zh: '组件名称，升级集群时取值：k8s'
+            }
+        },
+        'version': {
+            mapping: 'version',
+            descl: {
+                zh: '集群当前版本'
+            }
+        },
+        'next-version': {
+            mapping: 'nextVersion',
+            desc: {
+                zh: '集群可升级版本'
+            }
+        }
+    },
     args: [
         {
             name: 'clusterId',
-            required: true
-        },
-        {
-            name: 'version',
             required: true
         }
     ]
@@ -23,7 +39,7 @@ exports.cmdObj = {
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -32,21 +48,12 @@ exports.run = async function (argv) {
         type: profile.type
     });
     let UpgradeClusterRequest = require(`@alicloud/cs20151215`).UpgradeClusterRequest;
-    let request = new UpgradeClusterRequest({});
-
-    let UpgradeClusterBody = require('@alicloud/cs20151215').UpgradeClusterBody;
-    let body = new UpgradeClusterBody({});
-
-    body.version = argv._[1];
-    request.body = body;
+    let request = new UpgradeClusterRequest(argv._mappingValue);
 
     let client = new Client(config);
-    let result;
     try {
-        result = await client.upgradeClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        await client.upgradeClusterWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }
-    let data = JSON.stringify(result, null, 2);
-    output.log(data);
 };

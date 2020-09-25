@@ -193,12 +193,20 @@ exports.cmdObj = {
             dependency: true,
             vtype: 'array',
             subType: 'map',
-            mappingType: require('@alicloud/cs20151215').CreateClusterBodyWorkerDataDisks,
+            mappingType: require('@alicloud/cs20151215').CreateClusterRequestWorkerDataDisks,
             desc: {
                 zh: `Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效`
             },
-            example: `category=cloud,size=40,encrypted=false`,
             options: {
+                autoSnapshotPolicyId: {
+                    desc: {
+                        zh: '是否开启云盘备份'
+                    },
+                    choices: [
+                        'true',
+                        'false'
+                    ]
+                },
                 category: {
                     desc: {
                         zh: '数据盘类型'
@@ -526,7 +534,7 @@ exports.cmdObj = {
             mapping: 'tags',
             vtype: 'array',
             subType: 'map',
-            mappingType: require('@alicloud/cs20151215').CreateClusterBodyTags,
+            mappingType: require('@alicloud/cs20151215').CreateClusterRequestTags,
             desc: {
                 zh: '给集群打tag标签：key：标签名称；value：标签值'
             },
@@ -547,7 +555,7 @@ exports.cmdObj = {
         'addons': {
             vtype: 'array',
             subType: 'map',
-            mappingType: require('@alicloud/cs20151215').CreateClusterBodyAddons,
+            mappingType: require('@alicloud/cs20151215').CreateClusterRequestAddons,
             desc: {
                 zh: `Kubernetes集群的addon插件的组合
 网络插件：包含Flannel和Terway网络插件，二选一。
@@ -562,7 +570,7 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller`
                     'container-cidr': false,
                     'pod-vswitch-ids': false
                 };
-                if (!val){
+                if (!val) {
                     return optList;
                 }
                 for (let value of val) {
@@ -624,7 +632,7 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller`
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -633,15 +641,12 @@ exports.run = async function (argv) {
         type: profile.type
     });
     let CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
-    let request = new CreateClusterRequest({});
-    let CreateClusterBody = require('@alicloud/cs20151215').CreateClusterBody;
-    let body = new CreateClusterBody(argv._mappingValue);
+    let request = new CreateClusterRequest(argv._mappingValue);
 
-    request.body = body;
     let client = new Client(config);
     let result;
     try {
-        result = await client.createClusterWithOptions(request, runtime.getRuntimeOption(argv));
+        result = await client.createClusterWithOptions(request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }

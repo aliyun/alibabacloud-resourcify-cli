@@ -26,7 +26,7 @@ exports.cmdObj = {
         },
         'api-server-eip-id': {
             mapping: 'apiServerEipId',
-            dependency:true,
+            dependency: true,
             desc: {
                 zh: 'Kubernetes集群的apiServer的弹性IP（EIP）ID'
             }
@@ -69,7 +69,7 @@ exports.cmdObj = {
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -78,17 +78,12 @@ exports.run = async function (argv) {
         type: profile.type
     });
     let ModifyClusterRequest = require(`@alicloud/cs20151215`).ModifyClusterRequest;
-    let request = new ModifyClusterRequest({});
-
-    let ModifyClusterBody = require('@alicloud/cs20151215').ModifyClusterBody;
-    let body = new ModifyClusterBody(argv._mappingValue);
-
-    request.body = body;
+    let request = new ModifyClusterRequest(argv._mappingValue);
 
     let client = new Client(config);
     let result;
     try {
-        result = await client.modifyClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        result = await client.modifyClusterWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }
