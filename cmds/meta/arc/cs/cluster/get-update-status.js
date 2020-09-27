@@ -7,7 +7,8 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster get-update-status',
     desc: {
-        zh: '查询集群升级状态'
+        zh: '查询集群升级状态',
+        en: ` query the upgrade status of a cluster.`
     },
     args: [
         {

@@ -4,16 +4,17 @@ const config = require('../../../../config.js');
 
 exports.cmdObj = {
     use: 'arc config delete',
-    usage:[
+    usage: [
         'arc config delete <--profile profileName>'
     ],
     desc: {
-        'zh': '删除配置'
+        zh: '删除配置',
+        en: `remove profile`
     },
-    args:[
+    args: [
         {
-            name:'profileName',
-            required:true
+            name: 'profileName',
+            required: true
         }
     ]
 };

@@ -7,20 +7,23 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster delete',
     desc: {
-        zh: '根据集群ID删除集群'
+        zh: '根据集群ID删除集群',
+        en: `delete the cluster of a specified ID and release all nodes in the cluster.`
     },
-    options:{
-        'retain-resources':{
+    options: {
+        'retain-resources': {
             mapping: 'retainResources',
             vtype: 'array',
             subType: 'string',
             desc: {
-                zh: '资源名称'
+                zh: '资源名称',
+                en: `Resoure name`
             },
             options: {
                 element: {
                     desc: {
-                        zh: '资源名称'
+                        zh: '资源名称',
+                        en: `Resoure name`
                     }
                 }
             }
@@ -29,7 +32,7 @@ exports.cmdObj = {
     args: [
         {
             name: 'clusterId',
-            required:true
+            required: true
         }
     ]
 };
@@ -48,7 +51,7 @@ exports.run = async function (argv) {
     let request = new DeleteClusterRequest(argv._mappingValue);
     let client = new Client(config);
     try {
-        await client.deleteClusterWithOptions(argv._[0], request,{} ,runtime.getRuntimeOption(argv));
+        await client.deleteClusterWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e);
     }

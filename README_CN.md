@@ -11,12 +11,10 @@ ARC是面向资源化的全新阿里云CLI环境，是多个命令行工具的�
 
 ## 安装
 
-*安装前请确认具有NodeJS开发环境*
+*安装前请确认具有Node.js开发环境*
 
-1. 安装tnpm:  
-`npm install tnpm -g --registry=https://registry.npm.alibaba-inc.com`
-2. 安装ARC:  
-`tnpm install @ali/arc -g`
+使用以下命令安装ARC:  
+`npm i @alicloud/arc -g`
 
 ## 全局选项
 
@@ -115,6 +113,7 @@ name <name>
 ```
 
 3. 基本参数类型检查
+
 ```shell
 ? Worker节点系统盘大小，单位为GiB
 worker-system-disk-size <string>
@@ -122,6 +121,8 @@ worker-system-disk-size <string>
 ```
 
 4. 参数值具有可选范围，使用箭头便于用户选择
+
+
 ```shell
 ? 数据盘类型
 category (Use arrow keys)
@@ -132,6 +133,7 @@ category (Use arrow keys)
 ```
 
 5. 自动根据参数依赖关系，对参数进行隐藏，减少用户输入
+
 ```shell
 ## 当选择为true，则需输入数据盘相关信息
 ? 表示worker节点是否挂载数据盘
@@ -143,7 +145,7 @@ category (Use arrow keys)
   cloud_efficiency 
   cloud_ssd 
   [UNSET] 
-  
+
 ## 当选择为false，则无需输入数据盘相关信息
 ? 表示worker节点是否挂载数据盘
 worker-data-disk <false>
@@ -155,6 +157,7 @@ worker-instance-charge-type (Use arrow keys)
 ```
 
 6. 针对复杂参数值结构进行提示输入
+
 ```shell
 # map型参数值
 容器运行时，一般为docker，包括2个信息：name和version

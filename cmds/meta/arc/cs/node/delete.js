@@ -7,21 +7,24 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs node delete',
     desc: {
-        zh: '移除指定集群额外节点'
+        zh: '移除指定集群额外节点',
+        en: `remove nodes from a cluster.`
     },
     options: {
         'release-node': {
             mapping: 'releaseNode',
             vtype: 'boolean',
             desc: {
-                zh: '是否同时释放ECS'
+                zh: '是否同时释放ECS',
+                en: `Specifies whether to release the Elastic Compute Service (ECS) instances when they are removed from the cluster.`
             }
         },
         'drain-node': {
             mapping: 'drainNode',
             vtype: 'boolean',
             desc: {
-                zh: '是否排空节点上的Pod'
+                zh: '是否排空节点上的Pod',
+                en: `Specifies whether to remove all pods from the nodes that you want to remove.`
             }
         },
         nodes: {
@@ -29,12 +32,14 @@ exports.cmdObj = {
             vtype: 'array',
             subType: 'string',
             desc: {
-                zh: '要移除的node_name数组'
+                zh: '要移除的node_name数组',
+                en: `A list of the nodes that you want to remove.`
             },
             options: {
                 element: {
                     desc: {
-                        zh: '节点名称'
+                        zh: '节点名称',
+                        en: `node name`
                     }
                 }
             }

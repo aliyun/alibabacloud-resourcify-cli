@@ -6,7 +6,8 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster get-userquota',
     desc: {
-        zh: '查询用户配额'
+        zh: '查询用户配额',
+        en: `query resource quotas`
     }
 };
 

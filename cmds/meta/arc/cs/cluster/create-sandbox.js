@@ -1,5 +1,5 @@
 'use strict';
-// TODO 文档不全，暂停
+// TODO 文档不全
 exports.cmdObj = {
     use: 'arc cs cluster create-sandbox',
     flags: {

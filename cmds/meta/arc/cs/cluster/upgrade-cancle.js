@@ -7,7 +7,8 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster upgrade-cancle',
     desc: {
-        zh: '取消集群升级'
+        zh: '取消集群升级',
+        en: `cancel the upgrade of a cluster.`
     },
     args: [
         {

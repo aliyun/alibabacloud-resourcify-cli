@@ -6,19 +6,22 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster list',
     desc: {
-        zh: '查看您在容器服务中创建的所有集群（包括Swarm和Kubernetes集群）'
+        zh: '查看您在容器服务中创建的所有集群（包括Swarm和Kubernetes集群）',
+        en: `View all the clusters you created in the container service (including Swarm and Kubernetes clusters)`
     },
     options: {
         name: {
             mapping: 'name',
             desc: {
-                zh: '根据集群Name进行模糊匹配查询'
+                zh: '根据集群Name进行模糊匹配查询',
+                en: `Fuzzy matching query based on cluster name`
             }
         },
         'cluster-type': {
             mapping: 'clusterType',
             desc: {
-                zh: '集群类型'
+                zh: '集群类型',
+                en: `Cluster type`
             }
         }
     }

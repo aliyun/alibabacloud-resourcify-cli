@@ -4,12 +4,13 @@ let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
-exports.cmdObj={
-    use:'arc cs cluster get-log',
-    desc:{
-        zh:'查询指定集群日志'
+exports.cmdObj = {
+    use: 'arc cs cluster get-log',
+    desc: {
+        zh: '查询指定集群日志',
+        en: `query the logs of a cluster.`
     },
-    args:[
+    args: [
         {
             name: 'clusterId',
             required: true
@@ -32,6 +33,7 @@ exports.run = async function (argv) {
     let result;
     try {
         result = await client.describeClusterLogsWithOptions(argv._[0], {}, runtime.getRuntimeOption(argv));
+        console.log(result);
     } catch (e) {
         output.error(e.message);
     }

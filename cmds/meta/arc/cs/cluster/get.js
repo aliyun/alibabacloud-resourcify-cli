@@ -9,7 +9,8 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster get',
     desc: {
-        zh: '根据集群ID，查看集群的详细信息'
+        zh: '根据集群ID，查看集群的详细信息',
+        en: `view the details of a cluster based on the cluster ID.`
     },
     args: [
         {

@@ -5,7 +5,8 @@ const path = require('path');
 exports.cmdObj = {
     use: 'arc html',
     desc: {
-        zh: '生成网页版doc文档'
+        zh: '生成网页版doc文档',
+        en: `Generate web version doc document`
     },
 };
 
@@ -74,19 +75,19 @@ function generateList(path) {
                 break;
         }
         html += `<li class="${p}" onclick='demo(this)'>${sub}</li>\n`;
-        generateContent(`${path}/${sub}`,promt);
+        generateContent(`${path}/${sub}`, promt);
         html += generateList(`${path}/${sub}`);
     }
     html += `</ul>\n`;
     return html;
 }
 
-function generateContent(dirPath,promt) {
+function generateContent(dirPath, promt) {
     let meta = require(dirPath + '.js');
     let cmdObj = meta.cmdObj;
     let title = cmdObj.use;
     let syntax = '';
-    let sub='';
+    let sub = '';
     let options = '';
     if (meta.run) {
         let optionArg = '';
@@ -120,9 +121,9 @@ function generateContent(dirPath,promt) {
     }
     if (cmdObj.sub) {
         syntax += `<tr><td><code>${cmdObj.use} [${promt}]</code></td></tr>\n`;
-        sub+=`<tr><th style="text-align: left;">${promt}</th></tr>\n`;
-        for (let s in cmdObj.sub){
-            sub+=`
+        sub += `<tr><th style="text-align: left;">${promt}</th></tr>\n`;
+        for (let s in cmdObj.sub) {
+            sub += `
             <tr>
             <td>${s}</td>
             <td>${cmdObj.sub[s].zh}</td>
@@ -130,7 +131,7 @@ function generateContent(dirPath,promt) {
         }
     }
     if (cmdObj.options) {
-        options+=`<table>
+        options += `<table>
         <tr><th style="text-align: left;">options</th></tr>\n`;
         let opts = cliParse.transOpts(cmdObj.options);
         if (opts._required) {
@@ -157,7 +158,7 @@ function generateContent(dirPath,promt) {
                 <td style="width:500px">${opts[option].desc.zh}</td>
             </tr>\n`;
         }
-        options+=`</table>`;
+        options += `</table>`;
     }
     let html = `
     <!DOCTYPE html>

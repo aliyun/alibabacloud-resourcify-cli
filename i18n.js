@@ -44,7 +44,31 @@ exports.filedErr = {
     zh: `选项 '%s' 的输入结构与定义不符`,
     en: `The parameter value field of flag '%s' is incorrect`
 };
-exports.outOfIndex={
-    zh:`选项 '%s' 的输入值元素过多，最长支持元素数量：%d`,
-    en:`The number of '%s' values is too long, the longest should be: %d`
+exports.emptyValueErr = {
+    zh: '该参数值不能为空',
+    en: `The parameter value cannot be empty`
+};
+exports.notNumberErr={
+    zh: '值不为Number类型',
+    en: `Value is not of type Number`
+};
+exports.outOfIndex = {
+    zh: `选项 '%s' 的输入值元素过多，最长支持元素数量：%d`,
+    en: `The number of '%s' values is too long, the longest should be: %d`
+};
+exports.isRunPromt = {
+    zh: `是否执行`,
+    en: `Whether to execute`
+};
+exports.conflictPromt = {
+    zh: `以下选项具有冲突，请选择其中一项`,
+    en: `The following options conflict, please choose one`
+};
+exports.isConfigPromt = {
+    zh: `是否配置 %s`,
+    en: `Whether to configure %s`
+};
+exports.continueConfigPromt = {
+    zh: `是否继续配置 %s`,
+    en: `Whether to continue to configure %s`
 };

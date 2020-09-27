@@ -1,10 +1,11 @@
 'use strict';
 
-const output=require('../../../output.js');
+const output = require('../../../output.js');
 exports.cmdObj = {
   use: 'arc completion',
-  desc:{
-    zh:'自动补全'
+  desc: {
+    zh: '自动补全',
+    en: `Autocomplete`
   },
   args: [
     {

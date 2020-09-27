@@ -3,20 +3,25 @@ const config = require('../../../config.js');
 exports.cmdObj = {
     use: 'arc config',
     desc: {
-        zh: '交互式配置CLI，根据提示输入参数值，完成后自动将现有配置作为默认配置'
+        zh: '交互式配置CLI，根据提示输入参数值，完成后自动将现有配置作为默认配置',
+        en: `Configure the CLI interactively, enter parameter values according to the prompts, and automatically use the existing configuration as the default configuration after completion`
     },
     sub: {
         delete: {
-            zh: '删除配置'
+            zh: '删除配置',
+            en: `remove profile`
         },
         get: {
-            zh: '获取配置指定字段值'
+            zh: '获取配置指定字段值',
+            en: `Get profile specified field value`
         },
         list: {
-            zh: '获取指定配置所有信息'
+            zh: '获取指定配置所有信息',
+            en: `Get all information of the specified configuration`
         },
         set: {
-            zh: '设置配置字段值'
+            zh: '设置配置字段值',
+            en: `Set profile field value`
         }
     },
     options: {
@@ -26,7 +31,8 @@ exports.cmdObj = {
                 return config.profile.access_key_id || undefined;
             },
             desc: {
-                zh: '凭证ID'
+                zh: '凭证ID',
+                en: `Access Key ID`
             }
         },
         'access-key-secret': {
@@ -35,7 +41,8 @@ exports.cmdObj = {
                 return config.profile.access_key_secret || undefined;
             },
             desc: {
-                zh: '凭证密钥'
+                zh: '凭证密钥',
+                en: `Access Key Secret`
             }
         },
         'region': {
@@ -43,7 +50,8 @@ exports.cmdObj = {
                 return config.profile.region || 'cn-hangzhou';
             },
             desc: {
-                zh: '阿里云区域'
+                zh: '阿里云区域',
+                en: `the ID of the region`
             }
         },
         'language': {
@@ -51,7 +59,8 @@ exports.cmdObj = {
                 return config.profile.language || 'zh';
             },
             desc: {
-                zh: 'CLI语言'
+                zh: 'CLI语言',
+                en: `the language of CLI`
             },
             choices: [
                 'zh',

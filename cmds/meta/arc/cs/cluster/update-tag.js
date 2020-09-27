@@ -7,21 +7,24 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster update-tag',
     desc: {
-        zh: '修改当前Kubernetes集群的tag接口'
+        zh: '修改当前Kubernetes集群的tag接口',
+        en: `modify the tags of a cluster.`
     },
     options: {
         key: {
             required: true,
             mapping: 'key',
             desc: {
-                zh: '标签名称'
+                zh: '标签名称',
+                en: `The name of the tag to be modified.`
             }
         },
         value: {
             required: true,
             mapping: 'value',
             desc: {
-                zh: '标签值'
+                zh: '标签值',
+                en: `The value of the tag to be modified.`
             }
         }
     },

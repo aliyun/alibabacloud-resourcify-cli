@@ -7,14 +7,16 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster update',
     desc: {
-        zh: '修改集群信息'
+        zh: '修改集群信息',
+        en: ` modify the configurations of a cluster.`
     },
     options: {
         'api-server-eip': {
             mapping: 'apiServerEip',
             vtype: 'boolean',
             desc: {
-                zh: '集群是否开启EIP'
+                zh: '集群是否开启EIP',
+                en: `Specifies whether to assign an elastic IP address to the API server of the cluster.`
             },
             sufficient: function (val) {
                 let optList = {};
@@ -28,34 +30,38 @@ exports.cmdObj = {
             mapping: 'apiServerEipId',
             dependency: true,
             desc: {
-                zh: 'Kubernetes集群的apiServer的弹性IP（EIP）ID'
+                zh: 'Kubernetes集群的apiServer的弹性IP（EIP）ID',
+                en: `The ID of the elastic IP address that is assigned to the API server of the cluster.`
             }
         },
         'deletion-protection': {
             mapping: 'deletionProtection',
             vtype: 'boolean',
             desc: {
-                zh: '是否开启集群删除保护'
+                zh: '是否开启集群删除保护',
+                en: `Specifies whether to enable deletion protection for the cluster.`
             }
         },
         'ingress-domain-rebinding': {
             mapping: 'ingressDomainRebinding',
             vtype: 'boolean',
             desc: {
-                zh: '是否重新绑定域名到ingress的SLB地址'
+                zh: '是否重新绑定域名到ingress的SLB地址',
+                en: `Specifies whether to rebind the default domain name of the cluster to the public IP address of the SLB instance associated with the ingresses of the cluster.`
             }
         },
         'ingress-loadbalancer-id': {
             mapping: 'ingressLoadbalancerId',
             desc: {
-                zh: 'Kubernetes集群的ingress loadbalancer的ID'
+                zh: 'Kubernetes集群的ingress loadbalancer的ID',
+                en: `The ID of the Server Load Balancer (SLB) instance associated with the ingresses of the cluster.`
             }
         },
         'resource-group-id': {
             mapping: 'resourceGroupId',
             desc: {
                 zh: 'Kubernetes集群资源组ID',
-                en: ''
+                en: 'The ID of the resource group to which the cluster belongs.'
             }
         }
     },

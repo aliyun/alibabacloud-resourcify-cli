@@ -7,7 +7,8 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs addon get-upgrade-status',
     desc: {
-        zh: '查询集群Addons升级状态'
+        zh: '查询集群Addons升级状态',
+        en: `query the upgrade status of a cluster add-on.`
     },
     args: [
         {
@@ -15,8 +16,8 @@ exports.cmdObj = {
             required: true
         },
         {
-            name:'componentId',
-            required:true
+            name: 'componentId',
+            required: true
         }
     ]
 };
@@ -35,7 +36,7 @@ exports.run = async function (argv) {
     let client = new Client(config);
     let result;
     try {
-        result = await client.describeClusterAddonUpgradeStatusWithOptions(argv._[0],argv._[1], {}, runtime.getRuntimeOption(argv));
+        result = await client.describeClusterAddonUpgradeStatusWithOptions(argv._[0], argv._[1], {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }

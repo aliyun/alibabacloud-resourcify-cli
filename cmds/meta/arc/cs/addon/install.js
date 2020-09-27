@@ -7,7 +7,8 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs addon install',
     desc: {
-        zh: '安装集群插件'
+        zh: '安装集群插件',
+        en: `install an add-on for a cluster.`
     },
     options: {
         'body': {
@@ -16,39 +17,44 @@ exports.cmdObj = {
             vtype: 'array',
             subType: 'map',
             desc: {
-                zh: 'Addon列表'
+                zh: 'Addon列表',
+                en: `the list of add-on`
             },
             options: {
                 'name': {
                     mapping: 'name',
                     desc: {
-                        zh: 'addon名称'
+                        zh: 'addon名称',
+                        en: `The name of the add-on.`
                     }
                 },
                 'version': {
                     mapping: 'version',
                     desc: {
-                        zh: '插件版本'
+                        zh: '插件版本',
+                        en: `The version of the add-on.`
                     }
                 },
                 'disabled': {
                     mapping: 'disabled',
                     vtype: 'boolean',
                     desc: {
-                        zh: '是否禁止默认安装'
+                        zh: '是否禁止默认安装',
+                        en: `Specifies whether to disable automatic installation of the add-on.`
                     }
                 },
                 'required': {
                     mapping: 'required',
                     desc: {
-                        zh: '是否默认安装'
+                        zh: '是否默认安装',
+                        en: `Specifies whether to enable automatic installation of the add-on.`
                     }
                 },
                 'config': {
                     mapping: 'config',
                     desc: {
                         zh: '配置信息',
-                        en: ''
+                        en: 'The configurations of the add-on.'
                     }
                 }
             }

@@ -1,7 +1,9 @@
 'use strict';
 const config = require('./config.js');
 const inquirer = require('inquirer');
+const util = require('util');
 let cliParser = require('./parser.js');
+let i18n = require('./i18n.js');
 
 exports.runInteractively = async function () {
     let cmd = require(cliParser.argv._descFilePath).cmdObj;
@@ -33,11 +35,11 @@ exports.runInteractively = async function () {
     }
     cliParser.argv._parsedValue = values;
     cliParser.argv._mappingValue = mappingValues;
-    cliParser.argv._inputCmd=cmdStr;
+    cliParser.argv._inputCmd = cmdStr;
     let question = {
         type: 'confirm',
         name: 'isRun',
-        message: '是否执行',
+        message: i18n.isRunPromt[config.profile.language],
         default: false
     };
     let answer = await inquirer.prompt([question]);
@@ -59,7 +61,7 @@ async function optionInteract(optionList, options, optVal, required) {
             let question = {
                 type: 'list',
                 name: 'flag',
-                message: '以下选项具有冲突，请选择其中一项',
+                message: i18n.conflictPromt[config.profile.language],
                 choices: value
             };
             let answer = await inquirer.prompt([question]);
@@ -233,7 +235,7 @@ async function processArray(optionName, optionObj, required) {
         let question = {
             type: 'confirm',
             name: 'isConfig',
-            message: `是否配置${optionName}`
+            message: util.format(i18n.isConfigPromt[config.profile.language], optionName)
         };
         let answer = await inquirer.prompt([question]);
         if (!answer['isConfig']) {
@@ -244,17 +246,17 @@ async function processArray(optionName, optionObj, required) {
     for (; ;) {
         let value;
         let val = await optionsInteract(optionObj.options);
-        if (optionObj.subType==='map') {
-            if (optionObj.mappingType){
+        if (optionObj.subType === 'map') {
+            if (optionObj.mappingType) {
                 value = new optionObj.mappingType(val);
-            }else{
-                value=val;
+            } else {
+                value = val;
             }
         } else {
             value = val.element;
         }
-        if (value!==undefined){
-                values.push(value);
+        if (value !== undefined) {
+            values.push(value);
         }
         if (optionObj.maxindex) {
             if (index >= optionObj.maxindex) {
@@ -264,7 +266,7 @@ async function processArray(optionName, optionObj, required) {
         let question = {
             type: 'confirm',
             name: 'isConfig',
-            message: `是否继续配置${optionName}`
+            message: util.format(i18n.continueConfigPromt[config.profile.language], optionName)
         };
         let answer = await inquirer.prompt([question]);
         if (!answer['isConfig']) {
@@ -282,7 +284,7 @@ async function processMap(optionName, optionObj, required) {
         let question = {
             type: 'confirm',
             name: 'isConfig',
-            message: `是否配置${optionName}`
+            message: util.format(i18n.isConfigPromt[config.profile.language], optionName)
         };
         let answer = await inquirer.prompt([question]);
         if (!answer['isConfig']) {
@@ -310,7 +312,7 @@ async function argsInteractively(cmd) {
         if (arg.required) {
             question['validate'] = function (val) {
                 if (val === '') {
-                    return '该位置参数不能为空';
+                    return i18n.emptyValueErr[config.profile.language];
                 }
                 return true;
             };
@@ -323,7 +325,7 @@ async function argsInteractively(cmd) {
 
 function isEmpty(val) {
     if (!val || val === '') {
-        return '该字段不能为空';
+        return i18n.emptyValueErr[config.profile.language];
     }
     return '';
 }
@@ -331,7 +333,7 @@ function isEmpty(val) {
 function isNumber(val) {
     let value = +val;
     if (isNaN(value)) {
-        return `值不为Number类型`;
+        return i18n.notNumberErr[config.profile.language];
     }
     return '';
 }

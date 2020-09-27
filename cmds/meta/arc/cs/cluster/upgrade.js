@@ -7,25 +7,29 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster upgrade',
     desc: {
-        zh: '升级指定用户集群版本'
+        zh: '升级指定用户集群版本',
+        en: `upgrade a cluster.`
     },
     options: {
         'component-name': {
             mapping: 'componentName',
             desc: {
-                zh: '组件名称，升级集群时取值：k8s'
+                zh: '组件名称，升级集群时取值：k8s',
+                en: `Component name, value when upgrading the cluster: k8s.`
             }
         },
         'version': {
             mapping: 'version',
-            descl: {
-                zh: '集群当前版本'
+            desc: {
+                zh: '集群当前版本',
+                en: `Current version of the cluster`
             }
         },
         'next-version': {
             mapping: 'nextVersion',
             desc: {
-                zh: '集群可升级版本'
+                zh: '集群可升级版本',
+                en: `The target version of the upgrade.`
             }
         }
     },

@@ -7,14 +7,16 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs cluster get-kubeconfig',
     desc: {
-        zh: '返回包含当前登录用户身份信息的Kubernetes集群访问kubeconfig'
+        zh: '返回包含当前登录用户身份信息的Kubernetes集群访问kubeconfig',
+        en: `Return to the Kubernetes cluster containing the identity information of the currently logged in user to access kubeconfig`
     },
     options: {
         'private-ip-address': {
-            mapping:'privateIpAddress',
+            mapping: 'privateIpAddress',
             vtype: 'boolean',
             desc: {
-                zh: '当前用户对应的集群访问kubeconfig'
+                zh: '当前用户对应的集群访问kubeconfig',
+                en: `The cluster corresponding to the current user accesses kubeconfig`
             }
         }
     },
@@ -42,7 +44,7 @@ exports.run = async function (argv) {
     let client = new Client(config);
     let result;
     try {
-        result = await client.describeClusterUserKubeconfigWithOptions(argv._[0], request,{}, runtime.getRuntimeOption(argv));
+        result = await client.describeClusterUserKubeconfigWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }

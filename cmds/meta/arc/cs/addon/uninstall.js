@@ -4,19 +4,30 @@ let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
-// TODO
-// 请求结构和文档不一致
 exports.cmdObj = {
     use: 'arc cs addon uninstall',
     desc: {
-        zh: '卸载集群插件'
+        zh: '卸载集群插件',
+        en: `uninstall an add-on from a cluster.`
     },
     options: {
-        'name': {
-            mapping: 'name',
-            required: true,
+        'addons': {
+            mapping: 'addons',
+            mappingType: require(`@alicloud/cs20151215`).UnInstallClusterAddonsRequestAddons,
+            vtype: 'array',
+            subType: 'map',
             desc: {
-                zh: 'addon名称'
+                zh: 'Addon列表',
+                en: `the list of add-on`
+            },
+            options: {
+                'name': {
+                    required: true,
+                    desc: {
+                        zh: '集群名称',
+                        en: `The name of the cluster.`
+                    }
+                }
             }
         }
     },

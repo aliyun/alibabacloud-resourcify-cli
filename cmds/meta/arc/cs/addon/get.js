@@ -7,19 +7,22 @@ let output = require('../../../../../output.js');
 exports.cmdObj = {
     use: 'arc cs addon get',
     desc: {
-        zh: '集群安装的Addons详情'
+        zh: '集群安装的Addons详情',
+        en: ` query details about the add-ons that are supported by a specified cluster type.`
     },
     options: {
         'region': {
             mapping: 'region',
             desc: {
-                zh: '阿里云区域'
+                zh: '阿里云区域',
+                en: `The ID of the region to query.`
             }
         },
         'cluster-type': {
             mapping: 'clusterType',
             desc: {
-                zh: '集群类型，默认为kubernetes'
+                zh: '集群类型，默认为kubernetes',
+                en: `The type of the cluster. Default value: kubernetes.`
             }
         }
     }
@@ -41,7 +44,7 @@ exports.run = async function (argv) {
     let client = new Client(config);
     let result;
     try {
-        result = await client.describeAddonsWithOptions(request,{}, runtime.getRuntimeOption(argv));
+        result = await client.describeAddonsWithOptions(request, {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }

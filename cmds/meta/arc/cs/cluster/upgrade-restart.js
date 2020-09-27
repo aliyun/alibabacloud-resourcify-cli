@@ -4,12 +4,11 @@ let { default: Client } = require(`@alicloud/cs20151215`);
 let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
-// TODO
-// sdk2.0.0版本无此接口，待确认。
 exports.cmdObj = {
     use: 'arc cs cluster upgrade-restart',
     desc: {
-        zh: '重新开始集群升级'
+        zh: '重新开始集群升级',
+        en: `resume the upgrade of a cluster.`
     },
     args: [
         {
@@ -21,7 +20,7 @@ exports.cmdObj = {
 
 exports.run = async function (argv) {
     let profile = await runtime.getConfigOption();
-    let { Config } = require('@alicloud/roa-client');
+    let { Config } = require('@alicloud/openapi-client');
     let config = new Config({
         accessKeyId: profile.access_key_id,
         accessKeySecret: profile.access_key_secret,
@@ -29,15 +28,12 @@ exports.run = async function (argv) {
         regionId: profile.region,
         type: profile.type
     });
-    let ResumeUpgradeClusterRequest = require(`@alicloud/cs20151215`).ResumeUpgradeClusterRequest;
-    let request = new ResumeUpgradeClusterRequest({});
+
     let client = new Client(config);
-    let result;
+
     try {
-        result = await client.resumeUpgradeClusterWithOptions(argv._[0], request, runtime.getRuntimeOption(argv));
+        await client.resumeUpgradeClusterWithOptions(argv._[0], {}, runtime.getRuntimeOption(argv));
     } catch (e) {
         output.error(e.message);
     }
-    let data = JSON.stringify(result, null, 2);
-    output.log(data);
 };
