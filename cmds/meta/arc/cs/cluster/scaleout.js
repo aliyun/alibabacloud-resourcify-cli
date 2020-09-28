@@ -12,7 +12,6 @@ exports.cmdObj = {
     },
     options: {
         'count': {
-            required: true,
             mapping: 'count',
             vtype: 'number',
             desc: {
@@ -21,7 +20,6 @@ exports.cmdObj = {
             }
         },
         'key-pair': {
-            required: true,
             mapping: 'keyPair',
             desc: {
                 zh: 'key_pair名称',
@@ -32,7 +30,6 @@ exports.cmdObj = {
             ]
         },
         'login-password': {
-            required: true,
             mapping: 'loginPassword',
             desc: {
                 zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号），和key_pair 二选一。',
@@ -43,7 +40,6 @@ exports.cmdObj = {
             ]
         },
         'worker-data-disk': {
-            required: true,
             mapping: 'workerDataDisk',
             vtype: 'boolean',
             desc: {
@@ -93,7 +89,6 @@ exports.cmdObj = {
             }
         },
         'worker-instance-types': {
-            required: true,
             mapping: 'workerInstanceTypes',
             vtype: 'array',
             subType: 'string',

@@ -634,6 +634,7 @@ exports.cmdObj = {
             }
         },
         'addons': {
+            mapping: 'addons',
             vtype: 'array',
             subType: 'map',
             mappingType: require('@alicloud/cs20151215').CreateClusterRequestAddons,

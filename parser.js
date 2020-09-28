@@ -36,6 +36,9 @@ exports.parser = function (args) {
     if (exports.argv._parsedValue.region) {
         config.profile.region = exports.argv._parsedValue.region;
     }
+    if (opts['region'].mapping&&!exports.argv._mappingValue[opts['region'].mapping]){
+        exports.argv._mappingValue[opts['region'].mapping]=config.profile.region;
+    }
     for (let key of opts._unchanged) {
         if (opts[key].mapping) {
             exports.argv._mappingValue[opts[key].mapping] = opts[key].default;

@@ -102,6 +102,9 @@ exports.run = async function (argv) {
     } catch (e) {
         output.error(e.message);
     }
+    if (result) {
+        result = result.body;
+    }
     let data = JSON.stringify(result, null, 2);
     output.log(data);
 };
