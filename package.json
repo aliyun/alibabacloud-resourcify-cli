@@ -1,0 +1,38 @@
+{
+  "name": "@ali/arc",
+  "version": "1.0.4",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "arc": "bin/arc.js",
+    "arc-tool": "bin/arc-tool.js",
+    "arc-cs": "bin/arc-cs.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.alibaba-inc.com:alicloud-sdk/ARC.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npm.alibaba-inc.com"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@alicloud/alidns20150109": "^1.0.0",
+    "@alicloud/cms20190101": "^1.0.0",
+    "@alicloud/credentials": "^2.1.0",
+    "@alicloud/cs20151215": "^2.0.4",
+    "@alicloud/eci20180808": "^1.1.0",
+    "@alicloud/ecs20140526": "^1.0.0",
+    "@alicloud/nas20170626": "^1.0.0",
+    "@alicloud/polardb20170801": "^1.0.0",
+    "@alicloud/pop-core": "^1.7.9",
+    "@alicloud/rds20140815": "^1.0.0",
+    "@alicloud/rpc-client": "^1.2.0",
+    "cliui": "^6.0.0",
+    "inquirer": "^7.3.2"
+  }
+}
