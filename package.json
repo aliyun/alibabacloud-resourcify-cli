@@ -1,8 +1,7 @@
 {
-  "name": "@ali/arc",
-  "version": "1.0.4",
-  "description": "",
-  "main": "index.js",
+  "name": "@alicloud/arc",
+  "version": "0.0.1",
+  "description": "AlibabaCloud resourcify CLI",
   "bin": {
     "arc": "bin/arc.js",
     "arc-tool": "bin/arc-tool.js",
@@ -11,15 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@gitlab.alibaba-inc.com:alicloud-sdk/ARC.git"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npm.alibaba-inc.com"
-  },
-  "author": "",
-  "license": "ISC",
+  "author": "AlibabaCloud SDK Team",
+  "license": "Apache-2.0",
   "dependencies": {
     "@alicloud/alidns20150109": "^1.0.0",
     "@alicloud/cms20190101": "^1.0.0",
@@ -34,5 +26,20 @@
     "@alicloud/rpc-client": "^1.2.0",
     "cliui": "^6.0.0",
     "inquirer": "^7.3.2"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "alibabacloud",
+    "CLI"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aliyun/alibabacloud-resourcify-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aliyun/alibabacloud-resourcify-cli/issues"
+  },
+  "homepage": "https://github.com/aliyun/alibabacloud-resourcify-cli#readme"
 }
