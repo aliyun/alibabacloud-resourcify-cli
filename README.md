@@ -1,20 +1,25 @@
 # AlibabaCloud Resourcify CLI (ARC)
 
 ARC is a brand-new Alibaba Cloud CLI environment oriented to resourceization, and is a collection of multiple command line tools.
-The currently included command line tools are as follows:
-1. `arc`: call all Alibaba Cloud resource commands supported by ARC
-`arc <product> <resource> <action> [options]`
-2. `arc-cs`: Call CS related resource commands
-`arc-cs <resource> <action> [options]`
-3. `arc-tool`: call related commands of ARC itself
-`arc-tool <command> [subCommand] [options]`
 
 ## Installation
 
-*Please confirm that you have a Node.js development environment before installation*
+*Please confirm that you have a Node.js development environment before installation. You can find it from https://nodejs.org/ *
 
-Install ARC using the following command:  
-`npm i @alicloud/arc -g`
+Install ARC using the following command:
+
+```sh
+$ npm i @alicloud/arc -g`
+```
+
+The currently included command line tools are as follows:
+
+1. `arc`: call all Alibaba Cloud resource commands supported by ARC
+`arc <product> <resource> <action> [options]`
+2. `arc-tool`: call related commands of ARC itself
+`arc-tool <command> [subCommand] [options]`
+3. `arc-cs`: Call CS related resource commands
+`arc-cs <resource> <action> [options]`
 
 ## Global options
 
@@ -26,8 +31,8 @@ Install ARC using the following command:
 
 Before using ARC to operate Alibaba Cloud resources, you need to configure the ARC related environment.
 
-*The default path of the ARC configuration file is:
-`$HOME/.aliyun/arc.json`*
+The default path of the ARC configuration file is:
+`$HOME/.aliyun/arc.json`
 
 ### Configure credentials
 
@@ -48,10 +53,10 @@ Quickly configure AK credentials:
 
 ARC configures AK credentials by default. If you need other credentials, please use the subcommand of `config` to operate the arc configuration to add or delete necessary fields. If you change the default configuration to StsToken credentials:
 
-```shell
-arc-tool config set access_key_id <value>
-arc-tool config set access_key_secret <value>
-arc-tool config set sts_token <value>
+```sh
+$ arc-tool config set access_key_id <value>
+$ arc-tool config set access_key_secret <value>
+$ arc-tool config set sts_token <value>
 ```
 
 For more configuration related commands, please use the configuration help command: `arc-tool config help`
@@ -75,8 +80,9 @@ All ARC tools can use interactive mode to fill in command parameters.
 Add `-i` or `--interaction` after any command to enable interactive mode. And at the end of the configuration, the complete related commands are printed, which is convenient for users to continue to use later. Finally, the user can choose whether to directly run the command just filled.
 
 Use interactive input to configure the test configuration:
-```shell
-arc-tool config -i --profile test
+
+```sh
+$ arc-tool config -i --profile test
 ? Credential ID
 access-key-id <accessKeyId>
 ? Credential key
@@ -98,7 +104,7 @@ ARC has powerful advantages for complex command parameters and can assist user i
 *Angle brackets indicate user input*
 
 1. Prompt for parameter input and supplemented by parameter description, the user does not need to remember:
-```shell
+```sh
 ? The ID of the region where the cluster is deployed
 region <region>
 ? The name of the cluster. The name can contain uppercase letters, lowercase letters, Chinese characters, digits, and hyphens (-).
@@ -106,7 +112,7 @@ name <name>
 ```
 
 2. Prompt for conflicting parameters
-```shell
+```sh
 ? The following options conflict, please select one (Use arrow keys)
 ❯ login-password
   key-pair
@@ -114,7 +120,7 @@ name <name>
 
 3. Basic parameter type check
 
-```shell
+```sh
 ? Worker node system disk size, in GiB
 worker-system-disk-size <string>
 >> Value is not of type Number
@@ -122,8 +128,7 @@ worker-system-disk-size <string>
 
 4. The parameter value has an optional range, and the arrow is convenient for users to choose
 
-
-```shell
+```sh
 ? the type of the data disks
 category (Use arrow keys)
 ❯ cloud
@@ -134,7 +139,7 @@ category (Use arrow keys)
 
 5. Automatically hide the parameters according to the parameter dependency, reducing user input
 
-```shell
+```sh
 ## When the selection is true, you need to enter data disk related information
 ? Specifies whether to mount data disks to worker nodes
 worker-data-disk <true>
@@ -161,7 +166,7 @@ worker-instance-charge-type (Use arrow keys)
 
 6. Prompt input for complex parameter value structure
 
-```shell
+```sh
 # map type parameter value
 When the container is running, it is generally docker, including 2 information: name and version
 ? Whether to configure runtime <Yes>
@@ -178,5 +183,10 @@ element element
 ? The ECS instance type
 element element2
 ? Continue to configure worker-instance-types <No>
-
 ```
+
+# License
+
+The Apache License 2.0. See [Apache-2.0](/LICENSE)
+
+Copyright (c) 2009-present, Alibaba Cloud All rights reserved.
