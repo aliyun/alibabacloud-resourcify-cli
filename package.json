@@ -8,7 +8,8 @@
     "arc-cs": "bin/arc-cs.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-cov": "nyc -r=html -r=text -r=lcov mocha -t 3000 -R spec test/*.test.js",
+    "ci": "npm run test-cov && codecov"
   },
   "author": "AlibabaCloud SDK Team",
   "license": "Apache-2.0",
@@ -26,6 +27,12 @@
     "@alicloud/rpc-client": "^1.2.0",
     "cliui": "^6.0.0",
     "inquirer": "^7.3.2"
+  },
+  "devDependencies": {
+    "codecov": "^3.0.4",
+    "eslint": "^6.6.0",
+    "mocha": "^4",
+    "nyc": "^12.0.2"
   },
   "directories": {
     "test": "test"
