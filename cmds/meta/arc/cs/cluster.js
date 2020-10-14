@@ -32,7 +32,7 @@ exports.cmdObj = {
             en: 'modify the configurations of a cluster'
         },
         'get-agent': {
-            zh: '获取agent YMAL文件',
+            zh: '获取agent YAML文件',
             en: `obtain an agent to access the API server.`
         },
         'get-kubeconfig': {
@@ -67,15 +67,15 @@ exports.cmdObj = {
             zh: '升级用户集群版本',
             en: `upgrade a cluster`
         },
-        'upgrade-cancle': {
+        'cancel-upgrade': {
             zh: '取消集群升级',
             en: `cancel the upgrade of a cluster`
         },
-        'upgrade-pause': {
+        'pause-upgrade': {
             zh: '暂停集群升级',
             en: `suspend the upgrade of a cluster`
         },
-        'upgrade-restart': {
+        'restart-upgrade': {
             zh: '重新开始集群升级',
             en: `resume the upgrade of a cluster`
         }
