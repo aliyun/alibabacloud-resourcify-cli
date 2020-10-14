@@ -20,7 +20,7 @@ ARC is a brand-new Alibaba Cloud CLI environment oriented to resourceization, an
 Install ARC using the following command:
 
 ```sh
-$ npm i @alicloud/arc -g`
+$ npm i @alicloud/arc -g
 ```
 
 The currently included command line tools are as follows:
