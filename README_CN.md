@@ -104,7 +104,7 @@ region cn-hangzhou
 ? CLI语言
 language zh
 ? 是否执行 Yes
-arc config  --access-key-id accessKeyId --access-key-secret accessKeySecret --region cn-hangzhou --language zh
+arc-tool config  --access-key-id accessKeyId --access-key-secret accessKeySecret --region cn-hangzhou --language zh
 ```
 
 ## 优势
