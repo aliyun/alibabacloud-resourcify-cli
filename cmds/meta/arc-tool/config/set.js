@@ -3,7 +3,6 @@
 const config = require('../../../../config.js');
 
 exports.cmdObj = {
-  use: 'arc config set',
   desc: {
     zh: '设置配置中的字段，当字段不存在时添加；当value为空时，代表删除指定字段；若只是指定profile，则表示更改默认配置',
     en: `Set the field in the configuration, add it when the field does not exist; when the value is empty, it means delete the specified field; if only specify the profile, it means change the default configuration`

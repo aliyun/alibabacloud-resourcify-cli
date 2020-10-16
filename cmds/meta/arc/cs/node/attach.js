@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs node attach',
   desc: {
     zh: '添加已有ECS节点到Kubernetes集群',
     en: `existing Elastic Compute Service (ECS) instances to a cluster.`

@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster get-log',
   desc: {
     zh: '查询指定集群日志',
     en: `query the logs of a cluster.`

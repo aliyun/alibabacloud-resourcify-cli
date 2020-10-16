@@ -3,7 +3,6 @@
 const config = require('../../../../config.js');
 
 exports.cmdObj = {
-  use: 'arc config delete',
   usage: [
     'arc config delete <--profile profileName>'
   ],

@@ -1,7 +1,6 @@
 'use strict';
 
 exports.cmdObj = {
-  use: 'arc',
   desc: {
     zh: 'Alibaba Cloud CLI'
   },

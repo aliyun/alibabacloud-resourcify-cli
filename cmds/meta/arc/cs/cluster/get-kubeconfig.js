@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster get-kubeconfig',
   desc: {
     zh: '返回包含当前登录用户身份信息的Kubernetes集群访问kubeconfig',
     en: `Return to the Kubernetes cluster containing the identity information of the currently logged in user to access kubeconfig`

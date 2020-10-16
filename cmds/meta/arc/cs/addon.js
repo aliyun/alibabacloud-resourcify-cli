@@ -1,7 +1,6 @@
 'use strict';
 
 exports.cmdObj = {
-  use: 'arc cs addon',
   desc: {
     zh: '容器服务集群插件操作',
     en: `Action of container service cluster addon-on`

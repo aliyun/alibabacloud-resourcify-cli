@@ -5,9 +5,8 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster get-agent',
   desc: {
-    zh: '获取一个agent YAML文件，您可以将改YAML文件部署到自己的集群用于访问apiServer',
+    zh: '获取注册集群的代理配置。您可以将改配置部署到自己的集群用于访问API Server',
     en: `obtain an agent to access the API server.`
   },
   args: [

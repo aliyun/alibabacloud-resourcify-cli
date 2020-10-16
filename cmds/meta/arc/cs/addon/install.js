@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs addon install',
   desc: {
     zh: '安装集群插件',
     en: `install an add-on for a cluster.`

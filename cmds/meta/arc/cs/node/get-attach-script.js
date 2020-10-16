@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs node attach-script',
   desc: {
     zh: `生成Kubernetes边缘托管版集群的节点接入脚本
         该API返回唯一的可执行脚本。您获取脚本后，在已有节点上执行该脚本即可完成节点的接入。`,

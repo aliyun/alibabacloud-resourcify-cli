@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster update',
   desc: {
     zh: '修改集群信息',
     en: ` modify the configurations of a cluster.`

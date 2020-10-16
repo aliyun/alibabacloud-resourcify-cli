@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster list-resource',
   desc: {
     zh: '查询指定集群的所有资源',
     en: `query all resources in a cluster.`

@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs addon uninstall',
   desc: {
     zh: '卸载集群插件',
     en: `uninstall an add-on from a cluster.`

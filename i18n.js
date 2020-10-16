@@ -48,7 +48,7 @@ exports.emptyValueErr = {
   zh: '该参数值不能为空',
   en: `The parameter value cannot be empty`
 };
-exports.notNumberErr={
+exports.notNumberErr = {
   zh: '值不为Number类型',
   en: `Value is not of type Number`
 };

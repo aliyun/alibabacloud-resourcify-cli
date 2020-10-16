@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster create',
   desc: {
     en: 'Create a k8s dedicated cluster',
     zh: '创建 k8s 专有版集群'
