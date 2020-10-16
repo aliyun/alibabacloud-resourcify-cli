@@ -3,8 +3,8 @@
 exports.cmdObj = {
   use: 'arc',
   desc: {
-    zh: 'Alibaba Cloud CLI',
-    en: `Alibaba Cloud CLI`
+    zh: '阿里云资源化命令行工具，用于云服务资源操作',
+    en: `Alibaba Cloud Resourcify CLI, used for operate resources of cloud service`
   },
   sub: {
     cs: {
