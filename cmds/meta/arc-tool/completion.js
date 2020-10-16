@@ -2,7 +2,6 @@
 
 const output = require('../../../output.js');
 exports.cmdObj = {
-  use: 'arc completion',
   desc: {
     zh: '自动补全',
     en: `Autocomplete`

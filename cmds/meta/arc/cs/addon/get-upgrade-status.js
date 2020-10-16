@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs addon get-upgrade-status',
   desc: {
     zh: '查询集群Addons升级状态',
     en: `query the upgrade status of a cluster add-on.`

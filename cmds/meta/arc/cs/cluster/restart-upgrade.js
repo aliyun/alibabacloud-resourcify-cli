@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster upgrade-restart',
   desc: {
     zh: '重新开始集群升级',
     en: `resume the upgrade of a cluster.`

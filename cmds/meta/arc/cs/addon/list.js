@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs addon list',
   desc: {
     zh: '查询指定集群安装的所有Addons的信息',
     en: `query the details of all add-ons that are installed for a cluster.`

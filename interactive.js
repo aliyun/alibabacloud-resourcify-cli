@@ -6,6 +6,7 @@ let cliParser = require('./parser.js');
 let i18n = require('./i18n.js');
 
 exports.runInteractively = async function () {
+  const { rootCmd } = require('./arc_config.js');
   let cmd = require(cliParser.argv._descFilePath).cmdObj;
   if (cmd.args) {
     let answer = await argsInteractively(cmd);
@@ -15,7 +16,7 @@ exports.runInteractively = async function () {
       }
     }
   }
-  let cmdStr = 'arc ' + cliParser.argv._cmds.join(' ') + ' ' + cliParser.argv._.join(' ') + ' ';
+  let cmdStr = rootCmd + ' ' + cliParser.argv._cmds.join(' ') + ' ' + cliParser.argv._.join(' ') + ' ';
   let values = await optionsInteract(cmd.options);
   let mappingValues = {};
   for (let key in values) {

@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster upgrade-pause',
   desc: {
     zh: '暂停集群升级',
     en: `suspend the upgrade of a cluster.`

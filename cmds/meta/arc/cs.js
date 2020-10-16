@@ -1,7 +1,6 @@
 'use strict';
 
 exports.cmdObj = {
-  use: 'arc cs',
   desc: {
     zh: '容器服务k8s版',
     en: `Container Service for Kubernetes`

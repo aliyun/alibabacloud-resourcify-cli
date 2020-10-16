@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster delete',
   desc: {
     zh: '根据集群ID删除集群',
     en: `delete the cluster of a specified ID and release all nodes in the cluster.`

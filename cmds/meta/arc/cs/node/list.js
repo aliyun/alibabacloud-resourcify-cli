@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs node list',
   desc: {
     zh: '列举集群节点信息',
     en: `query nodes in a cluster.`

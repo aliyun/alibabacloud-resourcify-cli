@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const USER_HOME = require('os').homedir();
 
-const configFilePath = path.join(USER_HOME, '.aliyun', 'arc.json');
+exports.configFilePath = path.join(USER_HOME, '.aliyun', 'arc.json');
 
 const initProfileName = 'default';
 exports.profileName = initProfileName;
@@ -18,10 +18,10 @@ const initProfile = {
 exports.profile = initProfile;
 
 exports.getConfig = function () {
-  if (!fs.existsSync(configFilePath)) {
+  if (!fs.existsSync(exports.configFilePath)) {
     return null;
   }
-  let buf = fs.readFileSync(configFilePath);
+  let buf = fs.readFileSync(exports.configFilePath);
   let config = JSON.parse(buf);
   return config;
 };
@@ -52,7 +52,7 @@ exports.updateProfile = function (name, profile) {
   }
   config.credential[name] = profile;
   config.default = name;
-  fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
+  fs.writeFileSync(exports.configFilePath, JSON.stringify(config, null, 2));
 };
 
 exports.delete = function (name) {
@@ -65,5 +65,5 @@ exports.delete = function (name) {
     process.exit(-1);
   }
   delete config.credential[name];
-  fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
+  fs.writeFileSync(exports.configFilePath, JSON.stringify(config, null, 2));
 };

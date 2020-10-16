@@ -1,7 +1,6 @@
 'use strict';
 
 exports.cmdObj = {
-  use: 'arc cs cluster',
   desc: {
     zh: '容器服务k8s版集群相关操作',
     en: `Action of container service cluster`
@@ -17,7 +16,7 @@ exports.cmdObj = {
     },
     'get': {
       zh: '根据集群ID获取集群信息',
-      en: `view the details`
+      en: `Get cluster information based on cluster ID`
     },
     'get-userquota': {
       zh: '获取用户配额',
@@ -32,7 +31,7 @@ exports.cmdObj = {
       en: 'modify the configurations of a cluster'
     },
     'get-agent': {
-      zh: '获取agent YAML文件',
+      zh: '获取注册集群的代理配置以访问API Server',
       en: `obtain an agent to access the API server.`
     },
     'get-kubeconfig': {

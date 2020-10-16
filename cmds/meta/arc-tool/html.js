@@ -3,7 +3,6 @@ const fs = require('fs');
 const cliParse = require('../../../parser.js');
 const path = require('path');
 exports.cmdObj = {
-  use: 'arc html',
   desc: {
     zh: '生成网页版doc文档',
     en: `Generate web version doc document`
