@@ -103,7 +103,7 @@ region cn-hangzhou
 ? CLI language
 language <en>
 ? Whether to execute Yes
-arc config --access-key-id accessKeyId --access-key-secret accessKeySecret --region cn-hangzhou --language en
+arc-tool config --access-key-id accessKeyId --access-key-secret accessKeySecret --region cn-hangzhou --language en
 ```
 
 ## Advantage
