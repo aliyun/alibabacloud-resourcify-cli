@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster update-tag',
   desc: {
     zh: '修改当前Kubernetes集群的tag接口',
     en: `modify the tags of a cluster.`

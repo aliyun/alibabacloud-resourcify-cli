@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster list-tags',
   desc: {
     zh: '查询可见的资源标签关系',
     en: `query tags that are attached to resources.`

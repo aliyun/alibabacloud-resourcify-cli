@@ -5,7 +5,6 @@ const runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs cluster scaleout',
   desc: {
     zh: '增加集群中Worker节点的数量',
     en: `add worker nodes to a cluster. Worker nodes in a cluster can be deployed in multiple zones.`

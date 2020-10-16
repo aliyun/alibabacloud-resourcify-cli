@@ -5,7 +5,6 @@ let runtime = require('../../../../../runtime.js');
 let output = require('../../../../../output.js');
 
 exports.cmdObj = {
-  use: 'arc cs node attach-edge',
   desc: {
     zh: '添加已有ENS节点至边缘托管集群',
     en: `add existing Edge Node Service (ENS) instances to a managed edge cluster.`

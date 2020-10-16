@@ -2,11 +2,8 @@
 
 const parser = require('./parser.js');
 
-
 var ui = require('cliui')();
-
-let lang;
-
+let lang = 'zh';
 const cueWord = {
   command: {
     zh: '子命令',
@@ -30,25 +27,19 @@ const cueWord = {
   }
 };
 
-exports.printUsage = function (cmdObj) {
+function getSyntax(cmdObj) {
+  let syntax = [];
+  const { rootCmd } = require('./arc_config.js');
   if (cmdObj.usage) {
-    for (let value of cmdObj.usage) {
-      ui.div({
-        text: value,
-        padding: [0, 0, 0, 4]
-      });
-    }
-    return;
+    return cmdObj.usage;
   }
   let message = '';
+  let use = rootCmd + ' ' + parser.argv._cmds.join(' ');
   if (cmdObj.sub) {
-    ui.div({
-      text: `${cmdObj.use} [${cueWord.command[lang]}]`,
-      padding: [0, 0, 0, 4]
-    });
+    syntax.push(`${use} [${cueWord.command[lang]}]`);
   }
   if (cmdObj.args || cmdObj.options) {
-    message += cmdObj.use + ' ';
+    message += use + ' ';
   }
   if (cmdObj.args) {
     let argsUsage = '';
@@ -73,25 +64,14 @@ exports.printUsage = function (cmdObj) {
     message += `[${cueWord.options[lang]}]`;
   }
   if (message) {
-    ui.div({
-      text: message,
-      padding: [0, 0, 0, 4]
-    });
+    syntax.push(message);
   }
-};
+  return syntax;
+}
 
-exports.printDesc = function (desc) {
-  if (!desc) {
-    return;
-  }
-  ui.div({
-    text: desc[lang],
-    padding: [1, 0, 1, 4],
-    width: 50
-  });
-};
 
-exports.printSubcmd = function (sub) {
+
+exports.printSubcmdToUi = function (sub) {
   if (!sub) {
     return;
   }
@@ -109,36 +89,38 @@ exports.printSubcmd = function (sub) {
       }
     );
   }
+  return ui;
 };
 
-exports.printFlags = function (opts) {
-  if (opts._transed.length===0) {
+exports.printFlagsToUi = function (opts) {
+  if (opts._transed.length === 0) {
     return;
   }
   ui.div(`${cueWord.options[lang]}:`);
   if (opts._required) {
     for (let flagName of opts._required) {
-      if (Array.isArray(flagName)){
-        for (let flag of flagName){
-          exports.printFlag(flag, opts[flag], false);
+      if (Array.isArray(flagName)) {
+        for (let flag of flagName) {
+          getFlag(flag, opts[flag], false);
           delete opts[flag];
         }
         continue;
       }
-      exports.printFlag(flagName, opts[flagName], true);
+      getFlag(flagName, opts[flagName], true);
       delete opts[flagName];
     }
   }
-  for (let flagName of opts._transed){
-    if (!opts[flagName]){
+  for (let flagName of opts._transed) {
+    if (!opts[flagName]) {
       continue;
     }
-    exports.printFlag(flagName, opts[flagName], false);
+    getFlag(flagName, opts[flagName], false);
     delete opts[flagName];
   }
+  return ui;
 };
 
-exports.printFlag = function (flagName, flag, required) {
+function getFlag(flagName, flag, required) {
   flagName = `--${flagName}`;
   let desc = '';
   let vtype = flag.vtype || 'string';
@@ -163,43 +145,67 @@ exports.printFlag = function (flagName, flag, required) {
   if (flag.example) {
     desc += `\n${cueWord.example[lang]}：\n` + flag.example;
   }
-  {
-    ui.div(
-      {
-        text: flagName,
-        width: 25,
-        padding: [0, 4, 1, 2]
-      },
-      {
-        text: requiredTip,
-        width: 10,
-        padding: [0, 4, 1, 0]
-      },
-      {
-        text: `[${vtype}]   ${choices}`,
-        width: 20,
-        padding: [0, 4, 1, 0]
-      },
-      {
-        text: desc,
-        width: 50,
-      }
-    );
-  }
-};
+  ui.div(
+    {
+      text: flagName,
+      width: 25,
+      padding: [0, 4, 1, 2]
+    },
+    {
+      text: requiredTip,
+      width: 10,
+      padding: [0, 4, 1, 0]
+    },
+    {
+      text: `[${vtype}]   ${choices}`,
+      width: 20,
+      padding: [0, 4, 1, 0]
+    },
+    {
+      text: desc,
+      width: 50,
+    }
+  );
+}
 
 exports.printHelp = function () {
   console.log(ui.toString());
 };
 
+function printUsagePromtToUi() {
+  ui.div('usage:');
+}
+
 exports.help = function (cmdObj, language) {
   let opts = parser.transOpts(cmdObj.options);
   lang = language || 'zh';
-  ui.div('usage:');
-  exports.printUsage(cmdObj);
-  exports.printDesc(cmdObj.desc);
-  exports.printSubcmd(cmdObj.sub);
-  exports.printFlags(opts);
+  printUsagePromtToUi();
+  exports.printSyntaxToUi(cmdObj);
+  exports.printDescToUi(cmdObj.desc);
+  exports.printSubcmdToUi(cmdObj.sub);
+  exports.printFlagsToUi(opts);
   exports.printHelp();
 };
 
+exports.printSyntaxToUi = function (cmdObj) {
+  const syntax = getSyntax(cmdObj);
+  for (let value of syntax) {
+    ui.div({
+      text: value,
+      padding: [0, 0, 0, 4]
+    });
+  }
+  return ui;
+};
+
+exports.printDescToUi = function (desc) {
+  if (!desc) {
+    return;
+  }
+  ui.div({
+    text: desc[lang],
+    padding: [1, 0, 1, 4],
+    width: 50
+  });
+  return ui;
+};

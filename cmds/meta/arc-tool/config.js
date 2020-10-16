@@ -1,7 +1,6 @@
 'use strict';
 const config = require('../../../config.js');
 exports.cmdObj = {
-  use: 'arc config',
   desc: {
     zh: '交互式配置CLI，根据提示输入参数值，完成后自动将现有配置作为默认配置',
     en: `Configure the CLI interactively, enter parameter values according to the prompts, and automatically use the existing configuration as the default configuration after completion`

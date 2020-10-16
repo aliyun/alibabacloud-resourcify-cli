@@ -1,7 +1,6 @@
 'use strict';
 
 exports.cmdObj = {
-  use: 'arc cs node',
   desc: {
     zh: '容器服务k8s版节点操作',
     en: `Action of container service node`
