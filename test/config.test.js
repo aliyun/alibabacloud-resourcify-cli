@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const config = require('../config.js');
+const config = require('../lib/config.js');
 const fs = require('fs');
 const path = require('path');
 describe('config.js', function () {

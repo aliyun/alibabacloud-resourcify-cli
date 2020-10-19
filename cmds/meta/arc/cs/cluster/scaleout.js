@@ -1,8 +1,8 @@
 'use strict';
 
 let { default: Client } = require(`@alicloud/cs20151215`);
-const runtime = require('../../../../../runtime.js');
-let output = require('../../../../../output.js');
+const runtime = require('../../../../../lib/runtime.js');
+let output = require('../../../../../lib/output.js');
 
 exports.cmdObj = {
   desc: {

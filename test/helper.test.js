@@ -1,8 +1,8 @@
 'use strict';
 const assert = require('assert');
-const helper = require('../helper.js');
-let conf = require('../arc_config.js');
-let parser = require('../parser.js');
+const helper = require('../lib/helper.js');
+let conf = require('../lib/arc_config.js');
+let parser = require('../lib/parser.js');
 
 describe('config.js', function () {
   let ui = require('cliui')();
@@ -123,15 +123,11 @@ describe('config.js', function () {
     ui = helper.printFlagsToUi(opts);
     let actual = ui.toString();
     let expect = '选项:\n' +
-      '  --conflictFlag1                  [string]            冲突选项1\n' +
-      '\n' +
-      '  --conflictFlag2                  [number]            冲突选项2\n' +
-      '\n' +
-      '  --requiredFlag         <必选>    [boolean]           必选选项\n' +
-      '\n' +
-      '  --optionFlag                     [string]            可选选项\n' +
-      '\n' +
-      '  --transedFlag                    [string]            依赖选项\n';
+      '  --conflictFlag1                       [string]            冲突选项1\n' +
+      '  --conflictFlag2                       [number]            冲突选项2\n' +
+      '  --requiredFlag                        *[boolean]          必选选项\n' +
+      '  --optionFlag                          [string]            可选选项\n' +
+      '  --transedFlag                         [string]            依赖选项';
     assert.strictEqual(actual, expect);
   });
 });
