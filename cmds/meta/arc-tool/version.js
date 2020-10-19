@@ -1,5 +1,5 @@
 'use strict';
-const output = require('../../../output.js');
+const output = require('../../../lib/output.js');
 exports.cmdObj = {
   desc: {
     zh: '获取当前程序版本',
@@ -8,6 +8,6 @@ exports.cmdObj = {
 };
 
 exports.run = function () {
-  let info = require('../package.json');
+  let info = require('../../../package.json');
   output.log(info.version);
 };

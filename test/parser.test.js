@@ -1,8 +1,8 @@
 'use strict';
 const assert = require('assert');
 const path = require('path');
-let parser = require('../parser.js');
-let conf = require('../arc_config.js');
+let parser = require('../lib/parser.js');
+let conf = require('../lib/arc_config.js');
 
 describe('parser.js', function () {
   conf.rootCmd = 'arc-tool';

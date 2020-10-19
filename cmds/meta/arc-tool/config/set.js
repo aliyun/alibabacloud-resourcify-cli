@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('../../../../config.js');
+const config = require('../../../../lib/config.js');
 
 exports.cmdObj = {
   desc: {

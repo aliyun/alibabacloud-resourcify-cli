@@ -1,7 +1,7 @@
 'use strict';
 
-const config = require('../../../../config.js');
-const output = require('../../../../output.js');
+const config = require('../../../../lib/config.js');
+const output = require('../../../../lib/output.js');
 
 exports.cmdObj = {
   usage: [

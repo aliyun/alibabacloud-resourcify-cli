@@ -1,6 +1,6 @@
 'use strict';
 
-const output = require('../../../output.js');
+const output = require('../../../lib/output.js');
 exports.cmdObj = {
   desc: {
     zh: '自动补全',

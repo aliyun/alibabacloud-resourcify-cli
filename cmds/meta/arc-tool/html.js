@@ -1,6 +1,6 @@
 'use strict';
 const fs = require('fs');
-const cliParse = require('../../../parser.js');
+const cliParse = require('../../../lib/parser.js');
 const path = require('path');
 exports.cmdObj = {
   desc: {
@@ -10,7 +10,7 @@ exports.cmdObj = {
 };
 
 exports.run = function () {
-  let data = generateList('../../../cmds/meta/arc');
+  let data = generateList('../arc');
   let html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -51,14 +51,14 @@ document.getElementById("aid").src=\`./src\${x.className}.html\`
   fs.writeFileSync(path.join(__dirname, '../../../front/index.html'), html);
 };
 
-function generateList(path) {
+function generateList(dirPath) {
   let html = `<ul style="list-style: none;padding-left: 10px;">\n`;
-  let meta = require(path + '.js');
+  let meta = require(dirPath + '.js');
   if (!meta.cmdObj.sub) {
     return '';
   }
   for (let sub in meta.cmdObj.sub) {
-    let p = path.replace('../../../cmds/meta/arc', '');
+    let p = dirPath.replace('../arc', '');
     p = `${p}/${sub}`;
     let delimLen = (p.match(/\//g) || []).length;
     let promt = '';
@@ -74,8 +74,8 @@ function generateList(path) {
       break;
     }
     html += `<li class="${p}" onclick='demo(this)'>${sub}</li>\n`;
-    generateContent(`${path}/${sub}`, promt);
-    html += generateList(`${path}/${sub}`);
+    generateContent(`${dirPath}/${sub}`, promt);
+    html += generateList(`${dirPath}/${sub}`);
   }
   html += `</ul>\n`;
   return html;
@@ -178,9 +178,9 @@ function generateContent(dirPath, promt) {
             ${options}
     </body>
     </html>`;
-  let dir = path.dirname(path.join(__dirname, dirPath.replace('cmds/meta/arc', 'front/src')));
+  let dir = path.dirname(path.join(__dirname, dirPath.replace('../arc', '../../../front/src')));
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
-  fs.writeFileSync(path.join(__dirname, dirPath.replace('cmds/meta/arc', 'front/src')) + '.html', html);
+  fs.writeFileSync(path.join(__dirname, dirPath.replace('../arc', '../../../front/src')) + '.html', html);
 }

@@ -1,5 +1,5 @@
 'use strict';
-const config = require('../../../config.js');
+const config = require('../../../lib/config.js');
 exports.cmdObj = {
   desc: {
     zh: '交互式配置CLI，根据提示输入参数值，完成后自动将现有配置作为默认配置',
