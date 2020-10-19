@@ -62,7 +62,9 @@ describe('config.js', function () {
     };
     ui = helper.printSubcmdToUi(sub);
     let actual = ui.toString();
-    assert.strictEqual(actual, `子命令:\n    option-type     测试各个类型的参数\n    relation        测试类型间关系逻辑`);
+    assert.strictEqual(actual, '子命令:\n' +
+      '    option-type                         测试各个类型的参数\n' +
+      '    relation                            测试类型间关系逻辑');
   });
   it('printDescToUi', function () {
     ui = helper.printDescToUi();
