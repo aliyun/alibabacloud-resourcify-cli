@@ -24,6 +24,11 @@ exports.cmdObj = {
     }
   },
   options: {
+    interaction: {
+      vtype: 'boolean',
+      unchanged: true,
+      default: true,
+    },
     'access-key-id': {
       required: true,
       default: function () {
