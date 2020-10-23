@@ -30,7 +30,7 @@ describe('config.js', function () {
     };
     assert.deepStrictEqual(config.profile, initProfile, 'profile return initProifle when configFilePath doesnot exit');
     let conf = {
-      'credential': {
+      'profiles': {
         'test': {
           'access_key_id': 'access_key_id',
           'access_key_secret': 'access_key_secret',
@@ -48,9 +48,9 @@ describe('config.js', function () {
     };
     fs.writeFileSync(config.configFilePath, JSON.stringify(conf));
     config.getProfile();
-    assert.deepStrictEqual(config.profile, conf.credential.test, 'Get the default profile when the profile name is not specified');
+    assert.deepStrictEqual(config.profile, conf.profiles.test, 'Get the default profile when the profile name is not specified');
     config.getProfile('test2');
-    assert.deepStrictEqual(config.profile, conf.credential.test2, 'Get the specified profile');
+    assert.deepStrictEqual(config.profile, conf.profiles.test2, 'Get the specified profile');
   });
   it('function updateProfile()', function () {
     let name = 'test';
@@ -61,7 +61,7 @@ describe('config.js', function () {
       'language': 'zh'
     };
     let expConf = {
-      credential: {
+      profiles: {
         test: profile
       },
       default: name
@@ -72,7 +72,7 @@ describe('config.js', function () {
   });
   it('function delete()', function () {
     let initConf = {
-      'credential': {
+      'profiles': {
         'test': {
           'access_key_id': 'access_key_id',
           'access_key_secret': 'access_key_secret',
@@ -95,7 +95,7 @@ describe('config.js', function () {
     config.delete('test2');
     let actualConf = config.getConfig();
     let expConf = {
-      'credential': {
+      'profiles': {
         'test': {
           'access_key_id': 'access_key_id',
           'access_key_secret': 'access_key_secret',
