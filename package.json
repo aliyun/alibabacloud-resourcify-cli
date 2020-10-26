@@ -11,7 +11,9 @@
     "test": "mocha -t 3000 -R spec test/*.test.js",
     "test-cov": "nyc -r=html -r=text -r=lcov npm run test",
     "lint": "eslint --fix ./",
-    "ci": "npm run test-cov && codecov"
+    "ci": "npm run test-cov && codecov",
+    "build-ui": "cd front && npm install && npm run build",
+    "prepublishOnly": "npm run build-ui"
   },
   "author": "AlibabaCloud SDK Team",
   "license": "Apache-2.0",
@@ -28,7 +30,10 @@
     "@alicloud/rds20140815": "^1.0.0",
     "@alicloud/rpc-client": "^1.2.0",
     "cliui": "^6.0.0",
-    "inquirer": "^7.3.2"
+    "inquirer": "^7.3.2",
+    "koa": "^2.13.0",
+    "koa-router": "^9.4.0",
+    "koa-static": "^5.0.0"
   },
   "devDependencies": {
     "codecov": "^3.8.0",
@@ -51,5 +56,9 @@
     "url": "https://github.com/aliyun/alibabacloud-resourcify-cli/issues"
   },
   "homepage": "https://github.com/aliyun/alibabacloud-resourcify-cli#readme",
-  "files": ["bin", "cmds", "lib"]
+  "files": [
+    "bin",
+    "cmds",
+    "lib"
+  ]
 }

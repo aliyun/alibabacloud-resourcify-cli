@@ -22,7 +22,6 @@ exports.cmdObj={
       sufficient:function(val){
         let optList={};
         if (!val){
-          optList[['launch-template-id','launch-template-name']]=true;
           optList['ImageFamily']=false;
         }
       }

@@ -14,9 +14,9 @@ exports.cmdObj = {
       zh: '自动补全',
       en: `Autocomplete`
     },
-    html: {
-      zh: '生成网页版帮助信息',
-      en: `Generate web version of help information`
+    serve: {
+      zh: '启动帮助文档web服务器',
+      en: `Start the help document web server`
     }
   }
 };
