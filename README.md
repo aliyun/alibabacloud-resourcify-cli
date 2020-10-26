@@ -3,6 +3,8 @@
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
 [![codecov][cov-image]][cov-url]
+[![Total alerts][alerts-image]][alerts-url]
+[![Language grade: JavaScript][grade-image]][grade-url]
 
 [npm-image]: https://img.shields.io/npm/v/@alicloud/arc.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@alicloud/arc
@@ -10,6 +12,11 @@
 [travis-url]: https://travis-ci.org/aliyun/alibabacloud-resourcify-cli
 [cov-image]: https://codecov.io/gh/aliyun/alibabacloud-resourcify-cli/branch/master/graph/badge.svg
 [cov-url]: https://codecov.io/gh/aliyun/alibabacloud-resourcify-cli
+[alerts-image]:https://img.shields.io/lgtm/alerts/g/aliyun/alibabacloud-resourcify-cli.svg?logo=lgtm&logoWidth=18
+[alerts-url]:https://lgtm.com/projects/g/aliyun/alibabacloud-resourcify-cli/alerts/
+[grade-image]:https://img.shields.io/lgtm/grade/javascript/g/aliyun/alibabacloud-resourcify-cli.svg?logo=lgtm&logoWidth=18
+[grade-url]:https://lgtm.com/projects/g/aliyun/alibabacloud-resourcify-cli/context:javascript
+
 
 ARC is a brand-new Alibaba Cloud CLI environment oriented to resourceization, and is a collection of multiple command line tools.
 
