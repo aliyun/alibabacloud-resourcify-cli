@@ -100,17 +100,17 @@ Add `-i` or `--interaction` after any command to enable interactive mode. And at
 Use interactive input to configure the test configuration:
 
 ```sh
-$ arc-tool config -i --profile test
-? Credential ID
+$ arc-tool config --profile test
+? Access Key ID
 access-key-id <accessKeyId>
-? Credential key
+? Access Key Secret
 access-key-secret <accessKeySecret>
-? Alibaba Cloud Region
+? the ID of the region
 region cn-hangzhou
-? CLI language
-language <en>
+? the language of CLI
+language en
 ? Whether to execute Yes
-arc-tool config --access-key-id accessKeyId --access-key-secret accessKeySecret --region cn-hangzhou --language en
+arc-tool config --access-key-id <accessKeyId> --access-key-secret <accessKeySecret> --region cn-hangzhou --language en
 ```
 
 ## Advantage
@@ -123,9 +123,10 @@ ARC has powerful advantages for complex command parameters and can assist user i
 
 1. Prompt for parameter input and supplemented by parameter description, the user does not need to remember:
 ```sh
-? The ID of the region where the cluster is deployed
+? The ID of the region where the cluster is deployed.
 region <region>
-? The name of the cluster. The name can contain uppercase letters, lowercase letters, Chinese characters, digits, and hyphens (-).
+? The name of the cluster. The name can contain uppercase letters, lowercase  
+letters, Chinese characters, digits, and hyphens (-).
 name <name>
 ```
 
@@ -139,7 +140,7 @@ name <name>
 3. Basic parameter type check
 
 ```sh
-? Worker node system disk size, in GiB
+? The system disk size of a worker node. Unit: GiB.
 worker-system-disk-size <string>
 >> Value is not of type Number
 ```
@@ -160,34 +161,37 @@ category (Use arrow keys)
 ```sh
 ## When the selection is true, you need to enter data disk related information
 ? Specifies whether to mount data disks to worker nodes
-worker-data-disk <true>
-The data disk configurations of worker nodes, such as the disk type and disk size. This parameter takes effect only if worker_data_disk is set to true.
-? the type of the data disks
-category (Use arrow keys)
-❯ cloud
-  cloud_efficiency
-  cloud_ssd
+worker-data-disk true
+
+The data disk configurations of worker nodes, such as the disk type and disk  
+size. This parameter takes effect only if worker_data_disk is set to true.
+? Whether to enable snapshot
+autoSnapshotPolicyId (Use arrow keys)
+❯ true 
+  false 
   [UNSET]
 
-## When the selection is false, there is no need to enter data disk related information
+## When the selection is false, there is no 
+## need to enter data disk related information
 ? Specifies whether to mount data disks to worker nodes
 worker-data-disk <false>
 ? The billing method of worker nodes. Valid values:
-                PrePaid: subscription.
-                PostPaid: pay-as-you-go.
-                
-worker-instance-charge-type (Use arrow keys)
-❯ PrePaid
-  PostPaid
-  [UNSET]
+PrePaid: subscription.
+PostPaid: pay-as-you-go.
+
+worker-instance-charge-type 
+  PrePaid 
+❯ PostPaid 
+  [UNSET] 
 ```
 
 6. Prompt input for complex parameter value structure
 
 ```sh
 # map type parameter value
-When the container is running, it is generally docker, including 2 information: name and version
-? Whether to configure runtime <Yes>
+The runtime of containers. Default value: docker. Specify the runtime name and
+version.
+? Whether to configure runtime Yes
 ? runtime name
 name <name>
 ? runtime version
@@ -197,10 +201,11 @@ version <version>
 The ECS instance types of worker nodes
 ? The ECS instance type
 element element
-? Continue to configure worker-instance-types <Yes>
+? Whether to continue to configure worker-instance-types Yes
 ? The ECS instance type
 element element2
-? Continue to configure worker-instance-types <No>
+? Whether to continue to configure worker-instance-types No
+
 ```
 
 # License

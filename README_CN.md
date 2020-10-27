@@ -162,19 +162,19 @@ category (Use arrow keys)
 ```sh
 ## 当选择为true，则需输入数据盘相关信息
 ? 表示worker节点是否挂载数据盘
-worker-data-disk <true>
+worker-data-disk true
 Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效
-? 数据盘类型
-category (Use arrow keys)
-❯ cloud 
-  cloud_efficiency 
-  cloud_ssd 
-  [UNSET] 
+? 是否开启云盘备份
+autoSnapshotPolicyId (Use arrow keys)
+❯ true 
+  false 
 
 ## 当选择为false，则无需输入数据盘相关信息
 ? 表示worker节点是否挂载数据盘
 worker-data-disk <false>
-? Worker节点付费类型
+? Worker节点付费类型:
+PrePaid：预付费
+PostPaid：按量付费
 worker-instance-charge-type (Use arrow keys)
 ❯ PrePaid 
   PostPaid 
