@@ -42,7 +42,7 @@ exports.cmdObj = {
     'access-key-secret': {
       required: true,
       default: function () {
-        return config.profile.access_key_secret || undefined;
+        return confusePwd(config.profile.access_key_secret);
       },
       desc: {
         zh: '凭证密钥',
@@ -73,6 +73,14 @@ exports.cmdObj = {
     }
   }
 };
+
+function confusePwd(pwd) {
+  if (!pwd) {
+    return;
+  }
+  let confuseStr = pwd.substr(0, 3) + '****' + pwd.substr(-4);
+  return confuseStr;
+}
 
 exports.run = function (argv) {
   let profile = {};
