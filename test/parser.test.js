@@ -2,33 +2,41 @@
 const assert = require('assert');
 const path = require('path');
 let parser = require('../lib/parser.js');
-let conf = require('../lib/arc_config.js');
+const util = require('util');
+let { metaFilePath } = require('../lib/arc_config.js');
 
 describe('parser.js', function () {
-  conf.rootCmd = 'arc-tool';
+  let ctx = {
+    rootCmdName: 'arc-tool',
+    profile: {
+      access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
+      access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
+      region: 'cn-hangzhou',
+      language: 'zh'
+    }
+  };
   beforeEach(function () {
-    parser.argv = { _: [], _args: [], _cmds: [], _next: true, _err: '', _descFilePath: __dirname, _help: false, _mappingValue: {}, _parsedValue: {}, _inputCmd: '' };
-    parser.argv._descFilePath = path.join(parser.argv._descFilePath, '../cmds/meta/arc-tool/test');
+    ctx['cmdFilePath'] = path.join(metaFilePath, 'cmds/meta/arc-tool/test');
+    ctx.args = [];
   });
-  it('function cmdParser()', function () {
-    parser.parser(['parser']);
-    assert.ok(!parser.argv._help);
-    assert.deepStrictEqual(parser.argv._cmds, ['parser']);
-    assert.strictEqual(parser.argv._descFilePath, path.join(__dirname, '../cmds/meta/arc-tool/test/parser.js'));
-    assert.deepStrictEqual(parser.argv._args, []);
+
+  it('command and help command check', function () {
+    ctx.args = ['parser', 'help'];
+    let parserCtx = parser.parser(ctx);
+    assert.ok(parserCtx.help);
+    assert.deepStrictEqual(parserCtx.cmds, ['parser']);
+    assert.strictEqual(parserCtx.cmdFilePath, path.join(__dirname, '../cmds/meta/arc-tool/test/parser.js'));
+    assert.deepStrictEqual(parserCtx.args, ['help']);
   });
-  it('help command check', function () {
-    parser.parser(['parser', 'help']);
-    assert.ok(parser.argv._help);
-    assert.deepStrictEqual(parser.argv._cmds, ['parser']);
-    assert.strictEqual(parser.argv._descFilePath, path.join(__dirname, '../cmds/meta/arc-tool/test/parser.js'));
-    assert.deepStrictEqual(parser.argv._args, ['help']);
+  it('function argsParse() correct',function(){
+    ctx.args = ['parser', 'args1','--flag1', 'value1', '--conflictFlag1', 'value1' ];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.argv,['args1']);
   });
-  it('function argsParse()', function () {
-    parser.parser(['parser', 'args1', 'args2', '--flag']);
-    assert.deepStrictEqual(parser.argv._cmds, ['parser']);
-    assert.deepStrictEqual(parser.argv._, ['args1', 'args2']);
-    assert.deepStrictEqual(parser.argv._args, ['--flag']);
+  it('function argsParse() Error', function () {
+    ctx.args = ['parser', 'args1', 'args2'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(util.format(parserCtx.err.prompt[ctx.profile.language], ...parserCtx.err.values), `未知位置参数 '[ 'args2' ]'，位置参数数量应为 1`);
   });
   it('function transOpts()', function () {
     let options = {
@@ -107,27 +115,32 @@ describe('parser.js', function () {
     assert.deepStrictEqual(opts, expect);
   });
   it('Mandatory check for options', function () {
-    parser.parser(['parser', '--flag1', 'value1']);
-    assert.strictEqual(parser.argv._err, '缺少必选参数：conflictFlag2|conflictFlag1');
+    ctx.args = ['parser', '--flag1', 'value1'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(util.format(parserCtx.err.prompt[ctx.profile.language], ...parserCtx.err.values), '缺少必选参数：conflictFlag2|conflictFlag1');
   });
   it('Mandatory check for conflict options', function () {
-    parser.parser(['parser']);
-    assert.strictEqual(parser.argv._err, '缺少必选参数：flag1');
+    ctx.args = ['parser'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(util.format(parserCtx.err.prompt[ctx.profile.language], ...parserCtx.err.values), '缺少必选参数：flag1');
   });
   it('function flagsParser()', function () {
-    parser.parser(['parser', '--flag1', 'value1', '--flag2', '3', '--flag3']);
-    assert.deepStrictEqual(parser.argv._cmds, ['parser']);
-    assert.deepStrictEqual(parser.argv._parsedValue, { 'flag1': 'value1', 'flag2': 3, 'flag3': true });
+    ctx.args = ['parser', '--flag1', 'value1', '--flag2', '3', '--flag3', '--conflictFlag1', 'value'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.cmds, ['parser']);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag1': 'value1', 'flag2': 3, 'flag3': true, 'conflictFlag1': 'value' });
   });
   it('global option parse', function () {
-    parser.parser(['parser', '--flag1', 'value1', '--flag2', '3', '--flag3', '--profile', 'test', '--region', 'cn-hangzhou']);
-    assert.deepStrictEqual(parser.argv._cmds, ['parser']);
-    assert.deepStrictEqual(parser.argv._parsedValue, { 'flag1': 'value1', 'flag2': 3, 'flag3': true, 'profile': 'test', 'region': 'cn-hangzhou' });
+    ctx.args = ['parser', '--flag1', 'value1', '--flag2', '3', '--flag3', '--profile', 'test', '--region', 'cn-hangzhou', '--conflictFlag1', 'value'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.cmds, ['parser']);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag1': 'value1', 'flag2': 3, 'flag3': true, 'profile': 'test', 'region': 'cn-hangzhou', 'conflictFlag1': 'value' });
   });
   // TODO
   // 校验不完整，optionsValidate函数只能检查必选参数冲突。
   it('Option conflict check', function () {
-    parser.parser(['parser', '--flag1', 'value1', '--conflictFlag1', 'value1', '--conflictFlag2', 'value2']);
-    assert.strictEqual(parser.argv._err, '选项冲突，conflictFlag2,conflictFlag1 只能选择其中一个');
+    ctx.args = ['parser', '--flag1', 'value1', '--conflictFlag1', 'value1', '--conflictFlag2', 'value2'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(util.format(parserCtx.err.prompt[ctx.profile.language], ...parserCtx.err.values), `选项冲突，[ 'conflictFlag2', 'conflictFlag1' ] 只能选择其中一个`);
   });
 });

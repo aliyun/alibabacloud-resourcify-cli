@@ -719,8 +719,8 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller
   },
 };
 
-exports.run = async function (argv) {
-  let profile = await runtime.getConfigOption();
+exports.run = async function (ctx) {
+  let profile = await runtime.getConfigOption(ctx.profile);
   let { Config } = require('@alicloud/openapi-client');
   let config = new Config({
     accessKeyId: profile.access_key_id,
@@ -730,12 +730,12 @@ exports.run = async function (argv) {
     type: profile.type
   });
   let CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
-  let request = new CreateClusterRequest(argv._mappingValue);
+  let request = new CreateClusterRequest(ctx.mappingValue);
 
   let client = new Client(config);
   let result;
   try {
-    result = await client.createClusterWithOptions(request, {}, runtime.getRuntimeOption(argv));
+    result = await client.createClusterWithOptions(request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }

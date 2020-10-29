@@ -27,11 +27,16 @@ exports.cmdObj = {
         'conflictFlag1'
       ]
     }
-  }
+  },
+  args: [
+    {
+      name: 'arg1'
+    }
+  ]
 };
 
 exports.run = function (argv) {
   console.log('===========');
   console.log('parser run success');
-  console.log(argv._parsedValue);
+  console.log(argv.parsedValue);
 };

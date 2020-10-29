@@ -18,6 +18,6 @@ exports.cmdObj = {
   ]
 };
 
-exports.run = function (argv) {
-  config.delete(argv._[0]);
+exports.run = function (ctx) {
+  config.delete(ctx.argv[0]);
 };

@@ -54,5 +54,5 @@ exports.cmdObj = {
 exports.run = function (argv) {
   console.log('===========');
   console.log('relation run success');
-  console.log(argv._parsedValue);
+  console.log(argv.parsedValue);
 };

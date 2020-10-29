@@ -4,7 +4,6 @@ const router = require('koa-router')();
 const koaStatic = require('koa-static');
 const path = require('path');
 const fs = require('fs');
-const { cmdObj } = require('../arc/cs/cluster/restart-upgrade');
 const rootPath = path.join(__dirname, '../arc');
 const { transOpts } = require('../../../lib/parser.js');
 exports.cmdObj = {
@@ -14,7 +13,7 @@ exports.cmdObj = {
   },
 };
 
-exports.run = function () {
+exports.run = function (ctx) {
   const app = new Koa();
   app.use(async (ctx, next) => {
     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);

@@ -38,8 +38,8 @@ exports.cmdObj = {
   ]
 };
 
-exports.run = async function (argv) {
-  let profile = await runtime.getConfigOption();
+exports.run = async function (ctx) {
+  let profile = await runtime.getConfigOption(ctx.profile);
   let { Config } = require('@alicloud/openapi-client');
   let config = new Config({
     accessKeyId: profile.access_key_id,
@@ -49,12 +49,12 @@ exports.run = async function (argv) {
     type: profile.type
   });
   let UnInstallClusterAddonsRequest = require(`@alicloud/cs20151215`).UnInstallClusterAddonsRequest;
-  let request = new UnInstallClusterAddonsRequest(argv._mappingValue);
+  let request = new UnInstallClusterAddonsRequest(ctx.mappingValue);
 
   let client = new Client(config);
 
   try {
-    await client.unInstallClusterAddonsWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
+    await client.unInstallClusterAddonsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }

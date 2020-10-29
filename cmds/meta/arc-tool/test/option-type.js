@@ -93,5 +93,5 @@ exports.cmdObj = {
 exports.run = function (argv) {
   console.log('===========');
   console.log('option-type run success');
-  console.log(argv._parsedValue);
+  console.log(argv.parsedValue);
 };

@@ -19,8 +19,8 @@ exports.cmdObj = {
   ]
 };
 
-exports.run = async function (argv) {
-  let profile = await runtime.getConfigOption();
+exports.run = async function (ctx) {
+  let profile = await runtime.getConfigOption(ctx.profile);
   let { Config } = require('@alicloud/openapi-client');
   let config = new Config({
     accessKeyId: profile.access_key_id,
@@ -32,7 +32,7 @@ exports.run = async function (argv) {
   let client = new Client(config);
   let result;
   try {
-    result = await client.describeClusterDetailWithOptions(argv._[0], {}, runtime.getRuntimeOption(argv));
+    result = await client.describeClusterDetailWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }

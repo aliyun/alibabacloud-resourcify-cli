@@ -31,9 +31,6 @@ exports.cmdObj = {
     },
     'access-key-id': {
       required: true,
-      default: function () {
-        return config.profile.access_key_id || undefined;
-      },
       desc: {
         zh: '凭证ID',
         en: `Access Key ID`
@@ -41,27 +38,18 @@ exports.cmdObj = {
     },
     'access-key-secret': {
       required: true,
-      default: function () {
-        return config.profile.access_key_secret || undefined;
-      },
       desc: {
         zh: '凭证密钥',
         en: `Access Key Secret`
       }
     },
     'region': {
-      default: function () {
-        return config.profile.region || 'cn-hangzhou';
-      },
       desc: {
         zh: '阿里云区域',
         en: `the ID of the region`
       }
     },
     'language': {
-      default: function () {
-        return config.profile.language || 'zh';
-      },
       desc: {
         zh: 'CLI语言',
         en: `the language of CLI`
@@ -74,11 +62,32 @@ exports.cmdObj = {
   }
 };
 
-exports.run = function (argv) {
+function confusePwd(pwd) {
+  if (!pwd) {
+    return;
+  }
+
+  return pwd.substr(0, 3) + '****' + pwd.substr(-4);
+}
+
+exports.preInteractive = function (ctx) {
+  exports.cmdObj.options['access-key-id'].default = ctx.profile.access_key_id;
+  exports.cmdObj.options['access-key-secret'].default = confusePwd(ctx.profile.access_key_secret);
+  exports.cmdObj.options['access-key-secret'].filter = function (val) {
+    if (val === confusePwd(ctx.profile.access_key_secret)) {
+      return ctx.profile.access_key_secret;
+    }
+    return val;
+  };
+  exports.cmdObj.options.language.default = ctx.profile.language;
+  exports.cmdObj.options.region.default = ctx.profile.region;
+};
+
+exports.run = function (ctx) {
   let profile = {};
-  profile['access_key_id'] = argv._parsedValue['access-key-id'];
-  profile['access_key_secret'] = argv._parsedValue['access-key-secret'];
-  profile['region'] = argv._parsedValue['region'] || config.profile.region;
-  profile['language'] = argv._parsedValue['language'] || config.profile.language;
-  config.updateProfile(config.profileName, profile);
+  profile['access_key_id'] = ctx.parsedValue['access-key-id'];
+  profile['access_key_secret'] = ctx.parsedValue['access-key-secret'];
+  profile['region'] = ctx.parsedValue['region'] || ctx.profile.region;
+  profile['language'] = ctx.parsedValue['language'] || ctx.profile.language;
+  config.updateProfile(ctx.profileName, profile);
 };
