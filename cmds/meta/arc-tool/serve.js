@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const rootPath = path.join(__dirname, '../arc');
 const { transOpts } = require('../../../lib/parser.js');
+let lang='zh';
 exports.cmdObj = {
   desc: {
     zh: '启动帮助文档web服务器',
@@ -13,7 +14,8 @@ exports.cmdObj = {
   },
 };
 
-exports.run = function (ctx) {
+exports.run = function (rootCtx) {
+  lang=rootCtx.profile.language;
   const app = new Koa();
   app.use(async (ctx, next) => {
     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
@@ -89,13 +91,13 @@ function getProductData(product) {
     `arc ${product} [resources]`,
     `arc-${product} [resources]`
   ];
-  let desc = meta.cmdObj.desc.zh;
+  let desc = meta.cmdObj.desc[lang];
   let resources = {};
   for (let resource in meta.cmdObj.sub) {
     if (!resource) {
       continue;
     }
-    resources[resource] = meta.cmdObj.sub[resource].zh;
+    resources[resource] = meta.cmdObj.sub[resource][lang];
   }
   return { name: product, syntax, desc, resources };
 }
@@ -107,24 +109,24 @@ function getResourceData(product, resource) {
     `arc ${product} ${resource} [action]`,
     `arc-${product} ${resource} [action]`
   ];
-  let desc = meta.cmdObj.desc.zh;
+  let desc = meta.cmdObj.desc[lang];
   let actions = {};
   for (let action in meta.cmdObj.sub) {
     if (!resource) {
       continue;
     }
-    actions[action] = meta.cmdObj.sub[action].zh;
+    actions[action] = meta.cmdObj.sub[action][lang];
   }
   return { name: resource, syntax, desc, actions };
 }
 
 function getActionData(product, resource, action) {
   let descPath = path.join(rootPath, product, resource, action) + '.js';
-  let meta = require(descPath);
+  let cmdObj = require(descPath).cmdObj;
   let syntax;
   let syntaxSuffix = '';
-  if (meta.cmdObj.usage) {
-    syntax = meta.cmdObj.usage;
+  if (cmdObj.usage) {
+    syntax = cmdObj.usage;
   } else {
     if (cmdObj.args) {
       for (let value of cmdObj.args) {
@@ -148,13 +150,13 @@ function getActionData(product, resource, action) {
     ];
   }
  
-  let desc = meta.cmdObj.desc.zh;
+  let desc = cmdObj.desc[lang];
   let options = {};
 
-  if (!meta.cmdObj.options) {
+  if (!cmdObj.options) {
     return { name: action, syntax, desc };
   }
-  let opts = transOpts(meta.cmdObj.options);
+  let opts = transOpts(cmdObj.options);
   if (opts._required) {
     for (let option of opts._required) {
       if (Array.isArray(option)) {
@@ -162,7 +164,7 @@ function getActionData(product, resource, action) {
       }
       options[option] = {
         vtype: `*${opts[option].vtype || 'string'}`,
-        desc: opts[option].desc.zh
+        desc: opts[option].desc[lang]
       };
     }
   }
@@ -171,8 +173,8 @@ function getActionData(product, resource, action) {
       continue;
     }
     options[option] = {
-      vtype: meta.cmdObj.options[option].vtype || 'string',
-      desc: meta.cmdObj.options[option].desc.zh
+      vtype: cmdObj.options[option].vtype || 'string',
+      desc: cmdObj.options[option].desc[lang]
     };
   }
   return { name: action, syntax, desc, options };
