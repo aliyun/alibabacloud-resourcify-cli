@@ -1,14 +1,12 @@
 'use strict';
 const assert = require('assert');
 const helper = require('../lib/helper.js');
-let conf = require('../lib/arc_config.js');
-let parser = require('../lib/parser.js');
 
 describe('config.js', function () {
   let ui = require('cliui')();
   beforeEach(function () {
-    conf.rootCmd = 'arc-test';
-    parser.argv._cmds = ['test'];
+    helper.setCmds(['test']);
+    helper.setRootCmd('arc-test');
     ui.resetOutput();
   });
   it('printSyntaxWithSubCommand', function () {

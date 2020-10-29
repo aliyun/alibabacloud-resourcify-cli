@@ -302,8 +302,8 @@ exports.cmdObj = {
   ]
 };
 
-exports.run = async function (argv) {
-  let profile = await runtime.getConfigOption();
+exports.run = async function (ctx) {
+  let profile = await runtime.getConfigOption(ctx.profile);
   let { Config } = require('@alicloud/openapi-client');
   let config = new Config({
     accessKeyId: profile.access_key_id,
@@ -313,12 +313,12 @@ exports.run = async function (argv) {
     type: profile.type
   });
   let ScaleOutClusterRequest = require(`@alicloud/cs20151215`).ScaleOutClusterRequest;
-  let request = new ScaleOutClusterRequest(argv._mappingValue);
+  let request = new ScaleOutClusterRequest(ctx.mappingValue);
 
   let client = new Client(config);
   let result;
   try {
-    result = await client.scaleOutClusterWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
+    result = await client.scaleOutClusterWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }

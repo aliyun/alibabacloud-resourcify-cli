@@ -5,15 +5,16 @@ const config = require('../lib/config.js');
 const fs = require('fs');
 const path = require('path');
 describe('config.js', function () {
-  config.configFilePath = path.join(__dirname, 'arc.json');
+  let confPath = path.join(__dirname, 'arc.json');
+  config.setConfigPath(confPath);
   beforeEach(function () {
-    if (fs.existsSync(config.configFilePath)) {
-      fs.unlinkSync(config.configFilePath);
+    if (fs.existsSync(confPath)) {
+      fs.unlinkSync(confPath);
     }
   });
   after(function () {
-    if (fs.existsSync(config.configFilePath)) {
-      fs.unlinkSync(config.configFilePath);
+    if (fs.existsSync(confPath)) {
+      fs.unlinkSync(confPath);
     }
   });
   it('function getConfig()', function () {
@@ -21,14 +22,14 @@ describe('config.js', function () {
     assert.strictEqual(conf, null, 'conf should be null when configFilePath does not exist');
   });
   it('function getProfile()', function () {
-    config.getProfile();
+    let { profile } = config.getProfile();
     let initProfile = {
       access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
       access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
       region: 'cn-hangzhou',
       language: 'zh'
     };
-    assert.deepStrictEqual(config.profile, initProfile, 'profile return initProifle when configFilePath doesnot exit');
+    assert.deepStrictEqual(profile, initProfile, 'profile return initProifle when configFilePath doesnot exit');
     let conf = {
       'profiles': {
         'test': {
@@ -46,11 +47,11 @@ describe('config.js', function () {
       },
       'default': 'test'
     };
-    fs.writeFileSync(config.configFilePath, JSON.stringify(conf));
-    config.getProfile();
-    assert.deepStrictEqual(config.profile, conf.profiles.test, 'Get the default profile when the profile name is not specified');
-    config.getProfile('test2');
-    assert.deepStrictEqual(config.profile, conf.profiles.test2, 'Get the specified profile');
+    fs.writeFileSync(confPath, JSON.stringify(conf));
+    let profileInfo = config.getProfile();
+    assert.deepStrictEqual(profileInfo.profile, conf.profiles.test, 'Get the default profile when the profile name is not specified');
+    profileInfo = config.getProfile('test2');
+    assert.deepStrictEqual(profileInfo.profile, conf.profiles.test2, 'Get the specified profile');
   });
   it('function updateProfile()', function () {
     let name = 'test';
@@ -88,7 +89,7 @@ describe('config.js', function () {
       },
       'default': 'test'
     };
-    fs.writeFileSync(config.configFilePath, JSON.stringify(initConf));
+    fs.writeFileSync(confPath, JSON.stringify(initConf));
     // Try to delete the default profile
     // interrupt process.exit()
     // config.delete('test')

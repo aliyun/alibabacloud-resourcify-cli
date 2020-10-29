@@ -1,6 +1,5 @@
 'use strict';
 
-const config = require('../../../../lib/config.js');
 const output = require('../../../../lib/output.js');
 
 exports.cmdObj = {
@@ -13,7 +12,7 @@ exports.cmdObj = {
   }
 };
 
-exports.run = function () {
-  let data = JSON.stringify(config.profile, null, 2);
+exports.run = function (ctx) {
+  let data = JSON.stringify(ctx.profile, null, 2);
   output.log(data);
 };

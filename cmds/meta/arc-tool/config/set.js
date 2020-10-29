@@ -21,16 +21,16 @@ exports.cmdObj = {
 };
 
 exports.validate = function (args) {
-  if (args._[0] && args._[1] === undefined) {
+  if (args.argv[0] && args.argv[1] === undefined) {
     return 'value master be set';
   }
 };
 
-exports.run = function (args) {
-  if (!args._[1]) {
-    delete config.profile[args._[0]];
+exports.run = function (ctx) {
+  if (!ctx.argv[1]) {
+    delete ctx.profile[ctx.argv[0]];
   } else {
-    config.profile[args._[0]] = args._[1];
+    ctx.profile[ctx.argv[0]] = ctx.argv[1];
   }
-  config.updateProfile(config.profileName, config.profile);
+  config.updateProfile(ctx.profileName, ctx.profile);
 };

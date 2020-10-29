@@ -36,8 +36,8 @@ exports.cmdObj = {
   ]
 };
 
-exports.run = async function (argv) {
-  let profile = await runtime.getConfigOption();
+exports.run = async function (ctx) {
+  let profile = await runtime.getConfigOption(ctx.profile);
   let { Config } = require('@alicloud/openapi-client');
   let config = new Config({
     accessKeyId: profile.access_key_id,
@@ -47,10 +47,10 @@ exports.run = async function (argv) {
     type: profile.type
   });
   let DeleteClusterRequest = require(`@alicloud/cs20151215`).DeleteClusterRequest;
-  let request = new DeleteClusterRequest(argv._mappingValue);
+  let request = new DeleteClusterRequest(ctx.mappingValue);
   let client = new Client(config);
   try {
-    await client.deleteClusterWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
+    await client.deleteClusterWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e);
   }

@@ -18,8 +18,8 @@ exports.cmdObj = {
   ]
 };
 
-exports.run = function (argv) {
-  if (argv._[0] === 'bash') {
+exports.run = function (ctx) {
+  if (ctx.argv[0] === 'bash') {
     output.log(`
       # Installation: arc completion >> ~/.bashrc
       #    or arc completion >> ~/.bash_profile on OSX.

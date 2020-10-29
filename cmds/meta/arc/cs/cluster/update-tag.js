@@ -35,8 +35,8 @@ exports.cmdObj = {
   ]
 };
 
-exports.run = async function (argv) {
-  let profile = await runtime.getConfigOption();
+exports.run = async function (ctx) {
+  let profile = await runtime.getConfigOption(ctx.profile);
   let { Config } = require('@alicloud/openapi-client');
   let config = new Config({
     accessKeyId: profile.access_key_id,
@@ -46,11 +46,11 @@ exports.run = async function (argv) {
     type: profile.type
   });
   let ModifyClusterTagsRequest = require(`@alicloud/cs20151215`).ModifyClusterTagsRequest;
-  let request = new ModifyClusterTagsRequest(argv._mappingValue);
+  let request = new ModifyClusterTagsRequest(ctx.mappingValue);
 
   let client = new Client(config);
   try {
-    await client.modifyClusterTagsWithOptions(argv._[0], request, {}, runtime.getRuntimeOption(argv));
+    await client.modifyClusterTagsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }
