@@ -26,10 +26,9 @@ function getSubList(dirPath, nextDir) {
   if (!meta.cmdObj.sub) {
     return '';
   }
-  for (let sub in meta.cmdObj.sub) {
-    if (!sub) {
-      continue;
-    }
+
+  let subs = Object.keys(meta.cmdObj.sub);
+  for (let sub of subs) {
     data[sub] = getSubList(dirPath, sub);
   }
   return data;
@@ -44,10 +43,8 @@ function getProductData(product) {
   ];
   let desc = meta.cmdObj.desc[lang];
   let resources = {};
-  for (let resource in meta.cmdObj.sub) {
-    if (!resource) {
-      continue;
-    }
+  let subs = Object.keys(meta.cmdObj.sub);
+  for (let resource of subs) {
     resources[resource] = meta.cmdObj.sub[resource][lang];
   }
   return { name: product, syntax, desc, resources };
@@ -62,10 +59,8 @@ function getResourceData(product, resource) {
   ];
   let desc = meta.cmdObj.desc[lang];
   let actions = {};
-  for (let action in meta.cmdObj.sub) {
-    if (!resource) {
-      continue;
-    }
+  let subs = Object.keys(meta.cmdObj.sub);
+  for (let action of subs) {
     actions[action] = meta.cmdObj.sub[action][lang];
   }
   return { name: resource, syntax, desc, actions };
