@@ -6,62 +6,13 @@ const path = require('path');
 const fs = require('fs');
 const rootPath = path.join(__dirname, '../arc');
 const { transOpts } = require('../../../lib/parser.js');
-let lang='zh';
+let lang = 'zh';
+
 exports.cmdObj = {
   desc: {
     zh: '启动帮助文档web服务器',
     en: `Start the help document web server`
   },
-};
-
-exports.run = function (rootCtx) {
-  lang=rootCtx.profile.language;
-  const app = new Koa();
-  app.use(async (ctx, next) => {
-    console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
-    return await next();
-  });
-  app.use(koaStatic(path.join(__dirname, '../../../front/build')));
-  router.get('/product', async (ctx, next) => {
-    let data = getSubList(rootPath);
-    ctx.body = data;
-  });
-  router.get('/product/:product', async (ctx, next) => {
-    let product = ctx.params.product;
-    let data = getData(product);
-    ctx.body = data;
-  });
-  router.get('/resource/:product/:resource', async (ctx, next) => {
-    let product = ctx.params.product;
-    let resource = ctx.params.resource;
-    let data = getData(product, resource);
-    ctx.body = data;
-  });
-  router.get('/action/:product/:resource/:action', async (ctx, next) => {
-    let product = ctx.params.product;
-    let resource = ctx.params.resource;
-    let action = ctx.params.action;
-    let data = getData(product, resource, action);
-    ctx.body = data;
-  });
-  router.get('/', async (ctx, next) => {
-    let data = fs.readFileSync(path.join(__dirname, '../../../front/build/index.html'));
-    ctx.type = 'text/html;charset=utf-8';
-    ctx.body = data;
-  });
-  app.use(router.routes());
-  app.use((ctx, next) => {
-    return next().catch((err) => {
-      ctx.response.body = {
-        status: 500,
-        message: err.message
-      };
-    });
-  });
-  app.listen(8000, function () {
-    const addr = this.address();
-    console.log(`listening on ${addr.address}:${addr.port}, use http://localhost:${addr.port}/`);
-  });
 };
 
 function getSubList(dirPath, nextDir) {
@@ -149,7 +100,7 @@ function getActionData(product, resource, action) {
       `arc-${product} ${resource} ${action} ${syntaxSuffix}`
     ];
   }
- 
+
   let desc = cmdObj.desc[lang];
   let options = {};
 
@@ -207,4 +158,54 @@ function getData(product, resource, action) {
   }
   return data;
 }
+
+exports.run = function (rootCtx) {
+  lang = rootCtx.profile.language;
+  const app = new Koa();
+  app.use(async (ctx, next) => {
+    console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
+    return await next();
+  });
+  app.use(koaStatic(path.join(__dirname, '../../../front/build')));
+  router.get('/product', async (ctx, next) => {
+    let data = getSubList(rootPath);
+    ctx.body = data;
+  });
+  router.get('/product/:product', async (ctx, next) => {
+    let product = ctx.params.product;
+    let data = getData(product);
+    ctx.body = data;
+  });
+  router.get('/resource/:product/:resource', async (ctx, next) => {
+    let product = ctx.params.product;
+    let resource = ctx.params.resource;
+    let data = getData(product, resource);
+    ctx.body = data;
+  });
+  router.get('/action/:product/:resource/:action', async (ctx, next) => {
+    let product = ctx.params.product;
+    let resource = ctx.params.resource;
+    let action = ctx.params.action;
+    let data = getData(product, resource, action);
+    ctx.body = data;
+  });
+  router.get('/', async (ctx, next) => {
+    let data = fs.readFileSync(path.join(__dirname, '../../../front/build/index.html'));
+    ctx.type = 'text/html;charset=utf-8';
+    ctx.body = data;
+  });
+  app.use(router.routes());
+  app.use((ctx, next) => {
+    return next().catch((err) => {
+      ctx.response.body = {
+        status: 500,
+        message: err.message
+      };
+    });
+  });
+  app.listen(8000, function () {
+    const addr = this.address();
+    console.log(`listening on ${addr.address}:${addr.port}, use http://localhost:${addr.port}/`);
+  });
+};
 

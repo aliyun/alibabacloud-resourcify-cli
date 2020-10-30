@@ -10,8 +10,8 @@
   "scripts": {
     "test": "mocha -t 3000 -R spec test/*.test.js",
     "test-cov": "nyc -r=html -r=text -r=lcov npm run test",
-    "lint": "eslint --fix ./",
-    "ci": "npm run test-cov && codecov",
+    "lint": "eslint --fix ./bin ./cmds/ ./lib/ ./test",
+    "ci": "eslint ./bin ./cmds/ ./lib/ ./test && npm run test-cov && codecov",
     "build-ui": "cd front && npm install && npm run build",
     "prepublishOnly": "npm run build-ui"
   },
