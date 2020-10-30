@@ -28,15 +28,16 @@ describe('parser.js', function () {
     assert.strictEqual(parserCtx.cmdFilePath, path.join(__dirname, '../cmds/meta/arc-tool/test/parser.js'));
     assert.deepStrictEqual(parserCtx.args, ['help']);
   });
-  it('function argsParse() correct',function(){
-    ctx.args = ['parser', 'args1','--flag1', 'value1', '--conflictFlag1', 'value1' ];
+  it('function argsParse() correct', function () {
+    ctx.args = ['parser', 'args1', '--flag1', 'value1', '--conflictFlag1', 'value1'];
     let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.argv,['args1']);
+    assert.deepStrictEqual(parserCtx.argv, ['args1']);
   });
   it('function argsParse() Error', function () {
     ctx.args = ['parser', 'args1', 'args2'];
     let parserCtx = parser.parser(ctx);
-    assert.strictEqual(util.format(parserCtx.err.prompt[ctx.profile.language], ...parserCtx.err.values), `未知位置参数 '[ 'args2' ]'，位置参数数量应为 1`);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `未知位置参数 '%s'，位置参数数量应为 %d`);
+    assert.deepStrictEqual(parserCtx.err.values, [['args2'], 1]);
   });
   it('function transOpts()', function () {
     let options = {
@@ -141,6 +142,7 @@ describe('parser.js', function () {
   it('Option conflict check', function () {
     ctx.args = ['parser', '--flag1', 'value1', '--conflictFlag1', 'value1', '--conflictFlag2', 'value2'];
     let parserCtx = parser.parser(ctx);
-    assert.strictEqual(util.format(parserCtx.err.prompt[ctx.profile.language], ...parserCtx.err.values), `选项冲突，[ 'conflictFlag2', 'conflictFlag1' ] 只能选择其中一个`);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项冲突，%s 只能选择其中一个`);
+    assert.deepStrictEqual(parserCtx.err.values, [['conflictFlag2', 'conflictFlag1']]);
   });
 });
