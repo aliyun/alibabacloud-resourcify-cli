@@ -2,7 +2,7 @@
 
 exports.cmdObj = {
   desc: {
-    zh: 'map类型选项解析'
+    zh: 'array类型选项解析'
   },
   options: {
     flag: {
@@ -18,6 +18,14 @@ exports.cmdObj = {
       subType: 'number',
       options: {
         element: {}
+      }
+    },
+    'map-flag': {
+      vtype: 'array',
+      subType: 'map',
+      options: {
+        key: {},
+        value: {}
       }
     }
   }
