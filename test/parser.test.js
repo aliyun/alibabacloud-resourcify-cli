@@ -202,6 +202,12 @@ describe('parser.js', function () {
     assert.deepStrictEqual(parserCtx.err.values, ['flag', 'Unexpected token v in JSON at position 1']);
   });
 
+  it('string array type option analysis: shorthand grammar', function () {
+    ctx.args = ['array', '--flag', 'value1', 'value2'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag': ['value1', 'value2'] });
+  });
+
   it('string array type option analysis: json', function () {
     ctx.args = ['array', '--flag', '["value1","value2"]'];
     let parserCtx = parser.parser(ctx);
@@ -228,10 +234,64 @@ describe('parser.js', function () {
     assert.deepStrictEqual(parserCtx.err.values, ['number-flag', 3]);
   });
 
-  it('Map type option analysis', function () {
-    ctx.args = ['map', '--flag', '{"key":"key1","value":"value1"}'];
+  it('map array type option analysis: shorthand grammar', function () {
+    ctx.args = ['array', '--map-flag', 'key=key1,value=value1', 'key=key2,value=value2'];
     let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag': { 'key': 'key1', 'value': 'value1' } });
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'map-flag': [{ 'key': 'key1', 'value': 'value1' }, { 'key': 'key2', 'value': 'value2' }] });
+  });
+
+  it('map array type option analysis: shorthand grammar', function () {
+    ctx.args = ['array', '--map-flag', 'keyvaluevalue1'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
+    assert.deepStrictEqual(parserCtx.err.values, ['map-flag']);
+  });
+
+  // function processNumber
+  it('number type option analysis: vTypeMatchErr: Multi-parameter', function () {
+    ctx.args = ['normal', '--number-flag', '1', '2'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
+    assert.deepStrictEqual(parserCtx.err.values, ['number-flag']);
+  });
+
+  it('number type option analysis: vTypeMatchErr: isNaN', function () {
+    ctx.args = ['normal', '--number-flag', 'sdf'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
+    assert.deepStrictEqual(parserCtx.err.values, ['number-flag']);
+  });
+
+  it('number type option analysis', function () {
+    ctx.args = ['normal', '--number-flag', '1'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'number-flag': 1 });
+  });
+
+  // function processBoolean
+  it('boolean type option analysis: No input', function () {
+    ctx.args = ['normal', '--boolean-flag'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': true });
+  });
+
+  it('boolean type option analysis: input true', function () {
+    ctx.args = ['normal', '--boolean-flag=true'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': true });
+  });
+
+  it('boolean type option analysis: input false', function () {
+    ctx.args = ['normal', '--boolean-flag', 'false'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': false });
+  });
+
+  it('boolean type option analysis: input other', function () {
+    ctx.args = ['normal', '--boolean-flag', 'sdf'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
+    assert.deepStrictEqual(parserCtx.err.values, ['boolean-flag']);
   });
 
   // TODO
