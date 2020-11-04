@@ -1,6 +1,6 @@
 import { Card, Descriptions, PageHeader, Table, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { requestFeatch } from '../../model/api';
 import { ContentDataItem } from '../../model/_types';
 import './index.scss';
@@ -82,7 +82,10 @@ const Content: React.FC<ContentProps> = (props) => {
             <Descriptions bordered>
               {Object.entries(showData?.actions).map(([k, v]) => {
                 return (
-                  <Descriptions.Item key={k} label={k}>
+                  <Descriptions.Item
+                    key={k}
+                    label={<Link to={`${pathname}/${k}`}>{k}</Link>}
+                  >
                     {v as string}
                   </Descriptions.Item>
                 );
@@ -96,7 +99,10 @@ const Content: React.FC<ContentProps> = (props) => {
             <Descriptions bordered>
               {Object.entries(showData?.resources).map(([k, v]) => {
                 return (
-                  <Descriptions.Item key={k} label={k}>
+                  <Descriptions.Item
+                    key={k}
+                    label={<Link to={`${pathname}/${k}`}>{k}</Link>}
+                  >
                     {v as string}
                   </Descriptions.Item>
                 );
