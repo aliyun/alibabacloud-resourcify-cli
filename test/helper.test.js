@@ -1,6 +1,7 @@
 'use strict';
 const assert = require('assert');
 const helper = require('../lib/helper.js');
+const path = require('path');
 
 describe('config.js', function () {
   let ui = require('cliui')();
@@ -9,6 +10,7 @@ describe('config.js', function () {
     helper.setRootCmd('arc-test');
     ui.resetOutput();
   });
+
   it('printSyntaxWithSubCommand', function () {
     let cmdobj = {
       desc: {
@@ -27,6 +29,7 @@ describe('config.js', function () {
     let actual = ui.toString();
     assert.deepStrictEqual(actual, '    arc-test test [子命令]');
   });
+
   it('printSyntaxWithOptions', function () {
     let cmdobj = {
       desc: {
@@ -49,6 +52,7 @@ describe('config.js', function () {
     let actual = ui.toString();
     assert.deepStrictEqual(actual, '    arc-test test <arg1> [arg2] [选项]');
   });
+
   it('printSubCmd', function () {
     let sub = {
       'option-type': {
@@ -64,6 +68,7 @@ describe('config.js', function () {
       '    option-type                         测试各个类型的参数\n' +
       '    relation                            测试类型间关系逻辑');
   });
+
   it('printDescToUi', function () {
     ui = helper.printDescToUi();
     assert.strictEqual(ui, undefined);
@@ -128,6 +133,29 @@ describe('config.js', function () {
       '  --requiredFlag                        *[boolean]          必选选项\n' +
       '  --optionFlag                          [string]            可选选项\n' +
       '  --transedFlag                         [string]            依赖选项';
+    assert.strictEqual(actual, expect);
+  });
+
+  it('getHelp', function () {
+    let ctx = {
+      profile: {
+        language: 'zh'
+      },
+      cmds: ['test', 'normal'],
+      rootCmdName: 'arc-test',
+      cmdFilePath: path.join(__dirname, 'test_cmd/test/normal.js')
+    };
+    ui = helper.getHelp(ctx);
+    let actual = ui.toString();
+    let expect = 'usage:\n' +
+      '    arc-test test normal [选项]\n' +
+      '\n' +
+      '    普通类型选项解析\n' +
+      '\n' +
+      '选项:\n' +
+      '  --flag                                [string]\n' +
+      '  --number-flag                         [number]\n' +
+      '  --boolean-flag                        [boolean]';
     assert.strictEqual(actual, expect);
   });
 });
