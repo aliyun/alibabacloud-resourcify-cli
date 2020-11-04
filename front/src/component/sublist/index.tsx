@@ -36,6 +36,9 @@ const SubList: React.FC<SubListProps> = (props) => {
       try {
         const data = await getSublist();
         setTreeData(dataToTreeData(data));
+        if (!pathname || pathname === '/') {
+          props.history.push(Object.keys(data)?.[0] || '');
+        }
       } catch (e) {
         message.error('获取列表出错');
       }

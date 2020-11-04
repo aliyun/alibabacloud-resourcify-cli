@@ -1,4 +1,4 @@
-import { Card, Descriptions, PageHeader, Table, Typography } from 'antd';
+import { Card, Descriptions, Empty, PageHeader, Table, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { requestFeatch } from '../../model/api';
@@ -57,6 +57,10 @@ const Content: React.FC<ContentProps> = (props) => {
     });
     return res;
   };
+
+  if (!pathname || pathname === '/') {
+    return <Empty description='请先选择 API '></Empty>;
+  }
 
   return (
     <div className='pageContent'>
