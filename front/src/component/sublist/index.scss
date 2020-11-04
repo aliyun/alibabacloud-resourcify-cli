@@ -1,0 +1,49 @@
+.ant-tree {
+  background: transparent;
+  color: #ffffffa6;
+  margin-top: 10px;
+
+  .ant-tree-treenode {
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .ant-tree-switcher {
+    background: transparent;
+  }
+
+  .ant-tree-switcher-leaf-line {
+    &::before {
+      border-color: #b0b6bc;
+    }
+    &::after {
+      border-color: #b0b6bc;
+    }
+  }
+  .ant-tree-indent-unit {
+    &::before {
+      border-right-color: #b0b6bc;
+    }
+  }
+
+  .ant-tree-treenode-selected {
+    background: #1890ff;
+
+    .ant-tree-switcher {
+      color: #ffffff;
+    }
+  }
+
+  .ant-tree-node-content-wrapper {
+    &:hover {
+      background: transparent;
+      color: #ffffff;
+    }
+
+    &.ant-tree-node-selected {
+      background: transparent;
+      color: #ffffff;
+    }
+  }
+}

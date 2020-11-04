@@ -1,0 +1,18 @@
+.pageContent {
+  .ant-page-header {
+    padding: 24px;
+    background-color: #ffffff;
+  }
+  .cardContent {
+    padding: 24px;
+    .ant-card {
+      margin-bottom: 24px;
+    }
+    .codeItem:first-child {
+      margin-bottom: 16px;
+    }
+    .ant-table-cell {
+      white-space: pre-line;
+    }
+  }
+}
