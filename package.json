@@ -59,6 +59,7 @@
   "files": [
     "bin",
     "cmds",
-    "lib"
+    "lib",
+    "front/build"
   ]
 }
