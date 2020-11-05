@@ -83,7 +83,7 @@ const Content: React.FC<ContentProps> = (props) => {
 
         {showData?.actions && (
           <Card title='Actions'>
-            <Descriptions bordered>
+            <Descriptions bordered column={1}>
               {Object.entries(showData?.actions).map(([k, v]) => {
                 return (
                   <Descriptions.Item
@@ -100,7 +100,7 @@ const Content: React.FC<ContentProps> = (props) => {
 
         {showData?.resources && (
           <Card title='Resources'>
-            <Descriptions bordered>
+            <Descriptions bordered column={1}>
               {Object.entries(showData?.resources).map(([k, v]) => {
                 return (
                   <Descriptions.Item
