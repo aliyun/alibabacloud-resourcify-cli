@@ -60,6 +60,6 @@
     "bin",
     "cmds",
     "lib",
-    "front/build"
+    "front/build/*"
   ]
 }
