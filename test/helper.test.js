@@ -136,7 +136,7 @@ describe('config.js', function () {
     assert.strictEqual(actual, expect);
   });
 
-  it('getHelp', function () {
+  it('getHelp: normal flag', function () {
     let ctx = {
       profile: {
         language: 'zh'
@@ -155,7 +155,35 @@ describe('config.js', function () {
       '选项:\n' +
       '  --flag                                [string]\n' +
       '  --number-flag                         [number]\n' +
-      '  --boolean-flag                        [boolean]';
+      '  --boolean-flag                        [boolean]\n' +
+      '  --unrecognized-flag                   [unrecognized]';
+    assert.strictEqual(actual, expect);
+  });
+
+  // Supplementary test
+  // optional value, 
+  // example, 
+  // cmdObj.usage
+  it('getHelp: Supplementary flag', function () {
+    let ctx = {
+      profile: {
+        language: 'zh'
+      },
+      cmds: ['test', 'supplement'],
+      rootCmdName: 'arc-test',
+      cmdFilePath: path.join(__dirname, 'test_cmd/test/supplement.js')
+    };
+    ui = helper.getHelp(ctx);
+    let actual = ui.toString();
+    let expect = 'usage:\n' +
+      '    arc-test test supplement <virtualArgs>\n' +
+      '\n' +
+      '    补充测试\n' +
+      '\n' +
+      '选项:\n' +
+      '  -f,--flag                             [string]            测试flag\n' +
+      '                                        [可选值: value1     示例值：\n' +
+      '                                        , value2]           value';
     assert.strictEqual(actual, expect);
   });
 });

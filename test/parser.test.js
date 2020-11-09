@@ -294,6 +294,51 @@ describe('parser.js', function () {
     assert.deepStrictEqual(parserCtx.err.values, ['boolean-flag']);
   });
 
+  // function processString
+  it('string type option analysis: vTypeMatchErr', function () {
+    ctx.args = ['normal', '--flag'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
+    assert.deepStrictEqual(parserCtx.err.values, ['flag']);
+  });
+
+  // function processValue
+  it('unrecognized flag value type: unrecognizedVType', function () {
+    ctx.args = ['normal', '--unrecognized-flag'];
+    let parserCtx = parser.parser(ctx);
+    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `未识别的参数值类型`);
+    assert.deepStrictEqual(parserCtx.err.values, []);
+  });
+
+  // special flag parse
+  it('unchanged flag parse', function () {
+    ctx.args = ['special'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'unchange-flag': 'default', });
+    assert.deepStrictEqual(parserCtx.mappingValue, { 'unchangedMappingFlag': 'unchange', 'RegionId': 'cn-hangzhou' });
+  });
+
+  it('mapping flag parse', function () {
+    ctx.args = ['special', '--mapping-flag', 'value'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'unchange-flag': 'default', 'mapping-flag': 'value' });
+    assert.deepStrictEqual(parserCtx.mappingValue, { 'unchangedMappingFlag': 'unchange', 'mappingFlag': 'value', 'RegionId': 'cn-hangzhou' });
+  });
+
+  it('global flag parse', function () {
+    ctx.args = ['special', '--region', 'cn-beijing'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'unchange-flag': 'default', 'region': 'cn-beijing' });
+    assert.deepStrictEqual(parserCtx.mappingValue, { 'unchangedMappingFlag': 'unchange', 'RegionId': 'cn-beijing' });
+  });
+
+  // function parseOne
+  it('unknowSyntax error', function () {
+    let result = parser.parseOne(['a']);
+    assert.strictEqual(result.err.prompt[ctx.profile.language], `'%s' 是未知选项格式`);
+    assert.deepStrictEqual(result.err.values, ['a']);
+  });
+
   // TODO
   // 校验不完整，optionsValidate函数只能检查必选参数冲突。
   it('Option conflict check', function () {
