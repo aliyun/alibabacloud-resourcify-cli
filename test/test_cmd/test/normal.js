@@ -11,6 +11,9 @@ exports.cmdObj = {
     },
     'boolean-flag': {
       vtype: 'boolean'
+    },
+    'unrecognized-flag': {
+      vtype: 'unrecognized'
     }
   }
 };
