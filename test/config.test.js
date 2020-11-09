@@ -108,4 +108,34 @@ describe('config.js', function () {
     };
     assert.deepStrictEqual(actualConf, expConf, 'The delete operation should be successful');
   });
+
+  it('getProfile(): unexist profile name', function () {
+    let initConf = {
+      'profiles': {
+        'test': {
+          'access_key_id': 'access_key_id',
+          'access_key_secret': 'access_key_secret',
+          'region': 'cn-hangzhou',
+          'language': 'zh'
+        },
+        'test2': {
+          'access_key_id': 'test_id',
+          'access_key_secret': 'test_secret',
+          'region': 'cn-hangzhou',
+          'language': 'en'
+        }
+      },
+      'default': 'test'
+    };
+    fs.writeFileSync(confPath, JSON.stringify(initConf));
+    let { name, profile } = config.getProfile('test3');
+    let initProfile = {
+      access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
+      access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
+      region: 'cn-hangzhou',
+      language: 'zh'
+    };
+    assert.deepStrictEqual(profile, initProfile);
+    assert.strictEqual(name, 'test3');
+  });
 });
