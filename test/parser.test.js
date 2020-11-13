@@ -348,4 +348,15 @@ describe('parser.js', function () {
     assert.deepStrictEqual(parserCtx.err.values, [['conflictFlag2', 'conflictFlag1']]);
   });
 
+  it('required boolean flag check', function () {
+    ctx.args = ['required', '--boolean-flag', 'false'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': false });
+  });
+
+  it('required boolean flag check', function () {
+    ctx.args = ['required', '--boolean-flag', 'true'];
+    let parserCtx = parser.parser(ctx);
+    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': true });
+  });
 });
