@@ -1,0 +1,6 @@
+{
+  "scope": "alibabacloud",
+  "name": "arc",
+  "version": "1.0.0",
+  "main": ""
+}

@@ -105,3 +105,5 @@ dist
 package-lock.json
 node_modules
 front/build
+dara/*
+!dara/Teafile

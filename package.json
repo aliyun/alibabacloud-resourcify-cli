@@ -3,6 +3,7 @@
   "version": "0.1.2",
   "description": "AlibabaCloud resourcify CLI",
   "bin": {
+    "arc-generate": "bin/arc-generate.js",
     "arc": "bin/arc.js",
     "arc-tool": "bin/arc-tool.js",
     "arc-cs": "bin/arc-cs.js"
@@ -23,7 +24,7 @@
     "@alicloud/credentials": "^2.1.0",
     "@alicloud/cs20151215": "^2.0.4",
     "@alicloud/eci20180808": "^1.1.0",
-    "@alicloud/ecs20140526": "^1.0.0",
+    "@alicloud/ecs20140526": "^1.0.1",
     "@alicloud/nas20170626": "^1.0.0",
     "@alicloud/polardb20170801": "^1.0.0",
     "@alicloud/pop-core": "^1.7.9",
@@ -36,6 +37,7 @@
     "koa-static": "^5.0.0"
   },
   "devDependencies": {
+    "@darabonba/cli": "^1.1.5",
     "codecov": "^3.8.0",
     "eslint": "^7.11.0",
     "mocha": "^8.1.3",
