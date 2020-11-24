@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'private-ip-address': {
-      mapping: 'privateIpAddress',
+      mapping: 'DescribeClusterUserKubeconfigRequest.privateIpAddress',
       vtype: 'boolean',
       desc: {
         zh: '当前用户对应的集群访问kubeconfig',

@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     region: {
-      mapping: 'regionId',
+      mapping: 'CreateClusterRequest.regionId',
       alias: 'r',
       hide: true,
       desc: {
@@ -20,30 +20,35 @@ exports.cmdObj = {
       }
     },
     'cluster-type': {
-      mapping: 'clusterType',
+      mapping: 'CreateClusterRequest.clusterType',
       unchanged: true,
       default: 'Kubernetes',
       desc: {
         zh: '集群类型',
         en: `The type of the cluster`
-      }
+      },
     },
     name: {
-      mapping: 'name',
+      mapping: 'CreateClusterRequest.name',
       desc: {
         zh: '集群名称， 集群名称可以使用大小写英文字母、中文、数字、中划线。',
         en: `The name of the cluster. The name can contain uppercase letters, lowercase letters, Chinese characters, digits, and hyphens (-).`
       }
     },
     'key-pair': {
+      mapping: 'CreateClusterRequest.keyPair',
       required: true,
-      mapping: 'keyPair',
       desc: {
         zh: 'key_pair名称',
         en: `The name of the key pair.`
       },
-      conflicts: [
-        'login-password'
+      relation: [
+        {
+          type: 'conflict',
+          options:[
+            'login-password'
+          ],
+        }
       ]
     },
     'login-password': {
@@ -53,8 +58,13 @@ exports.cmdObj = {
         zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号）',
         en: `The SSH logon password. The password must be 8 to 30 characters in length and contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters`
       },
-      conflicts: [
-        'key-pair'
+      relation: [
+        {
+          type: 'conflict',
+          options:[
+            'key-pair'
+          ],
+        }
       ]
     },
     'snat-entry': {
@@ -189,6 +199,9 @@ exports.cmdObj = {
       desc: {
         zh: '是否开启Worker节点自动续费',
         en: `Specifies whether to enable auto renewal for worker nodes`
+      },
+      relation:{
+        
       },
       sufficient: function (val) {
         let optList = {};
