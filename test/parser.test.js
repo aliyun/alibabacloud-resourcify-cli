@@ -1,7 +1,8 @@
 'use strict';
 const assert = require('assert');
 const path = require('path');
-let parser = require('../lib/parser.js');
+const i18n = require('../lib/i18n.js');
+let Parse = require('../lib/parser.js');
 let { metaFilePath } = require('../lib/arc_config.js');
 
 describe('parser.js', function () {
@@ -19,344 +20,726 @@ describe('parser.js', function () {
     ctx.args = [];
   });
 
-  it('command and help command check', function () {
-    ctx.args = ['parser', 'help'];
-    let parserCtx = parser.parser(ctx);
-    assert.ok(parserCtx.help);
-    assert.deepStrictEqual(parserCtx.cmds, ['parser']);
-    assert.strictEqual(parserCtx.cmdFilePath, path.join(__dirname, '../test/test_cmd/test/parser.js'));
-    assert.deepStrictEqual(parserCtx.args, ['help']);
+  it('argv parse correct', function () {
+    ctx.args = ['argv', '--option', 'value'];
+    let parser = new Parse(ctx);
+    let argvCtx = parser.argvParse(ctx.args);
+    assert.deepStrictEqual(argvCtx.argv, ['argv']);
+    assert.deepStrictEqual(argvCtx.args, ['--option', 'value']);
   });
 
-  it('function argsParse() correct', function () {
-    ctx.args = ['parser', 'args1', '--flag1', 'value1', '--conflictFlag1', 'value1'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.argv, ['args1']);
+  it('empty argv parse', function () {
+    ctx.args = ['--option', 'value'];
+    let parser = new Parse(ctx);
+    let argvCtx = parser.argvParse(ctx.args);
+    assert.deepStrictEqual(argvCtx.argv, []);
+    assert.deepStrictEqual(argvCtx.args, ['--option', 'value']);
+
+    ctx.args = [];
+    argvCtx = parser.argvParse(ctx.args);
+    assert.deepStrictEqual(argvCtx.argv, []);
+    assert.deepStrictEqual(argvCtx.args, []);
+
+    ctx.args = ['argv1', 'argv2'];
+    argvCtx = parser.argvParse(ctx.args);
+    assert.deepStrictEqual(argvCtx.argv, ['argv1', 'argv2']);
+    assert.deepStrictEqual(argvCtx.args, []);
   });
 
-  it('function argsParse() Error', function () {
-    ctx.args = ['parser', 'args1', 'args2'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `未知位置参数 '%s'，位置参数数量应为 %d`);
-    assert.deepStrictEqual(parserCtx.err.values, [['args2'], 1]);
-  });
-
-  it('function transOpts()', function () {
+  it('addAlias()', function () {
     let options = {
-      requiredFlag: {
-        required: true,
-        desc: {
-          zh: '必填选项'
+      region: {
+        vtype: 'map',
+        alias: 'r',
+        options: {
+          key: {
+            alias: 'k'
+          },
+          value: {}
         }
       },
-      optionalFlag: {},
-      conflictFlag1: {
-        conflict: [
-          'conflictFlag2'
-        ]
-      },
-      conflictFlag2: {
-        conflict: [
-          'conflictFlag1'
-        ]
-      },
-      mainFlag: {},
-      dependentFlag: {
-        dependency: true
+      key: {
       }
     };
-    let opts = parser.transOpts(options);
-    let expect = {
-      _optional: [
-        'optionalFlag',
-        'conflictFlag1',
-        'conflictFlag2',
-        'mainFlag'
-      ],
-      _required: [
-        'requiredFlag'
-      ],
-      _transed: [
-        'requiredFlag',
-        'optionalFlag',
-        'conflictFlag1',
-        'conflictFlag2',
-        'mainFlag',
-        'dependentFlag'
-      ],
-      _unchanged: [],
-      requiredFlag: {
-        name: 'requiredFlag',
-        required: true,
-        desc: {
-          zh: '必填选项'
+    let parser = new Parse(ctx);
+    let opts = parser.addAlias(options);
+    let expectOpts = {
+      region: {
+        vtype: 'map',
+        alias: 'r',
+        options: {
+          key: {
+            alias: 'k'
+          },
+          value: {},
+          k: 'key'
         }
       },
-      optionalFlag: {
-        name: 'optionalFlag'
-      },
-      conflictFlag1: {
-        name: 'conflictFlag1',
-        conflict: [
-          'conflictFlag2'
-        ]
-      },
-      conflictFlag2: {
-        name: 'conflictFlag2',
-        conflict: [
-          'conflictFlag1'
-        ]
-      },
-      mainFlag: {
-        name: 'mainFlag',
-      },
-      dependentFlag: {
-        name: 'dependentFlag',
-        dependency: true
+      'r': 'region',
+      key: {
       }
     };
-    assert.deepStrictEqual(opts, expect);
+    assert.deepStrictEqual(opts, expectOpts);
+    opts = parser.addAlias({ key: { alias: 'k' } }, opts);
+    expectOpts = {
+      region: {
+        vtype: 'map',
+        alias: 'r',
+        options: {
+          key: {
+            alias: 'k'
+          },
+          value: {},
+          k: 'key'
+        }
+      },
+      'r': 'region',
+      key: {},
+      k: 'key'
+    };
+    assert.deepStrictEqual(opts, expectOpts);
   });
 
-  it('Mandatory check for options', function () {
-    ctx.args = ['parser', '--flag1', 'value1'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `缺少必选参数：%s`);
-    assert.deepStrictEqual(parserCtx.err.values, ['conflictFlag2|conflictFlag1']);
+  it('processString()', function () {
+    let parser = new Parse(ctx);
+    let result;
+    result = parser.processString([]);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processString(['value1', 'value2']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processString(['value1']);
+    assert.deepStrictEqual(result, { value: 'value1' });
   });
 
-  it('Mandatory check for conflict options', function () {
-    ctx.args = ['parser'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `缺少必选参数：%s`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag1']);
+  it('processBoolean()', function () {
+    let parser = new Parse(ctx);
+    let result;
+    result = parser.processBoolean([]);
+    assert.deepStrictEqual(result, { value: true });
+
+    result = parser.processBoolean(['value1', 'value2']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processBoolean(['value1']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processBoolean(['true']);
+    assert.deepStrictEqual(result, { value: true });
+
+    result = parser.processBoolean(['false']);
+    assert.deepStrictEqual(result, { value: false });
   });
 
-  it('function flagsParser()', function () {
-    ctx.args = ['parser', '--flag1', 'value1', '--flag2', '3', '--flag3', '--conflictFlag1', 'value'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.cmds, ['parser']);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag1': 'value1', 'flag2': 3, 'flag3': true, 'conflictFlag1': 'value' });
+  it('processNumber()', function () {
+    let parser = new Parse(ctx);
+    let result;
+    result = parser.processNumber([]);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processNumber(['1', '2']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processNumber(['string']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processNumber(['1']);
+    assert.deepStrictEqual(result, { value: 1 });
   });
 
-  it('global option parse', function () {
-    ctx.args = ['parser', '--flag1', 'value1', '--flag2', '3', '--flag3', '--profile', 'test', '--region', 'cn-hangzhou', '--conflictFlag1', 'value'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.cmds, ['parser']);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag1': 'value1', 'flag2': 3, 'flag3': true, 'profile': 'test', 'region': 'cn-hangzhou', 'conflictFlag1': 'value' });
+  it('processMap()', function () {
+    let parser = new Parse(ctx);
+    let result;
+    result = parser.processMap(['{"key":"1","value":"2"}', '{"key":"1","value":"2"}']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processMap(['a=b,b=c']);
+    assert.deepStrictEqual(result, { value: { a: 'b', b: 'c' } });
+
+    result = parser.processMap(['{"key":"1","value":"2"}']);
+    assert.deepStrictEqual(result, { value: { key: '1', value: '2' } });
+
+    result = parser.processMap(['{"key":"1","value":"}']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.resolveErr, values: [] } });
+
+    result = parser.processMap(['a']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
   });
 
-  // function processMap
-  it('Map type option analysis: vTypeMatchErr', function () {
-    ctx.args = ['map', '--flag', '{"key":"key1","value":"value1"}', 'nishuode'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag']);
+  it('processMapArray()', function () {
+    let parser = new Parse(ctx);
+    let result;
+    result = parser.processMapArray(['key=key1,value']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processMapArray(['key=key1,value=value1', 'key=key2,value=value2']);
+    assert.deepStrictEqual(result, { value: [{ key: 'key1', value: 'value1' }, { key: 'key2', value: 'value2' }] });
   });
 
-  it('Map type option analysis: resolveErr', function () {
-    ctx.args = ['map', '--flag', '{"ke,"value":"value1"}'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的值json解析失败: %s`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag', 'Unexpected token v in JSON at position 6']);
+  it('processArray()', function () {
+    let parser = new Parse(ctx);
+    let result;
+    result = parser.processArray({}, []);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processArray({}, ['["a","b"]', '["c","d"]']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.mixInputErr, values: [] } });
+
+    result = parser.processArray({}, ['["a","b"']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.resolveErr, values: [] } });
+
+    result = parser.processArray({ subType: 'string' }, ['["a","b"]']);
+    assert.deepStrictEqual(result, { value: ['a', 'b'] });
+
+    result = parser.processArray({ subType: 'number' }, ['["a","b"]']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
+
+    result = parser.processArray({ subType: 'number' }, ['1', '2']);
+    assert.deepStrictEqual(result, { value: [1, 2] });
+
+    result = parser.processArray({ subType: 'number' }, ['["1","2"]']);
+    assert.deepStrictEqual(result, { value: [1, 2] });
+
+    result = parser.processArray({ subType: 'map' }, ['key=key1,value=value1', 'key=key2,value=value2']);
+    assert.deepStrictEqual(result, { value: [{ key: 'key1', value: 'value1' }, { key: 'key2', value: 'value2' }] });
+
+    result = parser.processArray({ subType: 'map' }, ['key=key1,value']);
+    assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
   });
 
-  it('Map type option analysis: shorthand grammar error', function () {
-    ctx.args = ['map', '--flag', 'key=key1,value'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag']);
+  it('processValue()', function () {
+    let obj = {};
+    let flagName = 'flag';
+    let result;
+    let parser = new Parse(ctx);
+
+    result = parser.processValue(obj, {}, flagName, []);
+    assert.deepStrictEqual(result, { prompt: i18n.vTypeMatchErr, values: [] });
+
+    result = parser.processValue(obj, {}, flagName, ['a']);
+    assert.strictEqual(result, undefined);
+    assert.deepStrictEqual(obj, { 'flag': 'a' });
+
+    result = parser.processValue(obj, { vtype: 'number' }, flagName, ['1']);
+    assert.strictEqual(result, undefined);
+    assert.deepStrictEqual(obj, { 'flag': 1 });
+
+    result = parser.processValue(obj, { vtype: 'boolean' }, flagName, []);
+    assert.strictEqual(result, undefined);
+    assert.deepStrictEqual(obj, { 'flag': true });
+
+    result = parser.processValue(obj, { vtype: 'map' }, flagName, ['key=key1,value=value1']);
+    assert.deepStrictEqual(obj, { 'flag': { key: 'key1', value: 'value1' } });
+
+    result = parser.processValue(obj, { vtype: 'array', subType: 'string' }, flagName, ['value1', 'value2']);
+    assert.deepStrictEqual(obj, { 'flag': ['value1', 'value2'] });
   });
 
-  it('Map type option analysis: shorthand grammar', function () {
-    ctx.args = ['map', '--flag', 'key=key1,value=value1'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag': { 'key': 'key1', 'value': 'value1' } });
+  it('parseOne()', function () {
+    let result;
+    let parser = new Parse(ctx);
+
+    parser.options = { flag1: { vtype: 'string' }, flag2: { vtype: 'number' } };
+    result = parser.parseOne(['--flag1=value', '--flag2', '1']);
+    assert.deepStrictEqual(parser.parsedValue, { flag1: 'value' });
+    assert.deepStrictEqual(parser.args, ['--flag2', '1']);
+    assert.strictEqual(result, undefined);
+
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag=value', 'value2']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.strictEqual(result, undefined);
+
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag=value', 'value2']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.strictEqual(result, undefined);
+
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag.0=value', 'value2']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: [''] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.deepStrictEqual(result, { prompt: i18n.vTypeMatchErr, values: ['--flag.0'] });
+
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag.0=value']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: ['value'] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.strictEqual(result, undefined);
+
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag.a=value']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: [] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag.a'] });
+
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag1=value']);
+    assert.deepStrictEqual(parser.parsedValue, {});
+    assert.deepStrictEqual(parser.args, []);
+    assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag1'] });
   });
 
-  it('Map type option analysis: json', function () {
-    ctx.args = ['map', '--flag', '{"key":"key1","value":"value1"}'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag': { 'key': 'key1', 'value': 'value1' } });
+  it('parseFlag(args)', function () {
+    let parser = new Parse(ctx);
+
+    parser.options = { flag: { vtype: 'array', subType: 'map', options: { key: {}, value: {} } } };
+    parser.args = ['--flag.0.key=key1', '--flag.0.value=value1', '--flag.1.key=key2', '--flag.1.value=value2'];
+    let err = parser.parseFlag();
+    assert.strictEqual(err, undefined);
+    assert.deepStrictEqual(parser.parsedValue, { flag: [{ key: 'key1', value: 'value1' }, { key: 'key2', value: 'value2' }] });
+    assert.deepStrictEqual(parser.args, []);
+
+    parser.options = { flag: { vtype: 'array', subType: 'map', options: { key: {}, value: {} } } };
+    parser.args = ['--flag.0.key=key1', '--flag.0.value=value1', '--flag.1.key', '--flag.1.value=value2'];
+    err = parser.parseFlag();
+    assert.deepStrictEqual(err, { prompt: i18n.vTypeMatchErr, values: ['--flag.1.key'] });
   });
 
-  // function processArray
-  it('Array type option analysis: vTypeMatchErr: length==0', function () {
-    ctx.args = ['array', '--flag'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag']);
+  it('command and help command check', function () {
+    ctx.args = ['test', 'help'];
+    let parser = new Parse(ctx);
+    parser.parse();
+    assert.ok(parser.help);
+    assert.deepStrictEqual(parser.cmds, ['test']);
+    assert.strictEqual(parser.cmdFilePath, path.join(__dirname, '../test/test_cmd/test/test.js'));
+    assert.deepStrictEqual(parser.args, ['help']);
   });
 
-  it('Array type option analysis: mixInputErr', function () {
-    ctx.args = ['array', '--flag', '[value1]', 'test'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 混合输入无法被识别`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag']);
+  it('There is no run method, the help information is automatically displayed', function () {
+    ctx.args = [];
+    let parser = new Parse(ctx);
+    parser.parse();
+    assert.ok(parser.help);
+    assert.deepStrictEqual(parser.cmds, []);
+    assert.strictEqual(parser.cmdFilePath, path.join(__dirname, '../test/test_cmd/test.js'));
+    assert.deepStrictEqual(parser.args, []);
   });
 
-  it('Array type option analysis: json error', function () {
-    ctx.args = ['array', '--flag', '[value1,value2]'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的值json解析失败: %s`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag', 'Unexpected token v in JSON at position 1']);
+  it('parse()', function () {
+    ctx.args = ['test', '--flag=string', '-n', '2'];
+    let parser = new Parse(ctx);
+    let err = parser.parse();
+    assert.strictEqual(err, undefined);
+    assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'n': 2 });
   });
 
-  it('string array type option analysis: shorthand grammar', function () {
-    ctx.args = ['array', '--flag', 'value1', 'value2'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag': ['value1', 'value2'] });
+  it('getOptionByName(): array', function () {
+    let parser = new Parse(ctx);
+    parser.options = {
+      'flag': {
+        vtype: 'array',
+        subType: 'map',
+        options: {
+          key: {},
+          value: {}
+        }
+      }
+    };
+    parser.parsedValue = {
+      'flag': [
+        {
+          key: 'key1',
+          value: 'value1'
+        },
+        {
+          key: 'key2',
+          value: 'value2'
+        }
+      ]
+    };
+    let result = parser.getOptionByName('flag');
+    assert.deepStrictEqual(result.option, parser.options.flag);
+    assert.deepStrictEqual(result.value, parser.parsedValue.flag);
+
+    result = parser.getOptionByName('flag.0');
+    assert.deepStrictEqual(result.option, { vtype: 'map', options: { key: {}, value: {} } });
+    assert.deepStrictEqual(result.value, parser.parsedValue.flag[0]);
+
+    result = parser.getOptionByName('flag.0.key');
+    assert.deepStrictEqual(result.option, {});
+    assert.deepStrictEqual(result.value, parser.parsedValue.flag[0].key);
   });
 
-  it('string array type option analysis: json', function () {
-    ctx.args = ['array', '--flag', '["value1","value2"]'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'flag': ['value1', 'value2'] });
+  it('getOptionByName(): map', function () {
+    let parser = new Parse(ctx);
+    parser.options = {
+      'flag': {
+        vType: 'map',
+        options: {
+          key: {},
+          value: {}
+        }
+      }
+    };
+    parser.parsedValue = {
+      'flag': {
+        key: 'key1',
+        value: 'value1'
+      }
+    };
+    let result = parser.getOptionByName('flag');
+    assert.deepStrictEqual(result.option, parser.options.flag);
+    assert.deepStrictEqual(result.value, parser.parsedValue.flag);
+
+    result = parser.getOptionByName('flag.key');
+    assert.deepStrictEqual(result.option, {});
+    assert.deepStrictEqual(result.value, parser.parsedValue.flag.key);
   });
 
-  it('number array type option analysis: vTypeMatchErr', function () {
-    ctx.args = ['array', '--number-flag', '["asdf"]'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['number-flag']);
+  it('relation validate: conflict', function () {
+    let err;
+    let parser = new Parse(ctx);
+    let options = {
+      'conflict-flag1': {
+        vtype: 'string',
+        relations: [
+          {
+            type: 'equal',
+            value: undefined,
+            options: {
+              'conflict-flag2': {
+                required: true
+              }
+            }
+          },
+          {
+            type: 'any',
+            options: {
+              'conflict-flag2': {
+                hidden: true
+              }
+            }
+          }
+        ]
+      },
+      'conflict-flag2': {
+        vtype: 'string',
+        relations: [
+          {
+            type: 'equal',
+            value: undefined,
+            options: {
+              'conflict-flag1': {
+                required: true
+              }
+            }
+          },
+          {
+            type: 'any',
+            options: {
+              'conflict-flag1': {
+                hidden: true
+              }
+            }
+          }
+        ]
+      }
+    };
+    parser.parsedValue = {
+      'conflict-flag2': 'value'
+    };
+    parser.options = options;
+    err = parser.optionValidate('conflict-flag2');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('conflict-flag1');
+    assert.strictEqual(err, undefined);
+
+    parser.options['conflict-flag1'].hidden = false;
+    parser.parsedValue = {
+      'conflict-flag1': 'value'
+    };
+    err = parser.optionValidate('conflict-flag2');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('conflict-flag1');
+    assert.strictEqual(err, undefined);
+
+    parser.options['conflict-flag1'].hidden = false;
+    parser.options['conflict-flag2'].hidden = false;
+    parser.parsedValue = {
+      'conflict-flag1': 'value',
+      'conflict-flag2': 'value'
+    };
+    err = parser.optionValidate('conflict-flag2');
+    assert.deepStrictEqual(err, {
+      prompt: i18n.concatPromt(i18n.anyRelationErr, i18n.hiddenOptionErr),
+      values: ['conflict-flag2'].concat(['conflict-flag1'])
+    });
+
+    parser.options['conflict-flag1'].hidden = false;
+    parser.options['conflict-flag2'].hidden = false;
+    err = parser.optionValidate('conflict-flag1');
+    assert.deepStrictEqual(err, {
+      prompt: i18n.concatPromt(i18n.anyRelationErr, i18n.hiddenOptionErr),
+      values: ['conflict-flag1'].concat(['conflict-flag2'])
+    });
   });
 
-  it('number array type option analysis: json', function () {
-    ctx.args = ['array', '--number-flag', '[1,2]'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'number-flag': [1, 2] });
+  it('relation validate: required', function () {
+    let err;
+    let parser = new Parse(ctx);
+    parser.options = {
+      flag: {
+        vtype: 'string',
+        required: true
+      },
+      flag2: {
+        vtype: 'number'
+      }
+    };
+    parser.parsedValue = { flag: 'value' };
+    err = parser.optionValidate('flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+
+    parser.parsedValue = { flag2: 'value' };
+    err = parser.optionValidate('flag');
+    assert.deepStrictEqual(err, { prompt: i18n.requireOptionErr, values: ['flag'] });
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+
   });
 
-  it('number array type option analysis: maxIndex error', function () {
-    ctx.args = ['array', '--number-flag', '[1,2,3,4]'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值元素过多，最长支持元素数量：%d`);
-    assert.deepStrictEqual(parserCtx.err.values, ['number-flag', 3]);
+  it('relation validate: hidden', function () {
+    let err;
+    let parser = new Parse(ctx);
+    parser.options = {
+      flag: {
+        vtype: 'string',
+        required: true,
+        hidden: true
+      },
+    };
+    parser.parsedValue = { flag: 'value' };
+    err = parser.optionValidate('flag');
+    assert.deepStrictEqual(err, { prompt: i18n.hiddenOptionErr, values: ['flag'] });
   });
 
-  it('map array type option analysis: shorthand grammar', function () {
-    ctx.args = ['array', '--map-flag', 'key=key1,value=value1', 'key=key2,value=value2'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'map-flag': [{ 'key': 'key1', 'value': 'value1' }, { 'key': 'key2', 'value': 'value2' }] });
+  it('relation validate: subOptions equal relation', function () {
+    let err;
+    let parser = new Parse(ctx);
+    parser.options = {
+      flag: {
+        vtype: 'array',
+        subType: 'map',
+        options: {
+          key: {
+            vtype: 'string'
+          },
+          value: {
+            vtype: 'string',
+            relations: [
+              {
+                type: 'equal',
+                value: 'need',
+                options: {
+                  flag2: {
+                    required: true
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      flag2: {
+        vtype: 'number'
+      }
+    };
+    parser.parsedValue = { flag: [{ key: 'key', value: 'value' }] };
+    err = parser.optionValidate('flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+
+    parser.parsedValue = { flag: [{ key: 'key', value: 'value' }, { key: 'key2', value: 'need' }] };
+    err = parser.optionValidate('flag');
+    assert.deepStrictEqual(err, {
+      prompt: i18n.concatPromt(i18n.equalRelationErr, i18n.requireOptionErr),
+      values: ['flag.1.value', 'need'].concat(['flag2'])
+    });
+    err = parser.optionValidate('flag2');
+    assert.deepStrictEqual(err, {
+      prompt: i18n.requireOptionErr,
+      values: ['flag2']
+    });
+
+    parser.options.flag2.required = false;
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag');
+    assert.deepStrictEqual(err, {
+      prompt: i18n.concatPromt(i18n.equalRelationErr, i18n.requireOptionErr),
+      values: ['flag.1.value', 'need'].concat(['flag2'])
+    });
   });
 
-  it('map array type option analysis: shorthand grammar', function () {
-    ctx.args = ['array', '--map-flag', 'keyvaluevalue1'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['map-flag']);
+  it('valueToAPIStruct(): normal', function () {
+    let options = {
+      flag: {
+        vtype: 'string',
+        mapping: 'mappingFlag'
+      },
+      flag2: {
+        vtype: 'number',
+        mapping: 'mappingFlag2'
+      }
+    };
+    let values = { flag: 'value', flag2: 2 };
+    let parser = new Parse(ctx);
+    let mappingValue = {};
+    parser.valueToAPIStruct(options, values, mappingValue);
+    assert.deepStrictEqual(mappingValue, { mappingFlag: 'value', mappingFlag2: 2 });
   });
 
-  // function processNumber
-  it('number type option analysis: vTypeMatchErr: Multi-parameter', function () {
-    ctx.args = ['normal', '--number-flag', '1', '2'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['number-flag']);
+  it('valueToAPIStruct(): map', function () {
+    let options = {
+      flag: {
+        mapping: 'mappingFlag',
+        vtype: 'map',
+        options: {
+          key: {
+            vtype: 'string',
+            mapping: 'mappingKey'
+          },
+          value: {
+            vtype: 'string',
+            mapping: 'mappingValue'
+          }
+        }
+      },
+      flag2: {
+        mapping: 'mappingFlag2',
+        vtype: 'string'
+      }
+    };
+    let values = {
+      flag: {
+        key: 'key1',
+        value: 'value1'
+      },
+      flag2: 'value2'
+    };
+    let parser = new Parse(ctx);
+    let mappingValue = {};
+    parser.valueToAPIStruct(options, values, mappingValue);
+    assert.deepStrictEqual(mappingValue,
+      {
+        mappingFlag: { mappingKey: 'key1', mappingValue: 'value1' },
+        mappingFlag2: 'value2'
+      }
+    );
   });
 
-  it('number type option analysis: vTypeMatchErr: isNaN', function () {
-    ctx.args = ['normal', '--number-flag', 'sdf'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['number-flag']);
+  it('valueToAPIStruct(): arrayMap', function () {
+    let options = {
+      flag: {
+        mapping: 'mappingFlag',
+        vtype: 'array',
+        subType: 'map',
+        options: {
+          key: {
+            vtype: 'string',
+            mapping: 'mappingKey'
+          },
+          value: {
+            vtype: 'string',
+            mapping: 'mappingValue'
+          }
+        }
+      },
+      flag2: {
+        mapping: 'mappingFlag2',
+        vtype: 'string'
+      }
+    };
+    let values = {
+      flag: [
+        {
+          key: 'key1',
+          value: 'value1'
+        },
+        {
+          key: 'key2',
+          value: 'value2'
+        }
+      ],
+      flag2: 'value2'
+    };
+    let parser = new Parse(ctx);
+    let mappingValue = {};
+    parser.valueToAPIStruct(options, values, mappingValue);
+    assert.deepStrictEqual(mappingValue,
+      {
+        mappingFlag: [
+          { mappingKey: 'key1', mappingValue: 'value1' },
+          { mappingKey: 'key2', mappingValue: 'value2' }
+        ],
+        mappingFlag2: 'value2'
+      }
+    );
   });
 
-  it('number type option analysis', function () {
-    ctx.args = ['normal', '--number-flag', '1'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'number-flag': 1 });
+  it('valueToAPIStruct(): Multilevel', function () {
+    let options = {
+      flag: {
+        mapping: 'root.mappingFlag',
+        vtype: 'array',
+        subType:'map',
+        options: {
+          key: {
+            vtype: 'string',
+            mapping: 'mappingKey'
+          },
+          value: {
+            vtype: 'string',
+            mapping: 'mappingValue'
+          }
+        }
+      },
+      flag2: {
+        mapping: 'mappingFlag2',
+        vtype: 'string'
+      }
+    };
+    let values = {
+      flag: 
+      [
+        {
+          key: 'key1',
+          value: 'value1'
+        },
+        {
+          key: 'key2',
+          value: 'value2'
+        }
+      ],
+      flag2: 'value2'
+    };
+    let parser = new Parse(ctx);
+    let mappingValue = {};
+    parser.valueToAPIStruct(options, values, mappingValue);
+    assert.deepStrictEqual(mappingValue,
+      {
+        root: {
+          mappingFlag: [
+            { mappingKey: 'key1', mappingValue: 'value1' },
+            { mappingKey: 'key2', mappingValue: 'value2' }
+          ]
+        },
+        mappingFlag2: 'value2'
+      }
+    );
   });
 
-  // function processBoolean
-  it('boolean type option analysis: No input', function () {
-    ctx.args = ['normal', '--boolean-flag'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': true });
-  });
-
-  it('boolean type option analysis: input true', function () {
-    ctx.args = ['normal', '--boolean-flag=true'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': true });
-  });
-
-  it('boolean type option analysis: input false', function () {
-    ctx.args = ['normal', '--boolean-flag', 'false'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': false });
-  });
-
-  it('boolean type option analysis: input other', function () {
-    ctx.args = ['normal', '--boolean-flag', 'sdf'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['boolean-flag']);
-  });
-
-  // function processString
-  it('string type option analysis: vTypeMatchErr', function () {
-    ctx.args = ['normal', '--flag'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项 '%s' 的输入值类型不符合`);
-    assert.deepStrictEqual(parserCtx.err.values, ['flag']);
-  });
-
-  // function processValue
-  it('unrecognized flag value type: unrecognizedVType', function () {
-    ctx.args = ['normal', '--unrecognized-flag'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `未识别的参数值类型`);
-    assert.deepStrictEqual(parserCtx.err.values, []);
-  });
-
-  // special flag parse
-  it('unchanged flag parse', function () {
-    ctx.args = ['special'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'unchange-flag': 'default', });
-    assert.deepStrictEqual(parserCtx.mappingValue, { 'unchangedMappingFlag': 'unchange', 'RegionId': 'cn-hangzhou' });
-  });
-
-  it('mapping flag parse', function () {
-    ctx.args = ['special', '--mapping-flag', 'value'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'unchange-flag': 'default', 'mapping-flag': 'value' });
-    assert.deepStrictEqual(parserCtx.mappingValue, { 'unchangedMappingFlag': 'unchange', 'mappingFlag': 'value', 'RegionId': 'cn-hangzhou' });
-  });
-
-  it('global flag parse', function () {
-    ctx.args = ['special', '--region', 'cn-beijing'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'unchange-flag': 'default', 'region': 'cn-beijing' });
-    assert.deepStrictEqual(parserCtx.mappingValue, { 'unchangedMappingFlag': 'unchange', 'RegionId': 'cn-beijing' });
-  });
-
-  // function parseOne
-  it('unknowSyntax error', function () {
-    let result = parser.parseOne(['a']);
-    assert.strictEqual(result.err.prompt[ctx.profile.language], `'%s' 是未知选项格式`);
-    assert.deepStrictEqual(result.err.values, ['a']);
-  });
-
-  // TODO
-  // 校验不完整，optionsValidate函数只能检查必选参数冲突。
-  it('Option conflict check', function () {
-    ctx.args = ['parser', '--flag1', 'value1', '--conflictFlag1', 'value1', '--conflictFlag2', 'value2'];
-    let parserCtx = parser.parser(ctx);
-    assert.strictEqual(parserCtx.err.prompt[ctx.profile.language], `选项冲突，%s 只能选择其中一个`);
-    assert.deepStrictEqual(parserCtx.err.values, [['conflictFlag2', 'conflictFlag1']]);
-  });
-
-  it('required boolean flag check', function () {
-    ctx.args = ['required', '--boolean-flag', 'false'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': false });
-  });
-
-  it('required boolean flag check', function () {
-    ctx.args = ['required', '--boolean-flag', 'true'];
-    let parserCtx = parser.parser(ctx);
-    assert.deepStrictEqual(parserCtx.parsedValue, { 'boolean-flag': true });
-  });
 });

@@ -31,6 +31,7 @@
     "@alicloud/rpc-client": "^1.2.0",
     "cliui": "^6.0.0",
     "inquirer": "^7.3.2",
+    "jmespath": "^0.15.0",
     "koa": "^2.13.0",
     "koa-router": "^9.4.0",
     "koa-static": "^5.0.0"
