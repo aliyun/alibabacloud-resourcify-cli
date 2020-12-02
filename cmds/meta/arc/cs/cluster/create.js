@@ -13,7 +13,6 @@ exports.cmdObj = {
     region: {
       mapping: 'CreateClusterRequest.regionId',
       alias: 'r',
-      hide: true,
       desc: {
         zh: '集群所在地域ID',
         en: `The ID of the region where the cluster is deployed.`
@@ -37,35 +36,17 @@ exports.cmdObj = {
     },
     'key-pair': {
       mapping: 'CreateClusterRequest.keyPair',
-      required: true,
       desc: {
         zh: 'key_pair名称',
         en: `The name of the key pair.`
-      },
-      relation: [
-        {
-          type: 'conflict',
-          options:[
-            'login-password'
-          ],
-        }
-      ]
+      }
     },
     'login-password': {
-      required: true,
       mapping: 'loginPassword',
       desc: {
         zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号）',
         en: `The SSH logon password. The password must be 8 to 30 characters in length and contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters`
-      },
-      relation: [
-        {
-          type: 'conflict',
-          options:[
-            'key-pair'
-          ],
-        }
-      ]
+      }
     },
     'snat-entry': {
       required: true,
@@ -200,9 +181,7 @@ exports.cmdObj = {
         zh: '是否开启Worker节点自动续费',
         en: `Specifies whether to enable auto renewal for worker nodes`
       },
-      relation:{
-        
-      },
+
       sufficient: function (val) {
         let optList = {};
         if (val) {
@@ -336,14 +315,6 @@ exports.cmdObj = {
       desc: {
         zh: 'Worker节点ECS规格类型代码',
         en: `The ECS instance types of worker nodes`
-      },
-      options: {
-        element: {
-          desc: {
-            zh: 'ECS规格类型代码',
-            en: `The ECS instance type`
-          }
-        }
       }
     },
     'cpu-policy': {
@@ -723,13 +694,29 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller
     'is-enterprise': {
       mapping: 'isEnterpriseSecurityGroup',
       vtype: 'boolean',
-      dependency: true,
       desc: {
         zh: '是否创建企业安全组',
         en: `Whether to create an enterprise security group`
+      },
+      attributes:{
+        show: [
+          {
+            'security-group-id': {
+              type: 'equal',
+              value: undefined
+            }
+          }
+        ]
       }
     }
   },
+  conflicts: {
+    required: [
+      ['key-pair', 'login-password']
+    ]
+  },
+
+
 };
 
 exports.run = async function (ctx) {
