@@ -8,7 +8,7 @@ exports.cmdObj = {
     flag: {},
     'number-flag': {
       alias:'n',
-      vtype: 'number'
+      vtype: 'number',
     },
     'boolean-flag': {
       vtype: 'boolean'

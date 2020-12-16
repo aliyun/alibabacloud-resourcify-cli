@@ -54,22 +54,21 @@ exports.cmdObj = {
       vtype: 'boolean',
       desc: {
         zh: `是否为网络配置SNAT：
-                当已有VPC能访问公网环境时，设置为 false。
-                当已有VPC不能访问公网环境时：
-                设置为true，表示配置SNAT，此时可以访问公网环境。
-                设置为false，表示不配置SNAT，此时不能访问公网环境
-                `,
+当已有VPC能访问公网环境时，设置为 false。
+当已有VPC不能访问公网环境时：
+设置为true，表示配置SNAT，此时可以访问公网环境。
+设置为false，表示不配置SNAT，此时不能访问公网环境`,
         en: `Specifies whether to enable Source Network Address Translation (SNAT).
-                If the VPC has Internet access, set this parameter to false.
-                If the VPC has no Internet access, valid values include:
-                true: configures SNAT. This enables the cluster to access the Internet.
-                false: does not configure SNAT. The prevents the cluster from accessing the Internet.
-                `
+If the VPC has Internet access, set this parameter to false.
+If the VPC has no Internet access, valid values include:
+true: configures SNAT. This enables the cluster to access the Internet.
+false: does not configure SNAT. The prevents the cluster from accessing the Internet.`
       }
     },
     'worker-system-disk-category': {
       required: true,
       mapping: 'workerSystemDiskCategory',
+      vtype: 'string',
       desc: {
         zh: 'Worker节点系统盘类型',
         en: `The system disk type of worker nodes`
@@ -90,10 +89,20 @@ exports.cmdObj = {
     },
     'container-cidr': {
       mapping: 'containerCidr',
-      dependency: true,
+      vtype: 'string',
       desc: {
         zh: '容器网段，不能和VPC网段冲突。当选择系统自动创建VPC时，默认使用172.16.0.0/16网段。当创建flannel网络类型的集群时，该字段为必填',
         en: `The CIDR block of containers. This CIDR block cannot overlap with that of the VPC. If the VPC is automatically created by the system, the CIDR block of containers is set to 172.16.0.0/16.`
+      },
+      attributes:{
+        required: [
+          {
+            'addons[*].name': {
+              type:'equal',
+              value:'flannel'
+            }
+          }
+        ]
       }
     },
     'cloud-monitor-flags': {
@@ -110,10 +119,9 @@ exports.cmdObj = {
       desc: {
         zh: '失败是否回滚',
         en: `Specifies whether to retain all resources if the operation fails. Valid values:
-                true: retains the resources.
-                false: releases the resources.
-                Default value: true. We recommend that you use the default value.
-                `
+true: retains the resources.
+false: releases the resources.
+Default value: true. We recommend that you use the default value.`
       }
     },
     'endpoint-public-access': {
@@ -126,6 +134,7 @@ exports.cmdObj = {
     },
     'proxy-mode': {
       mapping: 'proxyMode',
+      vtype: 'string',
       desc: {
         zh: 'kube-proxy代理模式,默认为iptables',
         en: `The kube-proxy mode. Valid values: iptables and ipvs. Default value: iptables.`
@@ -137,20 +146,15 @@ exports.cmdObj = {
     },
     'security-group-id': {
       mapping: 'securityGroupId',
+      vtype: 'string',
       desc: {
         zh: '指定集群ECS实例所属于的安全组ID',
         en: `The ID of the security group to which the ECS instances in the cluster belong.`
-      },
-      sufficient: function (val) {
-        let optList = {};
-        if (!val) {
-          optList['is-enterprise'] = false;
-        }
-        return optList;
       }
     },
     'service-cidr': {
       mapping: 'serviceCidr',
+      vtype: 'string',
       desc: {
         zh: 'Service网络的网段，不能和VPC网段及Pod网络网段冲突。当选择系统自动创建VPC时，默认使用172.19.0.0/20网段',
         en: `The CIDR block of services. This CIDR block cannot overlap with that of the VPC or containers. If the VPC is automatically created by the system, the CIDR block of services is set to 172.19.0.0/20.`
@@ -161,13 +165,13 @@ exports.cmdObj = {
       vtype: 'number',
       desc: {
         zh: '集群资源栈创建超时时间，以分钟为单位，默认值 60',
-        en: `	
-                The timeout period in minutes during which a resource creation operation must be completed. Default value: 60.`
+        en: `The timeout period in minutes during which a resource creation operation must be completed. Default value: 60.`
       }
     },
     'vpcid': {
       required: true,
       mapping: 'vpcid',
+      vtype: 'string',
       desc: {
         zh: 'vpcId和vswitchid只能同时都设置对应的值',
         en: `The ID of the VPC. If this parameter is not specified, the system automatically creates a VPC that uses CIDR block 192.168.0.0/16.`
@@ -176,18 +180,27 @@ exports.cmdObj = {
     'worker-auto-renew': {
       mapping: 'workerAutoRenew',
       vtype: 'boolean',
-      dependency: true,
       desc: {
         zh: '是否开启Worker节点自动续费',
         en: `Specifies whether to enable auto renewal for worker nodes`
       },
-
-      sufficient: function (val) {
-        let optList = {};
-        if (val) {
-          optList['worker-auto-renew-period'] = true;
-        }
-        return optList;
+      attributes: {
+        show: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'worker-auto-renew-period': {
@@ -197,6 +210,24 @@ exports.cmdObj = {
       desc: {
         zh: 'Worker节点自动续费周期，当选择预付费和自动续费时才生效',
         en: `The auto renewal period for worker nodes. This parameter takes effect and is required only if worker-instance-charge-type is set to PrePaid and worker-auto-renew is set to true. If worker-period-unit is set to Month, valid values of worker-auto-renew-period include 1, 2, 3, 6, and 12.`
+      },
+      attributes: {
+        show: [
+          {
+            'worker-auto-renew': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-auto-renew': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ]
       }
     },
     'worker-data-disk': {
@@ -206,13 +237,6 @@ exports.cmdObj = {
         zh: '表示worker节点是否挂载数据盘',
         en: `Specifies whether to mount data disks to worker nodes`
       },
-      sufficient: function (val) {
-        let optList = {};
-        if (val) {
-          optList['worker-data-disks'] = true;
-        }
-        return optList;
-      }
     },
     'worker-data-disks': {
       mapping: 'workerDataDisks',
@@ -223,6 +247,24 @@ exports.cmdObj = {
       desc: {
         zh: `Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效`,
         en: `The data disk configurations of worker nodes, such as the disk type and disk size. This parameter takes effect only if worker_data_disk is set to true.`
+      },
+      attributes: {
+        show: [
+          {
+            'worker-data-disk': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-data-disk': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ]
       },
       options: {
         autoSnapshotPolicyId: {
@@ -279,32 +321,57 @@ exports.cmdObj = {
       choices: [
         'PrePaid',
         'PostPaid'
-      ],
-      sufficient: function (val) {
-        let optList = {};
-        if (val === 'PrePaid') {
-          optList['worker-period'] = true;
-          optList['worker-auto-renew'] = true;
-          optList['worker-period-unit'] = true;
-        }
-        return optList;
-      }
+      ]
     },
     'worker-period': {
       mapping: 'workerPeriod',
       vtype: 'number',
-      dependency: true,
       desc: {
         zh: '包年包月时长，当worker-instance-charge-type取值为PrePaid时才生效且为必选值，取值范围：PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”， “6”， “12”}',
         en: `The subscription duration of worker nodes. This parameter takes effect and is required only if worker-instance-charge-type is set to PrePaid. If worker_period_unit is set to Month, valid values of worker_period include 1, 2, 3, 6, and 12.`
+      },
+      attributes: {
+        show: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'worker-period-unit': {
       mapping: 'workerPeriodUnit',
-      dependency: true,
       desc: {
         zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位',
         en: `The unit of the subscription duration`
+      },
+      attributes: {
+        show: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'worker-instance-types': {
@@ -319,6 +386,7 @@ exports.cmdObj = {
     },
     'cpu-policy': {
       mapping: 'cpuPolicy',
+      vtype: 'string',
       desc: {
         zh: 'CPU策略。集群版本为1.12.6及以上版本支持static 和 none两种策略。默认为none',
         en: `The CPU policy. For Kubernetes 1.12.6 and later, valid values of cpu_policy include static and none. Default value: none.`
@@ -356,6 +424,7 @@ exports.cmdObj = {
     },
     'os-type': {
       mapping: 'osType',
+      vtype: 'string',
       desc: {
         zh: '运行pod的主机的操作系统类型',
         en: `The operating system of the nodes that run pods. For example, Linux and Windows.`
@@ -363,6 +432,7 @@ exports.cmdObj = {
     },
     'kubernetes-version': {
       mapping: 'kubernetesVersion',
+      vtype: 'string',
       desc: {
         zh: 'Kubernetes集群版本，默认最新版',
         en: `The Kubernetes version. We recommend that you use the latest version.`
@@ -379,6 +449,7 @@ exports.cmdObj = {
     'master-system-disk-category': {
       required: true,
       mapping: 'masterSystemDiskCategory',
+      vtype: 'string',
       desc: {
         zh: 'Master节点系统盘类型',
         en: `The system disk type of master nodes`
@@ -420,14 +491,6 @@ exports.cmdObj = {
       desc: {
         zh: 'Master节点ECS规格类型代码',
         en: 'The ECS instance types of master nodes'
-      },
-      options: {
-        element: {
-          desc: {
-            zh: 'ECS规格类型代码',
-            en: `ECS instance type`
-          }
-        }
       }
     },
     'master-vswitch-ids': {
@@ -439,15 +502,6 @@ exports.cmdObj = {
       desc: {
         zh: 'Master节点交换机ID列表，交换机个数取值范围为1~3。为确保集群的高可用性，推荐您选择3个交换机，且分布在不同的可用区。',
         en: `The VSwitch IDs of master nodes. Specify one to three VSwitch IDs. We recommend that you specify three VSwitches in different zones to ensure high availability.`
-      },
-      options: {
-        element: {
-          required: true,
-          desc: {
-            zh: '交换机ID',
-            en: `VSwitch ID`
-          }
-        }
       }
     },
     'worker-vswitch-ids': {
@@ -459,14 +513,6 @@ exports.cmdObj = {
       desc: {
         zh: 'Worker节点的虚拟交换机ID列表',
         en: `The VSwitch IDs of worker nodes.`
-      },
-      options: {
-        element: {
-          desc: {
-            zh: '交换机ID',
-            en: `VSwitch ID`
-          }
-        }
       }
     },
     'ssh-flags': {
@@ -489,69 +535,118 @@ exports.cmdObj = {
       mapping: 'masterInstanceChargeType',
       desc: {
         zh: `Master节点付费类型:
-                PrePaid：预付费
-                PostPaid：按量付费
-                `,
+PrePaid：预付费
+PostPaid：按量付费`,
         en: `The billing method of master nodes. Valid values:
-                PrePaid: subscription.
-                PostPaid: pay-as-you-go.
-                `
+PrePaid: subscription.
+PostPaid: pay-as-you-go.`
       },
       choices: [
         'PrePaid',
         'PostPaid'
-      ],
-      sufficient: function (val) {
-        let optList = {};
-        if (val === 'PrePaid') {
-          optList['master-period'] = true;
-          optList['master-period-unit'] = true;
-          optList['master-auto-renew'] = true;
-        }
-        return optList;
-      }
+      ]
     },
-
     'master-period': {
       mapping: 'masterPeriod',
       vtype: 'number',
-      dependency: true,
       desc: {
         zh: '包年包月时长，当master-instance-charge-type取值为PrePaid时才生效且为必选值，取值范围： PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”，“6”，“12”}',
         en: `The subscription duration of master nodes. This parameter takes effect and is required only if master-instance-charge-type is set to PrePaid. If master_period_unit is set to Month, valid values of master_period include 1, 2, 3, 6, and 12.`
       },
+      attributes: {
+        show: [
+          {
+            'master-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'master-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
+      }
     },
     'master-auto-renew': {
       mapping: 'masterAutoRenew',
       vtype: 'boolean',
-      dependency: true,
       desc: {
         zh: 'Master节点是否自动续费',
         en: `Specifies whether to enable auto renewal for master nodes.`
       },
-      sufficient: function (val) {
-        let optList = {};
-        if (val) {
-          optList['master-auto-renew-period'] = true;
-        }
-        return optList;
+      attributes: {
+        show: [
+          {
+            'master-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'master-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'master-auto-renew-period': {
       mapping: 'masterAutoRenewPeriod',
       vtype: 'number',
-      dependency: true,
       desc: {
         zh: 'Master节点自动续费周期，当选择预付费和自动续费时才生效，且为必选值',
         en: `The auto renewal period for master nodes. This parameter takes effect and is required only if master-instance-charge-type is set to PrePaid and master-auto-renew is set to true. If master-period-unit is set to Month, valid values of master-auto-renew-period include 1, 2, 3, 6, and 12.`
+      },
+      attributes: {
+        show: [
+          {
+            'master-auto-renew': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ],
+        required: [
+          {
+            'master-auto-renew': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ]
       }
     },
     'master-period-unit': {
       mapping: 'masterPeriodUnit',
-      dependency: true,
       desc: {
         zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位',
         en: `The unit of the subscription duration. This parameter is required if worker_instance_charge_type is set to PrePaid. A value of Month indicates that the subscription duration is measured in months.`
+      },
+      attributes: {
+        show: [
+          {
+            'master-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'master-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'master-count': {
@@ -565,24 +660,6 @@ exports.cmdObj = {
         3,
         5
       ]
-    },
-    'pod-vswitch-ids': {
-      mapping: 'podVswitchIds',
-      vtype: 'array',
-      dependency: true,
-      subType: 'string',
-      desc: {
-        zh: 'Pod的虚拟交换机列表，在ENI多网卡模式下，需要传额外的vswitchid给addon。当创建terway网络类型的集群时，该字段为必填。',
-        en: `Pod VSwitch IDs, in ENI multi-network card mode, you need to pass additional vswitchid to addon. When creating a cluster of the terway network type, this field is required.`
-      },
-      options: {
-        element: {
-          desc: {
-            zh: '交换机ID',
-            en: `VSwitch ID`
-          }
-        }
-      }
     },
     'node-cidr-mask': {
       mapping: 'nodeCidrMask',
@@ -627,36 +704,17 @@ exports.cmdObj = {
     当选择flannel类型网络时："container-cidr"为必传参数，且addons值必须包含flannel，例如:[{"name":"flannel"}]。
     当选择terway类型网络时："pod-vswitch-ids"为必传参数，且addons值必须包含terway-eni,例如： [{"name": "terway-eni"}]。
 日志服务：可选，如果不开启日志服务时，将无法使用集群审计功能。
-Ingress：默认开启安装Ingress组件nginx-ingress-controller
-`,
+Ingress：默认开启安装Ingress组件nginx-ingress-controller`,
         en: `The add-ons to be installed for the cluster.
-                    Configure the parameters of add-ons as follows:
-                    name: Required. The name of the add-on.
-                    version: Optional. The default value is the latest version.
-                    config: Optional.
-                    Network plug-in: Select Flannel or Terway.
-                    Log Service: Optional. If Log Service is disabled, the cluster audit feature is unavailable.
-                    Ingress: The nginx-ingress-controller component is installed by default.`
+Configure the parameters of add-ons as follows:
+name: Required. The name of the add-on.
+version: Optional. The default value is the latest version.
+config: Optional.
+Network plug-in: Select Flannel or Terway.
+Log Service: Optional. If Log Service is disabled, the cluster audit feature is unavailable.
+Ingress: The nginx-ingress-controller component is installed by default.`
       },
       example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
-      sufficient: function (val) {
-        let optList = {
-          'container-cidr': false,
-          'pod-vswitch-ids': false
-        };
-        if (!val) {
-          return optList;
-        }
-        for (let value of val) {
-          if (value.name === 'flannel') {
-            optList['container-cidr'] = true;
-          }
-          if (value.name === 'terway') {
-            optList['pod-vswitch-ids'] = true;
-          }
-        }
-        return optList;
-      },
       options: {
         name: {
           required: true,
@@ -680,6 +738,25 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller
         }
       }
     },
+    'pod-vswitch-ids': {
+      mapping: 'podVswitchIds',
+      vtype: 'array',
+      subType: 'string',
+      desc: {
+        zh: 'Pod的虚拟交换机列表，在ENI多网卡模式下，需要传额外的vswitchid给addon。当创建terway网络类型的集群时，该字段为必填。',
+        en: `Pod VSwitch IDs, in ENI multi-network card mode, you need to pass additional vswitchid to addon. When creating a cluster of the terway network type, this field is required.`
+      },
+      attributes: {
+        required: [
+          {
+            'addons[*].name': {
+              type:'include',
+              value:'terway'
+            }
+          }
+        ]
+      }
+    },
     'private-zone': {
       mapping: 'privateZone',
       desc: {
@@ -698,7 +775,7 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller
         zh: '是否创建企业安全组',
         en: `Whether to create an enterprise security group`
       },
-      attributes:{
+      attributes: {
         show: [
           {
             'security-group-id': {
@@ -710,13 +787,12 @@ Ingress：默认开启安装Ingress组件nginx-ingress-controller
       }
     }
   },
-  conflicts: {
-    required: [
-      ['key-pair', 'login-password']
-    ]
-  },
-
-
+  conflicts: [
+    {
+      optNames: ['key-pair', 'login-password'],
+      required: true
+    }
+  ]
 };
 
 exports.run = async function (ctx) {

@@ -241,38 +241,38 @@ describe('parser.js', function () {
     let parser = new Parse(ctx);
 
     parser.options = { flag1: { vtype: 'string' }, flag2: { vtype: 'number' } };
-    result = parser.parseOne(['--flag1=value', '--flag2', '1']);
-    assert.deepStrictEqual(parser.parsedValue, { flag1: 'value' });
-    assert.deepStrictEqual(parser.args, ['--flag2', '1']);
-    assert.strictEqual(result, undefined);
+    // result = parser.parseOne(['--flag1=value', '--flag2', '1']);
+    // assert.deepStrictEqual(parser.parsedValue, { flag1: 'value' });
+    // assert.deepStrictEqual(parser.args, ['--flag2', '1']);
+    // assert.strictEqual(result, undefined);
 
-    parser.parsedValue = {};
-    parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    result = parser.parseOne(['--flag=value', 'value2']);
-    assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
-    assert.deepStrictEqual(parser.args, []);
-    assert.strictEqual(result, undefined);
+    // parser.parsedValue = {};
+    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    // result = parser.parseOne(['--flag=value', 'value2']);
+    // assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
+    // assert.deepStrictEqual(parser.args, []);
+    // assert.strictEqual(result, undefined);
 
-    parser.parsedValue = {};
-    parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    result = parser.parseOne(['--flag=value', 'value2']);
-    assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
-    assert.deepStrictEqual(parser.args, []);
-    assert.strictEqual(result, undefined);
+    // parser.parsedValue = {};
+    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    // result = parser.parseOne(['--flag=value', 'value2']);
+    // assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
+    // assert.deepStrictEqual(parser.args, []);
+    // assert.strictEqual(result, undefined);
 
-    parser.parsedValue = {};
-    parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    result = parser.parseOne(['--flag.0=value', 'value2']);
-    assert.deepStrictEqual(parser.parsedValue, { flag: [''] });
-    assert.deepStrictEqual(parser.args, []);
-    assert.deepStrictEqual(result, { prompt: i18n.vTypeMatchErr, values: ['--flag.0'] });
+    // parser.parsedValue = {};
+    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    // result = parser.parseOne(['--flag.0=value', 'value2']);
+    // assert.deepStrictEqual(parser.parsedValue, { flag: [''] });
+    // assert.deepStrictEqual(parser.args, []);
+    // assert.deepStrictEqual(result, { prompt: i18n.vTypeMatchErr, values: ['--flag.0'] });
 
-    parser.parsedValue = {};
-    parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    result = parser.parseOne(['--flag.0=value']);
-    assert.deepStrictEqual(parser.parsedValue, { flag: ['value'] });
-    assert.deepStrictEqual(parser.args, []);
-    assert.strictEqual(result, undefined);
+    // parser.parsedValue = {};
+    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    // result = parser.parseOne(['--flag.0=value']);
+    // assert.deepStrictEqual(parser.parsedValue, { flag: ['value'] });
+    // assert.deepStrictEqual(parser.args, []);
+    // assert.strictEqual(result, undefined);
 
     parser.parsedValue = {};
     parser.options = { flag: { vtype: 'array', subType: 'string' } };
@@ -281,12 +281,12 @@ describe('parser.js', function () {
     assert.deepStrictEqual(parser.args, []);
     assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag.a'] });
 
-    parser.parsedValue = {};
-    parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    result = parser.parseOne(['--flag1=value']);
-    assert.deepStrictEqual(parser.parsedValue, {});
-    assert.deepStrictEqual(parser.args, []);
-    assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag1'] });
+    // parser.parsedValue = {};
+    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    // result = parser.parseOne(['--flag1=value']);
+    // assert.deepStrictEqual(parser.parsedValue, {});
+    // assert.deepStrictEqual(parser.args, []);
+    // assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag1'] });
   });
 
   it('parseFlag(args)', function () {
@@ -325,14 +325,6 @@ describe('parser.js', function () {
     assert.deepStrictEqual(parser.args, []);
   });
 
-  it('parse()', function () {
-    ctx.args = ['test', '--flag=string', '-n', '2'];
-    let parser = new Parse(ctx);
-    let err = parser.parse();
-    assert.strictEqual(err, undefined);
-    assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'n': 2 });
-  });
-
   it('getOptionByName(): array', function () {
     let parser = new Parse(ctx);
     parser.options = {
@@ -361,11 +353,11 @@ describe('parser.js', function () {
     assert.deepStrictEqual(result.option, parser.options.flag);
     assert.deepStrictEqual(result.value, parser.parsedValue.flag);
 
-    result = parser.getOptionByName('flag.0');
+    result = parser.getOptionByName('flag[0]');
     assert.deepStrictEqual(result.option, { vtype: 'map', options: { key: {}, value: {} } });
     assert.deepStrictEqual(result.value, parser.parsedValue.flag[0]);
 
-    result = parser.getOptionByName('flag.0.key');
+    result = parser.getOptionByName('flag[0].key');
     assert.deepStrictEqual(result.option, {});
     assert.deepStrictEqual(result.value, parser.parsedValue.flag[0].key);
   });
@@ -396,94 +388,6 @@ describe('parser.js', function () {
     assert.deepStrictEqual(result.value, parser.parsedValue.flag.key);
   });
 
-  it('relation validate: conflict', function () {
-    let err;
-    let parser = new Parse(ctx);
-    let options = {
-      'conflict-flag1': {
-        vtype: 'string',
-        relations: [
-          {
-            type: 'equal',
-            value: undefined,
-            options: {
-              'conflict-flag2': {
-                required: true
-              }
-            }
-          },
-          {
-            type: 'any',
-            options: {
-              'conflict-flag2': {
-                hidden: true
-              }
-            }
-          }
-        ]
-      },
-      'conflict-flag2': {
-        vtype: 'string',
-        relations: [
-          {
-            type: 'equal',
-            value: undefined,
-            options: {
-              'conflict-flag1': {
-                required: true
-              }
-            }
-          },
-          {
-            type: 'any',
-            options: {
-              'conflict-flag1': {
-                hidden: true
-              }
-            }
-          }
-        ]
-      }
-    };
-    parser.parsedValue = {
-      'conflict-flag2': 'value'
-    };
-    parser.options = options;
-    err = parser.optionValidate('conflict-flag2');
-    assert.strictEqual(err, undefined);
-    err = parser.optionValidate('conflict-flag1');
-    assert.strictEqual(err, undefined);
-
-    parser.options['conflict-flag1'].hidden = false;
-    parser.parsedValue = {
-      'conflict-flag1': 'value'
-    };
-    err = parser.optionValidate('conflict-flag2');
-    assert.strictEqual(err, undefined);
-    err = parser.optionValidate('conflict-flag1');
-    assert.strictEqual(err, undefined);
-
-    parser.options['conflict-flag1'].hidden = false;
-    parser.options['conflict-flag2'].hidden = false;
-    parser.parsedValue = {
-      'conflict-flag1': 'value',
-      'conflict-flag2': 'value'
-    };
-    err = parser.optionValidate('conflict-flag2');
-    assert.deepStrictEqual(err, {
-      prompt: i18n.concatPromt(i18n.anyRelationErr, i18n.hiddenOptionErr),
-      values: ['conflict-flag2'].concat(['conflict-flag1'])
-    });
-
-    parser.options['conflict-flag1'].hidden = false;
-    parser.options['conflict-flag2'].hidden = false;
-    err = parser.optionValidate('conflict-flag1');
-    assert.deepStrictEqual(err, {
-      prompt: i18n.concatPromt(i18n.anyRelationErr, i18n.hiddenOptionErr),
-      values: ['conflict-flag1'].concat(['conflict-flag2'])
-    });
-  });
-
   it('relation validate: required', function () {
     let err;
     let parser = new Parse(ctx);
@@ -507,22 +411,6 @@ describe('parser.js', function () {
     assert.deepStrictEqual(err, { prompt: i18n.requireOptionErr, values: ['flag'] });
     err = parser.optionValidate('flag2');
     assert.strictEqual(err, undefined);
-
-  });
-
-  it('relation validate: hidden', function () {
-    let err;
-    let parser = new Parse(ctx);
-    parser.options = {
-      flag: {
-        vtype: 'string',
-        required: true,
-        hidden: true
-      },
-    };
-    parser.parsedValue = { flag: 'value' };
-    err = parser.optionValidate('flag');
-    assert.deepStrictEqual(err, { prompt: i18n.hiddenOptionErr, values: ['flag'] });
   });
 
   it('relation validate: subOptions equal relation', function () {
@@ -538,22 +426,21 @@ describe('parser.js', function () {
           },
           value: {
             vtype: 'string',
-            relations: [
-              {
-                type: 'equal',
-                value: 'need',
-                options: {
-                  flag2: {
-                    required: true
-                  }
-                }
-              }
-            ]
           }
         }
       },
       flag2: {
-        vtype: 'number'
+        vtype: 'number',
+        attributes: {
+          required: [
+            {
+              'flag[*].value': {
+                type: 'include',
+                value: 'need'
+              }
+            }
+          ]
+        }
       }
     };
     parser.parsedValue = { flag: [{ key: 'key', value: 'value' }] };
@@ -564,23 +451,11 @@ describe('parser.js', function () {
 
     parser.parsedValue = { flag: [{ key: 'key', value: 'value' }, { key: 'key2', value: 'need' }] };
     err = parser.optionValidate('flag');
-    assert.deepStrictEqual(err, {
-      prompt: i18n.concatPromt(i18n.equalRelationErr, i18n.requireOptionErr),
-      values: ['flag.1.value', 'need'].concat(['flag2'])
-    });
-    err = parser.optionValidate('flag2');
-    assert.deepStrictEqual(err, {
-      prompt: i18n.requireOptionErr,
-      values: ['flag2']
-    });
-
-    parser.options.flag2.required = false;
-    err = parser.optionValidate('flag2');
     assert.strictEqual(err, undefined);
-    err = parser.optionValidate('flag');
+    err = parser.optionValidate('flag2');
     assert.deepStrictEqual(err, {
-      prompt: i18n.concatPromt(i18n.equalRelationErr, i18n.requireOptionErr),
-      values: ['flag.1.value', 'need'].concat(['flag2'])
+      prompt: i18n.concatPromt(i18n.includeRelationErr, i18n.requireOptionErr),
+      values: ['flag[*].value', 'flag2']
     });
   });
 
@@ -695,7 +570,7 @@ describe('parser.js', function () {
       flag: {
         mapping: 'root.mappingFlag',
         vtype: 'array',
-        subType:'map',
+        subType: 'map',
         options: {
           key: {
             vtype: 'string',
@@ -713,17 +588,17 @@ describe('parser.js', function () {
       }
     };
     let values = {
-      flag: 
-      [
-        {
-          key: 'key1',
-          value: 'value1'
-        },
-        {
-          key: 'key2',
-          value: 'value2'
-        }
-      ],
+      flag:
+        [
+          {
+            key: 'key1',
+            value: 'value1'
+          },
+          {
+            key: 'key2',
+            value: 'value2'
+          }
+        ],
       flag2: 'value2'
     };
     let parser = new Parse(ctx);
@@ -742,4 +617,130 @@ describe('parser.js', function () {
     );
   });
 
+  it('parse()', function () {
+    ctx.args = ['test', '--flag=string', '-n', '2'];
+    let parser = new Parse(ctx);
+    let err = parser.parse();
+    assert.strictEqual(err, undefined);
+    assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'number-flag': 2 });
+  });
+
+  it('parse: conflict', function () {
+    let err;
+    let parser = new Parse(ctx);
+    parser.options = {
+      'flag1': {
+        vtype: 'string',
+      },
+      'flag2': {
+        vtype: 'string',
+      }
+    };
+    parser.parsedValue = {
+      'flag2': 'value'
+    };
+
+    err = parser.conflictValidate([{ optNames: ['flag1', 'flag2'], required: true }]);
+    assert.strictEqual(err, undefined);
+
+    parser.parsedValue = {
+      'flag1': 'value'
+    };
+    err = parser.conflictValidate([{ optNames: ['flag1', 'flag2'], required: true }]);
+    assert.strictEqual(err, undefined);
+
+    parser.parsedValue = {
+      'flag1': 'value',
+      'flag2': 'value'
+    };
+    err = parser.conflictValidate([{ optNames: ['flag1', 'flag2'], required: true }]);
+    assert.deepStrictEqual(err, {
+      prompt: i18n.conflictErr,
+      values: ['flag1 | flag2']
+    });
+    err = parser.conflictValidate([{ optNames: ['flag1', 'flag2'], required: false }]);
+    assert.deepStrictEqual(err, {
+      prompt: i18n.conflictErr,
+      values: ['flag1 | flag2']
+    });
+
+    parser.parsedValue = {};
+    err = parser.conflictValidate([{ optNames: ['flag1', 'flag2'], required: true }]);
+    assert.deepStrictEqual(err, {
+      prompt: i18n.requireOptionErr,
+      values: ['flag1 | flag2']
+    });
+    err = parser.conflictValidate([{ optNames: ['flag1', 'flag2'], required: false }]);
+    assert.strictEqual(err, undefined);
+  });
+
+  it('Level dependency check: normal', function () {
+    let err;
+    let parser = new Parse(ctx);
+    parser.options = {
+      flag: {
+        vtype: 'string',
+      },
+      flag2: {
+        vtype: 'string'
+      },
+      'dep-flag': {
+        vtype: 'string',
+        attributes: {
+          show: [
+            {
+              'flag': {
+                type: 'any'
+              }
+            }
+          ],
+          required: [
+            {
+              flag2: {
+                type: 'equal',
+                value: 'requiredValue'
+              }
+            }
+          ]
+        }
+      }
+    };
+    parser.parsedValue = { 'dep-flag': 'value' };
+    err = parser.optionValidate('dep-flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+
+    // show no error
+    parser.parsedValue = { 'dep-flag': 'value', flag: 'value' };
+    err = parser.optionValidate('dep-flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+
+    // When the values are not equal, no need
+    parser.parsedValue = { 'flag2': 'value', flag: 'value' };
+    err = parser.optionValidate('flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('dep-flag');
+    assert.strictEqual(err, undefined);
+
+    // When the value is equal, required
+    parser.parsedValue = { 'flag2': 'requiredValue', flag: 'value' };
+    err = parser.optionValidate('flag');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('flag2');
+    assert.strictEqual(err, undefined);
+    err = parser.optionValidate('dep-flag');
+    assert.deepStrictEqual(err, {
+      prompt: i18n.concatPromt(i18n.equalRelationErr, i18n.requireOptionErr),
+      values: ['flag2', 'requiredValue', 'dep-flag']
+    });
+  });
 });
