@@ -123,11 +123,8 @@ ARC has powerful advantages for complex command parameters and can assist user i
 
 1. Prompt for parameter input and supplemented by parameter description, the user does not need to remember:
 ```sh
-? The ID of the region where the cluster is deployed.
-region <region>
-? The name of the cluster. The name can contain uppercase letters, lowercase  
-letters, Chinese characters, digits, and hyphens (-).
-name <name>
+? The name of the key pair.
+key-pair <keyPair>
 ```
 
 2. Prompt for conflicting parameters
@@ -156,55 +153,57 @@ category (Use arrow keys)
   [UNSET]
 ```
 
-5. Automatically hide the parameters according to the parameter dependency, reducing user input
+5. Optional flags to reduce user input time
 
 ```sh
-## When the selection is true, you need to enter data disk related information
-? Specifies whether to mount data disks to worker nodes
-worker-data-disk true
-
-The data disk configurations of worker nodes, such as the disk type and disk  
-size. This parameter takes effect only if worker_data_disk is set to true.
-? Whether to enable snapshot
-autoSnapshotPolicyId (Use arrow keys)
-❯ true 
-  false 
-  [UNSET]
-
-## When the selection is false, there is no 
-## need to enter data disk related information
-? Specifies whether to mount data disks to worker nodes
-worker-data-disk <false>
-? The billing method of worker nodes. Valid values:
-PrePaid: subscription.
-PostPaid: pay-as-you-go.
-
-worker-instance-charge-type 
-  PrePaid 
-❯ PostPaid 
-  [UNSET] 
+? Please select optional configuration or end configuration (Use arrow keys)
+❯ region [string] The ID of the region where the cluster is deployed. 
+  cluster-type [string] The type of the cluster 
+  name [string] The name of the cluster. The name can contain uppercase letters, lowercase letters, Chinese characters, digits, and hyphens (-). 
+  container-cidr [string] The CIDR block of containers. This CIDR block cannot overlap with that of the VPC. If the VPC is automatically created by the system, t
+he CIDR block of containers is set to 172.16.0.0/16. 
+  cloud-monitor-flags [boolean] Specifies whether to install the CloudMonitor agent. 
+  disable-rollback [boolean] Specifies whether to retain all resources if the operation fails. Valid values:
+true: retains the resources.
+false: releases the resources.
+Default value: true. We recommend that you use the default value. 
+(Move up and down to reveal more choices)
 ```
 
-6. Prompt input for complex parameter value structure
+6. Prompt the user to select a precondition
+```sh
+? Please select optional configuration or end configuration worker-data-disks
+worker-data-disks
+This parameter must meet the following conditions to be effective
+When the value of worker-data-disk is equal to true
+```
+
+7. Prompt input for complex parameter value structure
 
 ```sh
 # map type parameter value
+? Please select optional configuration or end configuration runtime
+runtime
 The runtime of containers. Default value: docker. Specify the runtime name and
 version.
-? Whether to configure runtime Yes
-? runtime name
-name <name>
-? runtime version
-version <version>
+?  runtime name 
+runtime.name <runtime.name>
+?  runtime version 
+runtime.version <runtime.version>
 
 # For array parameter values
-The ECS instance types of worker nodes
-? The ECS instance type
-element element
-? Whether to continue to configure worker-instance-types Yes
-? The ECS instance type
-element element2
-? Whether to continue to configure worker-instance-types No
+? Please select optional configuration or end configuration pod-vswitch-ids
+pod-vswitch-ids
+Pod VSwitch IDs, in ENI multi-network card mode, you need to pass additional
+vswitchid to addon. When creating a cluster of the terway network type, this
+field is required.
+? Pod VSwitch IDs, in ENI multi-network card mode, you need to pass additional vswitchid to addon. When creating a cluster of the terway network type, this field
+ is required.
+pod-vswitch-ids.0 <pod-vswitch-ids.0>
+? Whether to continue to configure the 2 pod-vswitch-ids Yes
+? Pod VSwitch IDs, in ENI multi-network card mode, you need to pass additional vswitchid to addon. When creating a cluster of the terway network type, this field
+ is required.
+pod-vswitch-ids.1 <pod-vswitch-ids.1>
 
 ```
 

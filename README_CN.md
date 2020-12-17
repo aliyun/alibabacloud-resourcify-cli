@@ -124,10 +124,8 @@ ARC针对复杂命令参数具有强大优势，可从多方面辅助用户输�
 1. 提示参数输入并辅以参数说明，用户无需记忆：
 
 ```sh
-? 集群所在地域ID
-region <region>
-? 集群名称， 集群名称可以使用大小写英文字母、中文、数字、中划线。
-name <name>
+? key_pair名称
+key-pair <keyPair>
 ```
 
 2. 对冲突参数进行提示
@@ -157,49 +155,52 @@ category (Use arrow keys)
   [UNSET] 
 ```
 
-5. 自动根据参数依赖关系，对参数进行隐藏，减少用户输入
+5. 可选项选择,减少用户输入时间
 
 ```sh
-## 当选择为true，则需输入数据盘相关信息
-? 表示worker节点是否挂载数据盘
-worker-data-disk true
-Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效
-? 是否开启云盘备份
-autoSnapshotPolicyId (Use arrow keys)
-❯ true 
-  false 
-
-## 当选择为false，则无需输入数据盘相关信息
-? 表示worker节点是否挂载数据盘
-worker-data-disk <false>
-? Worker节点付费类型:
-PrePaid：预付费
-PostPaid：按量付费
-worker-instance-charge-type (Use arrow keys)
-❯ PrePaid 
-  PostPaid 
-  [UNSET] 
+? 请选择可选配置或结束配置 
+  region [string] 集群所在地域ID 
+  cluster-type [string] 集群类型 
+  name [string] 集群名称， 集群名称可以使用大小写英文字母、中文、数字、中划线。 
+❯ cloud-monitor-flags [boolean] 是否安装云监控插件 
+  disable-rollback [boolean] 失败是否回滚 
+  endpoint-public-access [boolean] 是否开启公网API Server 
+  proxy-mode [string] kube-proxy代理模式,默认为iptables 
+  security-group-id [string] 指定集群ECS实例所属于的安全组ID 
+  service-cidr [string] Service网络的网段，不能和VPC网段及Pod网络网段冲突。当选择系统自动创建VPC时，默认使用172.19.0.0/20网段 
+  timeout-mins [number] 集群资源栈创建超时时间，以分钟为单位，默认值 60 
+(Move up and down to reveal more choices)
 ```
 
-6. 针对复杂参数值结构进行提示输入
+6. 提示用户选项生效前置条件
+
+```sh
+? 请选择可选配置或结束配置 worker-data-disks
+worker-data-disks
+该参数需满足以下条件方可生效
+当 worker-data-disk 的值等于 true
+```
+
+7. 针对复杂参数值结构进行提示输入
 
 ```sh
 # map型参数值
-容器运行时，一般为docker，包括2个信息：name和version
-? 是否配置runtime <Yes>
-? 容器运行时名称
-name <name>
+? 请选择可选配置或结束配置 runtime
+runtime
+容器运行时，一般为docker，包括2个信息：name和version? 
+容器运行时名称
+runtime.name <name>
 ? 容器运行时版本
-version <version>
+runtime.version <name>
 
-# 针对数组型参数值
-Worker节点ECS规格类型代码
-? ECS规格类型代码
-element element
-? 是否继续配置worker-instance-types <Yes>
-? ECS规格类型代码
-element element2
-? 是否继续配置worker-instance-types <No>
+# 针对数组型参数值,提示当前输入元素位置
+? 请选择可选配置或结束配置 pod-vswitch-idspod-vswitch-ids
+Pod的虚拟交换机列表，在ENI多网卡模式下，需要传额外的vswitchid给addon。当创建terway网络类型的集群时，该字段为必填。
+? Pod的虚拟交换机列表，在ENI多网卡模式下，需要传额外的vswitchid给addon。当创建terway网络类型的集群时，该字段为必填。
+pod-vswitch-ids.0 <pod-vswitch-ids.0>
+? 是否继续配置第 2 个 pod-vswitch-ids <Yes> 
+? Pod的虚拟交换机列表，在ENI多网卡模式下，需要传额外的vswitchid给addon。当创建terway网络类型的集群时，该字段为必填。
+pod-vswitch-ids.1 <pod-vswitch-ids.1>
 ```
 
 # 开源许可证
