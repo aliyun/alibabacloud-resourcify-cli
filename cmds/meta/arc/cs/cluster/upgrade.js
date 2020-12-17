@@ -11,21 +11,21 @@ exports.cmdObj = {
   },
   options: {
     'component-name': {
-      mapping: 'componentName',
+      mapping: 'UpgradeClusterRequest.componentName',
       desc: {
         zh: '组件名称，升级集群时取值：k8s',
         en: `Component name, value when upgrading the cluster: k8s.`
       }
     },
     'version': {
-      mapping: 'version',
+      mapping: 'UpgradeClusterRequest.version',
       desc: {
         zh: '集群当前版本',
         en: `Current version of the cluster`
       }
     },
     'next-version': {
-      mapping: 'nextVersion',
+      mapping: 'UpgradeClusterRequest.nextVersion',
       desc: {
         zh: '集群可升级版本',
         en: `The target version of the upgrade.`
@@ -51,7 +51,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let UpgradeClusterRequest = require(`@alicloud/cs20151215`).UpgradeClusterRequest;
-  let request = new UpgradeClusterRequest(ctx.mappingValue);
+  let request = new UpgradeClusterRequest(ctx.mappingValue.UpgradeClusterRequest);
 
   let client = new Client(config);
   try {

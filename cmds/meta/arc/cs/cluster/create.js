@@ -42,7 +42,7 @@ exports.cmdObj = {
       }
     },
     'login-password': {
-      mapping: 'loginPassword',
+      mapping: 'CreateClusterRequest.loginPassword',
       desc: {
         zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号）',
         en: `The SSH logon password. The password must be 8 to 30 characters in length and contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters`
@@ -50,7 +50,7 @@ exports.cmdObj = {
     },
     'snat-entry': {
       required: true,
-      mapping: 'snatEntry',
+      mapping: 'CreateClusterRequest.snatEntry',
       vtype: 'boolean',
       desc: {
         zh: `是否为网络配置SNAT：
@@ -67,7 +67,7 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
     },
     'worker-system-disk-category': {
       required: true,
-      mapping: 'workerSystemDiskCategory',
+      mapping: 'CreateClusterRequest.workerSystemDiskCategory',
       vtype: 'string',
       desc: {
         zh: 'Worker节点系统盘类型',
@@ -80,7 +80,7 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
     },
     'worker-system-disk-size': {
       required: true,
-      mapping: 'workerSystemDiskSize',
+      mapping: 'CreateClusterRequest.workerSystemDiskSize',
       vtype: 'number',
       desc: {
         zh: 'Worker节点系统盘大小，单位为GiB',
@@ -88,7 +88,7 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
       }
     },
     'container-cidr': {
-      mapping: 'containerCidr',
+      mapping: 'CreateClusterRequest.containerCidr',
       vtype: 'string',
       desc: {
         zh: '容器网段，不能和VPC网段冲突。当选择系统自动创建VPC时，默认使用172.16.0.0/16网段。当创建flannel网络类型的集群时，该字段为必填',
@@ -106,7 +106,7 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
       }
     },
     'cloud-monitor-flags': {
-      mapping: 'cloudMonitorFlags',
+      mapping: 'CreateClusterRequest.cloudMonitorFlags',
       vtype: 'boolean',
       desc: {
         zh: '是否安装云监控插件',
@@ -114,7 +114,7 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
       }
     },
     'disable-rollback': {
-      mapping: 'disableRollback',
+      mapping: 'CreateClusterRequest.disableRollback',
       vtype: 'boolean',
       desc: {
         zh: '失败是否回滚',
@@ -125,7 +125,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'endpoint-public-access': {
-      mapping: 'endpointPublicAccess',
+      mapping: 'CreateClusterRequest.endpointPublicAccess',
       vtype: 'boolean',
       desc: {
         zh: '是否开启公网API Server',
@@ -133,7 +133,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'proxy-mode': {
-      mapping: 'proxyMode',
+      mapping: 'CreateClusterRequest.proxyMode',
       vtype: 'string',
       desc: {
         zh: 'kube-proxy代理模式,默认为iptables',
@@ -145,7 +145,7 @@ Default value: true. We recommend that you use the default value.`
       ]
     },
     'security-group-id': {
-      mapping: 'securityGroupId',
+      mapping: 'CreateClusterRequest.securityGroupId',
       vtype: 'string',
       desc: {
         zh: '指定集群ECS实例所属于的安全组ID',
@@ -153,7 +153,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'service-cidr': {
-      mapping: 'serviceCidr',
+      mapping: 'CreateClusterRequest.serviceCidr',
       vtype: 'string',
       desc: {
         zh: 'Service网络的网段，不能和VPC网段及Pod网络网段冲突。当选择系统自动创建VPC时，默认使用172.19.0.0/20网段',
@@ -161,7 +161,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'timeout-mins': {
-      mapping: 'timeoutMins',
+      mapping: 'CreateClusterRequest.timeoutMins',
       vtype: 'number',
       desc: {
         zh: '集群资源栈创建超时时间，以分钟为单位，默认值 60',
@@ -170,7 +170,7 @@ Default value: true. We recommend that you use the default value.`
     },
     'vpcid': {
       required: true,
-      mapping: 'vpcid',
+      mapping: 'CreateClusterRequest.vpcid',
       vtype: 'string',
       desc: {
         zh: 'vpcId和vswitchid只能同时都设置对应的值',
@@ -178,7 +178,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'worker-auto-renew': {
-      mapping: 'workerAutoRenew',
+      mapping: 'CreateClusterRequest.workerAutoRenew',
       vtype: 'boolean',
       desc: {
         zh: '是否开启Worker节点自动续费',
@@ -204,7 +204,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'worker-auto-renew-period': {
-      mapping: 'workerAutoRenewPeriod',
+      mapping: 'CreateClusterRequest.workerAutoRenewPeriod',
       dependency: true,
       vtype: 'number',
       desc: {
@@ -231,7 +231,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'worker-data-disk': {
-      mapping: 'workerDataDisk',
+      mapping: 'CreateClusterRequest.workerDataDisk',
       vtype: 'boolean',
       desc: {
         zh: '表示worker节点是否挂载数据盘',
@@ -239,7 +239,7 @@ Default value: true. We recommend that you use the default value.`
       },
     },
     'worker-data-disks': {
-      mapping: 'workerDataDisks',
+      mapping: 'CreateClusterRequest.workerDataDisks',
       dependency: true,
       vtype: 'array',
       subType: 'map',
@@ -307,16 +307,14 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'worker-instance-charge-type': {
-      mapping: 'workerInstanceChargeType',
+      mapping: 'CreateClusterRequest.workerInstanceChargeType',
       desc: {
         zh: `Worker节点付费类型:
-                PrePaid：预付费
-                PostPaid：按量付费
-                `,
+PrePaid：预付费
+PostPaid：按量付费`,
         en: `The billing method of worker nodes. Valid values:
-                PrePaid: subscription.
-                PostPaid: pay-as-you-go.
-                `
+PrePaid: subscription.
+PostPaid: pay-as-you-go.`
       },
       choices: [
         'PrePaid',
@@ -324,7 +322,7 @@ Default value: true. We recommend that you use the default value.`
       ]
     },
     'worker-period': {
-      mapping: 'workerPeriod',
+      mapping: 'CreateClusterRequest.workerPeriod',
       vtype: 'number',
       desc: {
         zh: '包年包月时长，当worker-instance-charge-type取值为PrePaid时才生效且为必选值，取值范围：PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”， “6”， “12”}',
@@ -350,7 +348,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'worker-period-unit': {
-      mapping: 'workerPeriodUnit',
+      mapping: 'CreateClusterRequest.workerPeriodUnit',
       desc: {
         zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位',
         en: `The unit of the subscription duration`
@@ -376,7 +374,7 @@ Default value: true. We recommend that you use the default value.`
     },
     'worker-instance-types': {
       required: true,
-      mapping: 'workerInstanceTypes',
+      mapping: 'CreateClusterRequest.workerInstanceTypes',
       vtype: 'array',
       subType: 'string',
       desc: {
@@ -385,7 +383,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'cpu-policy': {
-      mapping: 'cpuPolicy',
+      mapping: 'CreateClusterRequest.cpuPolicy',
       vtype: 'string',
       desc: {
         zh: 'CPU策略。集群版本为1.12.6及以上版本支持static 和 none两种策略。默认为none',
@@ -393,7 +391,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'runtime': {
-      mapping: 'runtime',
+      mapping: 'CreateClusterRequest.runtime',
       vtype: 'map',
       desc: {
         zh: '容器运行时，一般为docker，包括2个信息：name和version',
@@ -416,14 +414,14 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     platform: {
-      mapping: 'platform',
+      mapping: 'CreateClusterRequest.platform',
       desc: {
         zh: '运行pod的主机的平台架构，如 x86',
         en: `The architecture of the nodes that run pods, for example, x86.`
       }
     },
     'os-type': {
-      mapping: 'osType',
+      mapping: 'CreateClusterRequest.osType',
       vtype: 'string',
       desc: {
         zh: '运行pod的主机的操作系统类型',
@@ -431,7 +429,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'kubernetes-version': {
-      mapping: 'kubernetesVersion',
+      mapping: 'CreateClusterRequest.kubernetesVersion',
       vtype: 'string',
       desc: {
         zh: 'Kubernetes集群版本，默认最新版',
@@ -439,7 +437,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'deletion-protection': {
-      mapping: 'deletionProtection',
+      mapping: 'CreateClusterRequest.deletionProtection',
       vtype: 'boolean',
       desc: {
         zh: '是否开启集群删除保护，防止通过控制台或API误删除集群',
@@ -448,7 +446,7 @@ Default value: true. We recommend that you use the default value.`
     },
     'master-system-disk-category': {
       required: true,
-      mapping: 'masterSystemDiskCategory',
+      mapping: 'CreateClusterRequest.masterSystemDiskCategory',
       vtype: 'string',
       desc: {
         zh: 'Master节点系统盘类型',
@@ -461,7 +459,7 @@ Default value: true. We recommend that you use the default value.`
     },
     'master-system-disk-size': {
       required: true,
-      mapping: 'masterSystemDiskSize',
+      mapping: 'CreateClusterRequest.masterSystemDiskSize',
       vtype: 'number',
       desc: {
         zh: 'Master节点系统盘大小，单位为GiB',
@@ -470,22 +468,16 @@ Default value: true. We recommend that you use the default value.`
     },
     'num-of-nodes': {
       required: true,
-      mapping: 'numOfNodes',
+      mapping: 'CreateClusterRequest.numOfNodes',
       vtype: 'number',
       desc: {
         zh: 'Worker节点数。范围是[0，100]',
         en: `The number of worker nodes. Valid values: 0 to 100.`
-      },
-      validate: function (val) {
-        if (val < 0 || val > 100) {
-          return false;
-        }
-        return true;
       }
     },
     'master-instance-types': {
       required: true,
-      mapping: 'masterInstanceTypes',
+      mapping: 'CreateClusterRequest.masterInstanceTypes',
       vtype: 'array',
       subType: 'string',
       desc: {
@@ -495,7 +487,7 @@ Default value: true. We recommend that you use the default value.`
     },
     'master-vswitch-ids': {
       required: true,
-      mapping: 'masterVswitchIds',
+      mapping: 'CreateClusterRequest.masterVswitchIds',
       vtype: 'array',
       maxindex: 3,
       subType: 'string',
@@ -506,7 +498,7 @@ Default value: true. We recommend that you use the default value.`
     },
     'worker-vswitch-ids': {
       required: true,
-      mapping: 'workerVswitchIds',
+      mapping: 'CreateClusterRequest.workerVswitchIds',
       vtype: 'array',
       maxindex: 3,
       subType: 'string',
@@ -516,7 +508,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'ssh-flags': {
-      mapping: 'sshFlags',
+      mapping: 'CreateClusterRequest.sshFlags',
       vtype: 'boolean',
       desc: {
         zh: '是否开放公网SSH登录',
@@ -524,7 +516,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'node-port-range': {
-      mapping: 'nodePortRange',
+      mapping: 'CreateClusterRequest.nodePortRange',
       desc: {
         zh: '节点服务端口。取值范围为[30000，65535]',
         en: `The service port range of nodes. Valid values: 30000 to 65535.`
@@ -532,7 +524,7 @@ Default value: true. We recommend that you use the default value.`
       example: `30000-32767`
     },
     'master-instance-charge-type': {
-      mapping: 'masterInstanceChargeType',
+      mapping: 'CreateClusterRequest.masterInstanceChargeType',
       desc: {
         zh: `Master节点付费类型:
 PrePaid：预付费
@@ -547,7 +539,7 @@ PostPaid: pay-as-you-go.`
       ]
     },
     'master-period': {
-      mapping: 'masterPeriod',
+      mapping: 'CreateClusterRequest.masterPeriod',
       vtype: 'number',
       desc: {
         zh: '包年包月时长，当master-instance-charge-type取值为PrePaid时才生效且为必选值，取值范围： PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”，“6”，“12”}',
@@ -573,7 +565,7 @@ PostPaid: pay-as-you-go.`
       }
     },
     'master-auto-renew': {
-      mapping: 'masterAutoRenew',
+      mapping: 'CreateClusterRequest.masterAutoRenew',
       vtype: 'boolean',
       desc: {
         zh: 'Master节点是否自动续费',
@@ -599,7 +591,7 @@ PostPaid: pay-as-you-go.`
       }
     },
     'master-auto-renew-period': {
-      mapping: 'masterAutoRenewPeriod',
+      mapping: 'CreateClusterRequest.masterAutoRenewPeriod',
       vtype: 'number',
       desc: {
         zh: 'Master节点自动续费周期，当选择预付费和自动续费时才生效，且为必选值',
@@ -625,7 +617,7 @@ PostPaid: pay-as-you-go.`
       }
     },
     'master-period-unit': {
-      mapping: 'masterPeriodUnit',
+      mapping: 'CreateClusterRequest.masterPeriodUnit',
       desc: {
         zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位',
         en: `The unit of the subscription duration. This parameter is required if worker_instance_charge_type is set to PrePaid. A value of Month indicates that the subscription duration is measured in months.`
@@ -650,7 +642,7 @@ PostPaid: pay-as-you-go.`
       }
     },
     'master-count': {
-      mapping: 'masterCount',
+      mapping: 'CreateClusterRequest.masterCount',
       vtype: 'number',
       desc: {
         zh: 'Master实例个数，默认是3',
@@ -662,14 +654,14 @@ PostPaid: pay-as-you-go.`
       ]
     },
     'node-cidr-mask': {
-      mapping: 'nodeCidrMask',
+      mapping: 'CreateClusterRequest.nodeCidrMask',
       desc: {
         zh: '节点网络的网络前缀',
         en: `The prefix length of the node CIDR block.`
       }
     },
     tags: {
-      mapping: 'tags',
+      mapping: 'CreateClusterRequest.tags',
       vtype: 'array',
       subType: 'map',
       mappingType: require('@alicloud/cs20151215').CreateClusterRequestTags,
@@ -694,7 +686,7 @@ PostPaid: pay-as-you-go.`
       }
     },
     'addons': {
-      mapping: 'addons',
+      mapping: 'CreateClusterRequest.addons',
       vtype: 'array',
       subType: 'map',
       mappingType: require('@alicloud/cs20151215').CreateClusterRequestAddons,
@@ -739,7 +731,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       }
     },
     'pod-vswitch-ids': {
-      mapping: 'podVswitchIds',
+      mapping: 'CreateClusterRequest.podVswitchIds',
       vtype: 'array',
       subType: 'string',
       desc: {
@@ -758,7 +750,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       }
     },
     'private-zone': {
-      mapping: 'privateZone',
+      mapping: 'CreateClusterRequest.privateZone',
       desc: {
         zh: '是否开启PrivateZone用于服务发现',
         en: `Whether to enable PrivateZone for service discovery`
@@ -769,7 +761,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       ]
     },
     'is-enterprise': {
-      mapping: 'isEnterpriseSecurityGroup',
+      mapping: 'CreateClusterRequest.isEnterpriseSecurityGroup',
       vtype: 'boolean',
       desc: {
         zh: '是否创建企业安全组',
@@ -806,8 +798,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
-  let request = new CreateClusterRequest(ctx.mappingValue);
-
+  let request = new CreateClusterRequest(ctx.mappingValue.CreateClusterRequest);
   let client = new Client(config);
   let result;
   try {

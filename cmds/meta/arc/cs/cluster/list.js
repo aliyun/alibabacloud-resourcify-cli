@@ -10,14 +10,14 @@ exports.cmdObj = {
   },
   options: {
     name: {
-      mapping: 'name',
+      mapping: 'DescribeClustersRequest.name',
       desc: {
         zh: '根据集群Name进行模糊匹配查询',
         en: `Fuzzy matching query based on cluster name`
       }
     },
     'cluster-type': {
-      mapping: 'clusterType',
+      mapping: 'DescribeClustersRequest.clusterType',
       desc: {
         zh: '集群类型',
         en: `Cluster type`
@@ -37,7 +37,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let DescribeClustersRequest = require(`@alicloud/cs20151215`).DescribeClustersRequest;
-  let request = new DescribeClustersRequest(ctx.mappingValue);
+  let request = new DescribeClustersRequest(ctx.mappingValue.DescribeClustersRequest);
 
   let client = new Client(config);
   let result;

@@ -11,21 +11,13 @@ exports.cmdObj = {
   },
   options: {
     'retain-resources': {
-      mapping: 'retainResources',
+      mapping: 'DeleteClusterRequest.retainResources',
       vtype: 'array',
       subType: 'string',
       desc: {
         zh: '资源名称',
         en: `Resoure name`
       },
-      options: {
-        element: {
-          desc: {
-            zh: '资源名称',
-            en: `Resoure name`
-          }
-        }
-      }
     }
   },
   args: [
@@ -47,7 +39,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let DeleteClusterRequest = require(`@alicloud/cs20151215`).DeleteClusterRequest;
-  let request = new DeleteClusterRequest(ctx.mappingValue);
+  let request = new DeleteClusterRequest(ctx.mappingValue.DeleteClusterRequest);
   let client = new Client(config);
   try {
     await client.deleteClusterWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());

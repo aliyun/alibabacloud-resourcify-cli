@@ -11,19 +11,14 @@ exports.cmdObj = {
   },
   options: {
     'key-pair': {
-      required: true,
-      mapping: 'keyPair',
+      mapping: 'AttachInstancesRequest.keyPair',
       desc: {
         zh: 'key-pair名称',
         en: `The name of the key pair. You must set key_pair or password.`
       },
-      conflicts: [
-        'password'
-      ]
     },
     'password': {
-      required: true,
-      mapping: 'password',
+      mapping: 'AttachInstancesRequest.password',
       desc: {
         zh: '扩容的worker节点密码。密码规则为8~30 个字符，且同时包含三项（大、小写字母，数字和特殊符号）',
         en: `The password of the worker nodes to be added. The password must be 8 to 30 characters in length and contain three of the following character types: uppercase letters, lowercase letters, digits, and special characters. You must set key_pair or password.`
@@ -33,7 +28,7 @@ exports.cmdObj = {
       ]
     },
     'format-disk': {
-      mapping: 'formatDisk',
+      mapping: 'AttachInstancesRequest.formatDisk',
       vtype: 'boolean',
       desc: {
         zh: '是否格式化数据盘',
@@ -41,7 +36,7 @@ exports.cmdObj = {
       }
     },
     'keep-instance-name': {
-      mapping: 'keepInstanceName',
+      mapping: 'AttachInstancesRequest.keepInstanceName',
       vtype: 'boolean',
       desc: {
         zh: '是否保留实例名称',
@@ -49,14 +44,14 @@ exports.cmdObj = {
       }
     },
     'cpu-policy': {
-      mapping: 'cpuPolicy',
+      mapping: 'AttachInstancesRequest.cpuPolicy',
       desc: {
         zh: 'CPU策略。Kubernetes集群版本为1.12.6及以上版本支持static和none两种策略，默认为none。',
         en: `The CPU policy. For Kubernetes 1.12.6 and later, valid values of cpu_policy include static and none. Default value: none.`
       }
     },
     'instances': {
-      mapping: 'instances',
+      mapping: 'AttachInstancesRequest.instances',
       required: true,
       vtype: 'array',
       subType: 'string',
@@ -64,18 +59,9 @@ exports.cmdObj = {
         zh: '实例列表',
         en: `A list of the ECS instances.`
       },
-      options: {
-        element: {
-          required: true,
-          desc: {
-            zh: 'ECS实例ID',
-            en: `ECS instance id`
-          }
-        }
-      }
     },
     tags: {
-      mapping: 'tags',
+      mapping: 'AttachInstancesRequest.tags',
       vtype: 'array',
       subType: 'map',
       mappingType: require('@alicloud/cs20151215').AttachInstancesRequestTags,
@@ -86,12 +72,14 @@ exports.cmdObj = {
       example: `key=tier,value=backend`,
       options: {
         key: {
+          mapping: 'key',
           desc: {
             zh: '标签名称',
             en: `the name of tag`
           }
         },
         value: {
+          mapping: 'value',
           desc: {
             zh: '标签值',
             en: `the value of tag`
@@ -100,7 +88,7 @@ exports.cmdObj = {
       }
     },
     'runtime': {
-      mapping: 'runtime',
+      mapping: 'AttachInstancesRequest.runtime',
       vtype: 'map',
       desc: {
         zh: '容器运行时，一般为docker，包括2个信息：name和version',
@@ -109,59 +97,58 @@ exports.cmdObj = {
       example: `name=docker,version=19.03.5`,
       options: {
         name: {
+          mapping: 'name',
           desc: {
             zh: '容器运行时名称',
-            en: ` runtime name `
+            en: `runtime name `
           }
         },
         version: {
+          mapping: 'version',
           desc: {
             zh: '容器运行时版本',
-            en: ` runtime version `
+            en: `runtime version `
           }
         }
       }
     },
     'image-id': {
-      mapping: 'imageId',
+      mapping: 'AttachInstancesRequest.imageId',
       desc: {
         zh: '自定义镜像，默认使用系统镜像。当选择自定义镜像时，将取代默认系统镜像。',
         en: `Custom image, system image is used by default. When selecting a custom image, it will replace the default system image.`
       }
     },
     'user-data': {
-      mapping: 'userData',
+      mapping: 'AttachInstancesRequest.userData',
       desc: {
         zh: 'RDS实例列表，将该ECS加入到选择的RDS实例的白名单中。',
         en: `RDS instance list, add the ECS to the whitelist of the selected RDS instance.`
       }
     },
     'nodepool-id': {
-      mapping: 'nodepoolId',
+      mapping: 'AttachInstancesRequest.nodepoolId',
       desc: {
         zh: `节点池ID。`,
         en: `Node pool ID.`
       }
     },
     'rds-instances': {
-      mapping: 'rdsInstances',
+      mapping: 'AttachInstancesRequest.rdsInstances',
       vtype: 'array',
       subType: 'string',
       desc: {
         zh: 'RDS实例列表',
         en: `A list of the RDS instances.`
-      },
-      options: {
-        element: {
-          required: true,
-          desc: {
-            zh: 'RDS实例ID',
-            en: `RDS instance id`
-          }
-        }
       }
     },
   },
+  conflicts: [
+    {
+      optNames: ['key-pair', 'password'],
+      required: true
+    }
+  ],
   args: [
     {
       name: 'clusterId',
@@ -181,7 +168,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let AttachInstancesRequest = require(`@alicloud/cs20151215`).AttachInstancesRequest;
-  let request = new AttachInstancesRequest(ctx.mappingValue);
+  let request = new AttachInstancesRequest(ctx.mappingValue.AttachInstancesRequest);
 
   let client = new Client(config);
   let result;

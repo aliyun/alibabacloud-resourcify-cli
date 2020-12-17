@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'addons': {
-      mapping: 'addons',
+      mapping: 'UnInstallClusterAddonsRequest.addons',
       mappingType: require(`@alicloud/cs20151215`).UnInstallClusterAddonsRequestAddons,
       vtype: 'array',
       subType: 'map',
@@ -21,6 +21,7 @@ exports.cmdObj = {
       },
       options: {
         'name': {
+          mapping:'name',
           required: true,
           desc: {
             zh: '集群名称',
@@ -49,7 +50,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let UnInstallClusterAddonsRequest = require(`@alicloud/cs20151215`).UnInstallClusterAddonsRequest;
-  let request = new UnInstallClusterAddonsRequest(ctx.mappingValue);
+  let request = new UnInstallClusterAddonsRequest(ctx.mappingValue.UnInstallClusterAddonsRequest);
 
   let client = new Client(config);
 

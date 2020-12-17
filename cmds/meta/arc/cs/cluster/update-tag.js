@@ -12,7 +12,7 @@ exports.cmdObj = {
   options: {
     key: {
       required: true,
-      mapping: 'key',
+      mapping: 'ModifyClusterTagsRequest.key',
       desc: {
         zh: '标签名称',
         en: `The name of the tag to be modified.`
@@ -20,7 +20,7 @@ exports.cmdObj = {
     },
     value: {
       required: true,
-      mapping: 'value',
+      mapping: 'ModifyClusterTagsRequest.value',
       desc: {
         zh: '标签值',
         en: `The value of the tag to be modified.`
@@ -46,7 +46,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let ModifyClusterTagsRequest = require(`@alicloud/cs20151215`).ModifyClusterTagsRequest;
-  let request = new ModifyClusterTagsRequest(ctx.mappingValue);
+  let request = new ModifyClusterTagsRequest(ctx.mappingValue.ModifyClusterTagsRequest);
 
   let client = new Client(config);
   try {

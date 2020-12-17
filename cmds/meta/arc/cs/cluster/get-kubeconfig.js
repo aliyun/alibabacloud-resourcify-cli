@@ -38,8 +38,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let DescribeClusterUserKubeconfigRequest = require(`@alicloud/cs20151215`).DescribeClusterUserKubeconfigRequest;
-  let request = new DescribeClusterUserKubeconfigRequest(ctx.mappingValue);
-
+  let request = new DescribeClusterUserKubeconfigRequest(ctx.mappingValue.DescribeClusterUserKubeconfigRequest);
   let client = new Client(config);
   let result;
   try {

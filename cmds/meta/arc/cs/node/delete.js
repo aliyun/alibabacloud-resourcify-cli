@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'release-node': {
-      mapping: 'releaseNode',
+      mapping: 'RemoveClusterNodesRequest.releaseNode',
       vtype: 'boolean',
       desc: {
         zh: '是否同时释放ECS',
@@ -19,7 +19,7 @@ exports.cmdObj = {
       }
     },
     'drain-node': {
-      mapping: 'drainNode',
+      mapping: 'RemoveClusterNodesRequest.drainNode',
       vtype: 'boolean',
       desc: {
         zh: '是否排空节点上的Pod',
@@ -27,20 +27,12 @@ exports.cmdObj = {
       }
     },
     nodes: {
-      mapping: 'nodes',
+      mapping: 'RemoveClusterNodesRequest.nodes',
       vtype: 'array',
       subType: 'string',
       desc: {
         zh: '要移除的node_name数组',
         en: `A list of the nodes that you want to remove.`
-      },
-      options: {
-        element: {
-          desc: {
-            zh: '节点名称',
-            en: `node name`
-          }
-        }
       }
     },
   },
@@ -63,7 +55,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let RemoveClusterNodesRequest = require(`@alicloud/cs20151215`).RemoveClusterNodesRequest;
-  let request = new RemoveClusterNodesRequest(ctx.mappingValue);
+  let request = new RemoveClusterNodesRequest(ctx.mappingValue.RemoveClusterNodesRequest);
 
   let client = new Client(config);
   try {

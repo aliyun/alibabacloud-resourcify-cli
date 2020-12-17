@@ -11,30 +11,40 @@ exports.cmdObj = {
   },
   options: {
     'api-server-eip': {
-      mapping: 'apiServerEip',
+      mapping: 'ModifyClusterRequest.apiServerEip',
       vtype: 'boolean',
       desc: {
         zh: '集群是否开启EIP',
         en: `Specifies whether to assign an elastic IP address to the API server of the cluster.`
-      },
-      sufficient: function (val) {
-        let optList = {};
-        if (val) {
-          optList['api-server-eip-id'] = true;
-        }
-        return optList;
       }
     },
     'api-server-eip-id': {
-      mapping: 'apiServerEipId',
-      dependency: true,
+      mapping: 'ModifyClusterRequest.apiServerEipId',
       desc: {
         zh: 'Kubernetes集群的apiServer的弹性IP（EIP）ID',
         en: `The ID of the elastic IP address that is assigned to the API server of the cluster.`
+      },
+      attributes: {
+        show: [
+          {
+            'api-server-eip': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ],
+        required: [
+          {
+            'api-server-eip': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ]
       }
     },
     'deletion-protection': {
-      mapping: 'deletionProtection',
+      mapping: 'ModifyClusterRequest.deletionProtection',
       vtype: 'boolean',
       desc: {
         zh: '是否开启集群删除保护',
@@ -42,7 +52,7 @@ exports.cmdObj = {
       }
     },
     'ingress-domain-rebinding': {
-      mapping: 'ingressDomainRebinding',
+      mapping: 'ModifyClusterRequest.ingressDomainRebinding',
       vtype: 'boolean',
       desc: {
         zh: '是否重新绑定域名到ingress的SLB地址',
@@ -50,14 +60,14 @@ exports.cmdObj = {
       }
     },
     'ingress-loadbalancer-id': {
-      mapping: 'ingressLoadbalancerId',
+      mapping: 'ModifyClusterRequest.ingressLoadbalancerId',
       desc: {
         zh: 'Kubernetes集群的ingress loadbalancer的ID',
         en: `The ID of the Server Load Balancer (SLB) instance associated with the ingresses of the cluster.`
       }
     },
     'resource-group-id': {
-      mapping: 'resourceGroupId',
+      mapping: 'ModifyClusterRequest.resourceGroupId',
       desc: {
         zh: 'Kubernetes集群资源组ID',
         en: 'The ID of the resource group to which the cluster belongs.'
@@ -83,7 +93,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let ModifyClusterRequest = require(`@alicloud/cs20151215`).ModifyClusterRequest;
-  let request = new ModifyClusterRequest(ctx.mappingValue);
+  let request = new ModifyClusterRequest(ctx.mappingValue.ModifyClusterRequest);
 
   let client = new Client(config);
   let result;
