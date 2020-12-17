@@ -11,28 +11,28 @@ exports.cmdObj = {
   },
   options: {
     'page-size': {
-      mapping: 'pageSize',
+      mapping: 'DescribeClusterNodesRequest.pageSize',
       desc: {
         zh: '分页大小',
         en: `The number of entries to return on each page.`
       }
     },
     'page-number': {
-      mapping: 'pageNumber',
+      mapping: 'DescribeClusterNodesRequest.pageNumber',
       desc: {
         zh: '共计展示多少页',
         en: `The total number of pages to return.`
       }
     },
     'nodepool-id': {
-      mapping: 'nodepoolId',
+      mapping: 'DescribeClusterNodesRequest.nodepoolId',
       desc: {
         zh: '节点池ID',
         en: `The ID of the node pool.`
       }
     },
     'state': {
-      mapping: 'state',
+      mapping: 'DescribeClusterNodesRequest.state',
       desc: {
         zh: '状态信息',
         en: `The status of the cluster.`
@@ -58,7 +58,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let DescribeClusterNodesRequest = require(`@alicloud/cs20151215`).DescribeClusterNodesRequest;
-  let request = new DescribeClusterNodesRequest(ctx.mappingValue);
+  let request = new DescribeClusterNodesRequest(ctx.mappingValue.DescribeClusterNodesRequest);
 
   let client = new Client(config);
   let result;

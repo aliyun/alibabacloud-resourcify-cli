@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'body': {
-      mapping: 'body',
+      mapping: 'InstallClusterAddonsRequest.body',
       mappingType: require(`@alicloud/cs20151215`).InstallClusterAddonsRequestBody,
       vtype: 'array',
       subType: 'map',
@@ -78,8 +78,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let InstallClusterAddonsRequest = require(`@alicloud/cs20151215`).InstallClusterAddonsRequest;
-  let request = new InstallClusterAddonsRequest(ctx.mappingValue);
-
+  let request = new InstallClusterAddonsRequest(ctx.mappingValue.InstallClusterAddonsRequest);
   let client = new Client(config);
 
   try {

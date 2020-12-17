@@ -241,38 +241,38 @@ describe('parser.js', function () {
     let parser = new Parse(ctx);
 
     parser.options = { flag1: { vtype: 'string' }, flag2: { vtype: 'number' } };
-    // result = parser.parseOne(['--flag1=value', '--flag2', '1']);
-    // assert.deepStrictEqual(parser.parsedValue, { flag1: 'value' });
-    // assert.deepStrictEqual(parser.args, ['--flag2', '1']);
-    // assert.strictEqual(result, undefined);
+    result = parser.parseOne(['--flag1=value', '--flag2', '1']);
+    assert.deepStrictEqual(parser.parsedValue, { flag1: 'value' });
+    assert.deepStrictEqual(parser.args, ['--flag2', '1']);
+    assert.strictEqual(result, undefined);
 
-    // parser.parsedValue = {};
-    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    // result = parser.parseOne(['--flag=value', 'value2']);
-    // assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
-    // assert.deepStrictEqual(parser.args, []);
-    // assert.strictEqual(result, undefined);
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag=value', 'value2']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.strictEqual(result, undefined);
 
-    // parser.parsedValue = {};
-    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    // result = parser.parseOne(['--flag=value', 'value2']);
-    // assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
-    // assert.deepStrictEqual(parser.args, []);
-    // assert.strictEqual(result, undefined);
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag=value', 'value2']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: ['value', 'value2'] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.strictEqual(result, undefined);
 
-    // parser.parsedValue = {};
-    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    // result = parser.parseOne(['--flag.0=value', 'value2']);
-    // assert.deepStrictEqual(parser.parsedValue, { flag: [''] });
-    // assert.deepStrictEqual(parser.args, []);
-    // assert.deepStrictEqual(result, { prompt: i18n.vTypeMatchErr, values: ['--flag.0'] });
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag.0=value', 'value2']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: [''] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.deepStrictEqual(result, { prompt: i18n.vTypeMatchErr, values: ['--flag.0'] });
 
-    // parser.parsedValue = {};
-    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    // result = parser.parseOne(['--flag.0=value']);
-    // assert.deepStrictEqual(parser.parsedValue, { flag: ['value'] });
-    // assert.deepStrictEqual(parser.args, []);
-    // assert.strictEqual(result, undefined);
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag.0=value']);
+    assert.deepStrictEqual(parser.parsedValue, { flag: ['value'] });
+    assert.deepStrictEqual(parser.args, []);
+    assert.strictEqual(result, undefined);
 
     parser.parsedValue = {};
     parser.options = { flag: { vtype: 'array', subType: 'string' } };
@@ -281,12 +281,12 @@ describe('parser.js', function () {
     assert.deepStrictEqual(parser.args, []);
     assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag.a'] });
 
-    // parser.parsedValue = {};
-    // parser.options = { flag: { vtype: 'array', subType: 'string' } };
-    // result = parser.parseOne(['--flag1=value']);
-    // assert.deepStrictEqual(parser.parsedValue, {});
-    // assert.deepStrictEqual(parser.args, []);
-    // assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag1'] });
+    parser.parsedValue = {};
+    parser.options = { flag: { vtype: 'array', subType: 'string' } };
+    result = parser.parseOne(['--flag1=value']);
+    assert.deepStrictEqual(parser.parsedValue, {});
+    assert.deepStrictEqual(parser.args, []);
+    assert.deepStrictEqual(result, { prompt: i18n.unknowFlag, values: ['--flag1'] });
   });
 
   it('parseFlag(args)', function () {
@@ -610,9 +610,37 @@ describe('parser.js', function () {
           mappingFlag: [
             { mappingKey: 'key1', mappingValue: 'value1' },
             { mappingKey: 'key2', mappingValue: 'value2' }
-          ]
+          ],
         },
-        mappingFlag2: 'value2'
+        mappingFlag2: 'value2' 
+      }
+    );
+  });
+
+  it('valueToAPIStruct(): Multilevel2', function () {
+    let options = {
+      flag: {
+        mapping: 'root.mappingFlag',
+        vtype: 'string',
+      },
+      flag2: {
+        mapping: 'root.mappingFlag2',
+        vtype: 'string'
+      }
+    };
+    let values = {
+      flag:'value1',
+      flag2: 'value2'
+    };
+    let parser = new Parse(ctx);
+    let mappingValue = {};
+    parser.valueToAPIStruct(options, values, mappingValue);
+    assert.deepStrictEqual(mappingValue,
+      {
+        root: {
+          mappingFlag: 'value1',
+          mappingFlag2: 'value2' 
+        }
       }
     );
   });
@@ -742,5 +770,59 @@ describe('parser.js', function () {
       prompt: i18n.concatPromt(i18n.equalRelationErr, i18n.requireOptionErr),
       values: ['flag2', 'requiredValue', 'dep-flag']
     });
+  });
+
+  it('tansOpts()', function () {
+    let cmdObj = {
+      options: {
+        flag: {},
+        'conflict-flag': {},
+        flag2: {
+          vtype: 'number',
+        },
+        flag3: {
+          attributes: {
+            required: [
+              {
+                flag2: {
+                  type: 'equal',
+                  value: 3
+                }
+              }
+            ]
+          }
+        },
+        flag4: {}
+      },
+      conflicts: [
+        {
+          optNames: ['flag', 'conflict-flag'],
+          required: true
+        },
+        {
+          optNames: ['flag3', 'flag4'],
+        }
+      ]
+    };
+    let parser = new Parse(ctx);
+    let result = parser.transOpts(cmdObj);
+    assert.deepStrictEqual(result, { index: [['flag', 'conflict-flag'], ['flag3', 'flag4'], 'flag2'], endRequiredIndex: 0 });
+
+    cmdObj.conflicts.pop();
+    result = parser.transOpts(cmdObj);
+    assert.deepStrictEqual(result, { index: [['flag', 'conflict-flag'], 'flag2', 'flag3', 'flag4'], endRequiredIndex: 0 });
+
+    cmdObj.options.flag4.index = 0;
+    result = parser.transOpts(cmdObj);
+    assert.deepStrictEqual(result, { index: [['flag', 'conflict-flag'], 'flag4', 'flag3', 'flag2'], endRequiredIndex: 0 });
+
+    cmdObj.options.flag2.index = 1;
+    result = parser.transOpts(cmdObj);
+    assert.deepStrictEqual(result, { index: [['flag', 'conflict-flag'], 'flag4', 'flag2', 'flag3'], endRequiredIndex: 0 });
+
+    cmdObj.options.flag5 = {required: true };
+    cmdObj.options.flag6 = { index: 0, required: true };
+    result = parser.transOpts(cmdObj);
+    assert.deepStrictEqual(result, { index: ['flag6','flag5', ['flag', 'conflict-flag'], 'flag4', 'flag2', 'flag3'], endRequiredIndex: 2 });
   });
 });

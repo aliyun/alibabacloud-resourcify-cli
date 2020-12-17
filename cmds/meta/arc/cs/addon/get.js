@@ -11,14 +11,14 @@ exports.cmdObj = {
   },
   options: {
     'region': {
-      mapping: 'region',
+      mapping: 'DescribeAddonsRequest.region',
       desc: {
         zh: '阿里云区域',
         en: `The ID of the region to query.`
       }
     },
     'cluster-type': {
-      mapping: 'clusterType',
+      mapping: 'DescribeAddonsRequest.clusterType',
       desc: {
         zh: '集群类型，默认为kubernetes',
         en: `The type of the cluster. Default value: kubernetes.`
@@ -38,7 +38,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let DescribeAddonsRequest = require(`@alicloud/cs20151215`).DescribeAddonsRequest;
-  let request = new DescribeAddonsRequest(ctx.mappingValue);
+  let request = new DescribeAddonsRequest(ctx.mappingValue.DescribeAddonsRequest);
 
   let client = new Client(config);
   let result;

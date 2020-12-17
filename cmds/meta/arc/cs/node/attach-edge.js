@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'is_edge_worker': {
-      vtype: 'boolean',
+      vtype: 'AttachInstancesRequest.boolean',
       required: true,
       mapping: 'isEdgeWorker',
       desc: {
@@ -20,7 +20,7 @@ exports.cmdObj = {
       }
     },
     'instances': {
-      mapping: 'instances',
+      mapping: 'AttachInstancesRequest.instances',
       required: true,
       vtype: 'array',
       subType: 'string',
@@ -28,36 +28,18 @@ exports.cmdObj = {
         zh: '实例列表',
         en: `A list of the ECS instances.`
       },
-      options: {
-        element: {
-          required: true,
-          desc: {
-            zh: 'ECS实例ID',
-            en: `ECS instance id`
-          }
-        }
-      }
     },
     'rds-instances': {
-      mapping: 'rdsInstances',
+      mapping: 'AttachInstancesRequest.rdsInstances',
       vtype: 'array',
       subType: 'string',
       desc: {
         zh: 'RDS实例列表',
         en: `A list of the RDS instances.`
-      },
-      options: {
-        element: {
-          required: true,
-          desc: {
-            zh: 'RDS实例ID',
-            en: `RDS instance id`
-          }
-        }
       }
     },
     'keep-instance-name': {
-      mapping: 'keepInstanceName',
+      mapping: 'AttachInstancesRequest.keepInstanceName',
       vtype: 'boolean',
       desc: {
         zh: '是否保留实例名称',
@@ -65,7 +47,7 @@ exports.cmdObj = {
       }
     },
     'format-disk': {
-      mapping: 'formatDisk',
+      mapping: 'AttachInstancesRequest.formatDisk',
       vtype: 'boolean',
       desc: {
         zh: '是否格式化数据盘',
@@ -92,7 +74,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let AttachInstancesRequest = require(`@alicloud/cs20151215`).AttachInstancesRequest;
-  let request = new AttachInstancesRequest(ctx.mappingValue);
+  let request = new AttachInstancesRequest(ctx.mappingValue.AttachInstancesRequest);
 
   let client = new Client(config);
   let result;

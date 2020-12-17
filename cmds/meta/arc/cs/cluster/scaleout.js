@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'count': {
-      mapping: 'count',
+      mapping: 'ScaleOutClusterRequest.count',
       vtype: 'number',
       desc: {
         zh: '扩容实例数量',
@@ -19,27 +19,21 @@ exports.cmdObj = {
       }
     },
     'key-pair': {
-      mapping: 'keyPair',
+      mapping: 'ScaleOutClusterRequest.keyPair',
       desc: {
         zh: 'key_pair名称',
         en: `The name of the key pair. You must set key_pair or login_password.`
       },
-      conflicts: [
-        'login-password'
-      ]
     },
     'login-password': {
-      mapping: 'loginPassword',
+      mapping: 'ScaleOutClusterRequest.loginPassword',
       desc: {
         zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号），和key_pair 二选一。',
         en: `The SSH logon password. The password must be 8 to 30 characters in length and contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters. You must set login_password or key_pair.`
-      },
-      conflicts: [
-        'key-pair'
-      ]
+      }
     },
     'worker-data-disk': {
-      mapping: 'workerDataDisk',
+      mapping: 'ScaleOutClusterRequest.workerDataDisk',
       vtype: 'boolean',
       desc: {
         zh: '表示worker节点是否挂载数据盘',
@@ -47,8 +41,7 @@ exports.cmdObj = {
       }
     },
     'worker-data-disks': {
-      mapping: 'workerDataDisks',
-      dependency: true,
+      mapping: 'ScaleOutClusterRequest.workerDataDisks',
       vtype: 'array',
       subType: 'map',
       mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestWorkerDataDisks,
@@ -56,9 +49,28 @@ exports.cmdObj = {
         zh: `Worker数据盘类型、大小等配置的组合`,
         en: `The data disk configurations of worker nodes, such as the disk type and disk size. This parameter takes effect only if worker-data-disk is set to true.`
       },
+      attributes: {
+        show: [
+          {
+            'worker-data-disk': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-data-disk': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ]
+      },
       example: `category=cloud,size=40,encrypted=false`,
       options: {
         category: {
+          mapping: 'category',
           desc: {
             zh: '数据盘类型',
             en: `the type of the data disks`
@@ -70,12 +82,14 @@ exports.cmdObj = {
           ]
         },
         size: {
+          mapping: 'size',
           desc: {
             zh: '数据盘大小，单位为GiB',
             en: `the size of a data disk. Unit: GiB.`
           }
         },
         encrypted: {
+          mapping: 'encrypted',
           desc: {
             zh: '是否对数据盘加密',
             en: `specifies whether to encrypt data disks. `
@@ -88,92 +102,135 @@ exports.cmdObj = {
       }
     },
     'worker-instance-types': {
-      mapping: 'workerInstanceTypes',
+      mapping: 'ScaleOutClusterRequest.workerInstanceTypes',
       vtype: 'array',
       subType: 'string',
       desc: {
         zh: 'Worker节点ECS规格类型代码',
         en: `The ECS instance types of worker nodes. `
       },
-      options: {
-        element: {
-          desc: {
-            zh: 'ECS规格类型代码',
-            en: `The ECS instance type`
-          }
-        }
-      }
     },
     'worker-instance-charge-type': {
-      mapping: 'workerInstanceChargeType',
+      mapping: 'ScaleOutClusterRequest.workerInstanceChargeType',
       desc: {
         zh: `Worker节点付费类型：
-                PrePaid：预付费
-                PostPaid：按量付费`,
+PrePaid：预付费
+PostPaid：按量付费`,
         en: `The billing method of worker nodes. Valid values:
-                PrePaid: subscription.
-                PostPaid: pay-as-you-go.
-                Default value: PostPaid.
-                `
+PrePaid: subscription.
+PostPaid: pay-as-you-go.
+Default value: PostPaid.`
       },
       choices: [
         'PrePaid',
         'PostPaid'
-      ],
-      sufficient: function (val) {
-        let optList = {};
-        if (val === 'PrePaid') {
-          optList['worker-period'] = true;
-          optList['worker-auto-renew'] = true;
-          optList['worker-period-unit'] = true;
-        }
-        return optList;
-      }
+      ]
     },
     'worker-period': {
-      mapping: 'workerPeriod',
+      mapping: 'ScaleOutClusterRequest.workerPeriod',
       vtype: 'number',
-      dependency: true,
       desc: {
         zh: '包年包月时长，当worker_instance_charge_type取值为PrePaid时才生效且为必选值，取值范围：PeriodUnit=Month时，Period取值：{ “1”， “2”， “3”， “6”， “12”}',
         en: `The subscription duration of worker nodes. This parameter takes effect and is required only if worker-instance-charge-type is set to PrePaid. If worker-period-unit is set to Month, valid values of worker-period include 1, 2, 3, 6, and 12.`
+      },
+      attributes: {
+        show: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'worker-period-unit': {
-      mapping: 'workerPeriodUnit',
-      dependency: true,
+      mapping: 'ScaleOutClusterRequest.workerPeriodUnit',
       desc: {
         zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位',
         en: `The unit of the subscription duration. This parameter is required if worker-instance-charge-type is set to PrePaid. A value of Month indicates that the subscription duration is measured in months`
+      },
+      attributes: {
+        show: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'worker-auto-renew': {
-      mapping: 'workerAutoRenew',
+      mapping: 'ScaleOutClusterRequest.workerAutoRenew',
       vtype: 'boolean',
-      dependency: true,
       desc: {
         zh: '是否开启Worker节点自动续费',
         en: `Specifies whether to enable auto renewal for worker nodes`
       },
-      sufficient: function (val) {
-        let optList = {};
-        if (val) {
-          optList['worker-auto-renew-period'] = true;
-        }
-        return optList;
+      attributes: {
+        show: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-instance-charge-type': {
+              type: 'equal',
+              value: 'PrePaid'
+            }
+          }
+        ]
       }
     },
     'worker-auto-renew-period': {
-      mapping: 'workerAutoRenewPeriod',
-      dependency: true,
+      mapping: 'ScaleOutClusterRequest.workerAutoRenewPeriod',
       vtype: 'number',
       desc: {
         zh: 'Worker节点自动续费周期，当选择预付费和自动续费时才生效',
         en: `The auto renewal period for worker nodes. This parameter takes effect and is required only if worker_instance_charge_type is set to PrePaid and worker_auto_renew is set to true. If worker-period-unit is set to Month, valid values of worker-auto-renew-period include 1, 2, 3, 6, and 12.`
+      },
+      attributes: {
+        show: [
+          {
+            'worker-auto-renew': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ],
+        required: [
+          {
+            'worker-auto-renew': {
+              type: 'equal',
+              value: true
+            }
+          }
+        ]
       }
     },
     'worker-system-disk-category': {
-      mapping: 'workerSystemDiskCategory',
+      mapping: 'ScaleOutClusterRequest.workerSystemDiskCategory',
       desc: {
         zh: 'Worker节点系统盘类型',
         en: `The system disk type of worker nodes.`
@@ -184,7 +241,7 @@ exports.cmdObj = {
       ]
     },
     'worker-system-disk-size': {
-      mapping: 'workerSystemDiskSize',
+      mapping: 'ScaleOutClusterRequest.workerSystemDiskSize',
       vtype: 'number',
       desc: {
         zh: 'Worker节点系统盘大小，单位为GiB',
@@ -192,7 +249,7 @@ exports.cmdObj = {
       }
     },
     'cloud-monitor-flags': {
-      mapping: 'cloudMonitorFlags',
+      mapping: 'ScaleOutClusterRequest.cloudMonitorFlags',
       vtype: 'boolean',
       desc: {
         zh: '是否安装云监控插件',
@@ -200,7 +257,7 @@ exports.cmdObj = {
       }
     },
     'disable-rollback': {
-      mapping: 'disableRollback',
+      mapping: 'ScaleOutClusterRequest.disableRollback',
       vtype: 'boolean',
       desc: {
         zh: '失败是否回滚',
@@ -208,14 +265,14 @@ exports.cmdObj = {
       }
     },
     'cpu-policy': {
-      mapping: 'cpuPolicy',
+      mapping: 'ScaleOutClusterRequest.cpuPolicy',
       desc: {
         zh: 'CPU策略。集群版本为1.12.6及以上版本支持static 和 none两种策略。默认为none',
         en: `The CPU policy. For Kubernetes 1.12.6 and later, valid values of cpu_policy include static and none. Default value: none.`
       }
     },
     'vswitch-ids': {
-      mapping: 'vswitchIds',
+      mapping: 'ScaleOutClusterRequest.vswitchIds',
       vtype: 'array',
       subType: 'string',
       maxindex: 3,
@@ -223,37 +280,29 @@ exports.cmdObj = {
         zh: 'Worker节点的虚拟交换机ID列表',
         en: `The VSwitch IDs of worker nodes. Specify one to three VSwitch IDs. We recommend that you specify three VSwitches in different zones to ensure high availability.`
       },
-      options: {
-        element: {
-          required: true,
-          desc: {
-            zh: '节点交换机ID',
-            en: `VSwitch ID`
-          }
-        }
-      }
     },
     tags: {
-      mapping: 'tags',
+      mapping: 'ScaleOutClusterRequest.tags',
       vtype: 'array',
       subType: 'map',
       mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestTags,
       desc: {
         zh: '给集群打tag标签：key：标签名称；value：标签值',
         en: `The tags of the cluster.
-                key: the name of the tag.
-                value: the value of the tag.
-                `
+key: the name of the tag.
+value: the value of the tag.`
       },
       example: `key=tier,value=backend`,
       options: {
         key: {
+          mapping: 'key',
           desc: {
             zh: '标签名称',
             en: `the name of the tag.`
           }
         },
         value: {
+          mapping: 'value',
           desc: {
             zh: '标签值',
             en: `the value of the tag`
@@ -262,7 +311,7 @@ exports.cmdObj = {
       }
     },
     taints: {
-      mapping: 'taints',
+      mapping: 'ScaleOutClusterRequest.taints',
       vtype: 'array',
       subType: 'map',
       mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestTaints,
@@ -273,18 +322,21 @@ exports.cmdObj = {
       example: `key=tier,value=backend`,
       options: {
         key: {
+          mapping: 'key',
           desc: {
             zh: 'taints名称',
             en: `the name of taint`
           }
         },
         value: {
+          mapping: 'value',
           desc: {
             zh: 'taints值',
             en: `the value of taint`
           }
         },
         effect: {
+          mapping: 'effect',
           desc: {
             zh: '调度策略。',
             en: `the effect of taint`
@@ -293,6 +345,11 @@ exports.cmdObj = {
       }
     },
   },
+  conflicts: [
+    {
+      optNames: ['key-pair', 'login-password'],
+    }
+  ],
   args: [
     {
       name: 'clusterId',
@@ -313,7 +370,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let ScaleOutClusterRequest = require(`@alicloud/cs20151215`).ScaleOutClusterRequest;
-  let request = new ScaleOutClusterRequest(ctx.mappingValue);
+  let request = new ScaleOutClusterRequest(ctx.mappingValue.ScaleOutClusterRequest);
 
   let client = new Client(config);
   let result;

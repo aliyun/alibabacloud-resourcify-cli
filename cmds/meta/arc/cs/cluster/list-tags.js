@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'resource-type': {
-      mapping: 'resourceType',
+      mapping: 'ListTagResourcesRequest.resourceType',
       required: true,
       desc: {
         zh: '资源类型定义',
@@ -19,21 +19,21 @@ exports.cmdObj = {
       }
     },
     'next-token': {
-      mapping: 'nextToken',
+      mapping: 'ListTagResourcesRequest.nextToken',
       desc: {
         zh: '下一个查询开始的Token',
         en: `The token used to start the next query.`
       }
     },
     'resource-ids': {
-      mapping: 'resourceIds',
+      mapping: 'ListTagResourcesRequest.resourceIds',
       desc: {
         zh: '要查询的集群ID列表',
         en: `The IDs of the resources to query.`
       }
     },
     tags: {
-      mapping: 'tags',
+      mapping: 'ListTagResourcesRequest.tags',
       vtype: 'string',
       desc: {
         zh: '给集群打tag标签：key：标签名称；value：标签值',
@@ -55,7 +55,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let ListTagResourcesRequest = require(`@alicloud/cs20151215`).ListTagResourcesRequest;
-  let request = new ListTagResourcesRequest(ctx.mappingValue);
+  let request = new ListTagResourcesRequest(ctx.mappingValue.ListTagResourcesRequest);
 
   let client = new Client(config);
   let result;
