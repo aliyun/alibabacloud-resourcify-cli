@@ -455,7 +455,7 @@ describe('parser.js', function () {
     err = parser.optionValidate('flag2');
     assert.deepStrictEqual(err, {
       prompt: i18n.concatPromt(i18n.includeRelationErr, i18n.requireOptionErr),
-      values: ['flag[*].value', 'flag2']
+      values: ['flag[*].value','need', 'flag2']
     });
   });
 

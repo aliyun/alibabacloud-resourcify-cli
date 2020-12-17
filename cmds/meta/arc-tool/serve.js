@@ -5,8 +5,12 @@ const koaStatic = require('koa-static');
 const path = require('path');
 const fs = require('fs');
 const rootPath = path.join(__dirname, '../arc');
-const { transOpts } = require('../../../lib/parser.js');
+const Parse = require('../../../lib/parser.js');
+const i18n = require('../../../lib/i18n.js');
+const util = require('util');
+
 let lang = 'zh';
+
 
 exports.cmdObj = {
   desc: {
@@ -66,6 +70,41 @@ function getResourceData(product, resource) {
   return { name: resource, syntax, desc, actions };
 }
 
+function getOptionInfo(parse, option) {
+  let info = {
+    vtype: option.vtype || 'string',
+    desc: option.desc[lang],
+    remark: ''
+  };
+  if (option.required) {
+    info.vtype = '*' + info.vtype;
+  }
+  if (option.attributes) {
+    if (option.attributes.show) {
+      info.remark = i18n.conditionNotMetPrompt[lang] + ':\n';
+      for (let i = 0; i < option.attributes.show.length; i++) {
+        let prompt = parse.getConditionPrompt(option.attributes.show[i]);
+        info.remark =info.remark+ util.format(prompt.prompt[lang], ...prompt.values)+'\n';
+        if (option.attributes.show[i + 1]) {
+          info.remark = info.remark + i18n.orKeyWord[lang] + '\n';
+        }
+      }
+    }
+    if (option.attributes.required) {
+      info.remark = info.remark + i18n.requiredConditionPrompt[lang] + ':\n';
+      for (let i = 0; i < option.attributes.required.length; i++) {
+        let prompt = parse.getConditionPrompt(option.attributes.required[i]);
+        info.remark =info.remark+ util.format(prompt.prompt[lang], ...prompt.values)+'\n';
+        if (option.attributes.required[i + 1]) {
+          info.remark = info.remark + i18n.orKeyWord[lang] + '\n';
+        }
+      }
+    }
+  }
+  console.log(info);
+  return info;
+}
+
 function getActionData(product, resource, action) {
   let descPath = path.join(rootPath, product, resource, action) + '.js';
   let cmdObj = require(descPath).cmdObj;
@@ -102,26 +141,16 @@ function getActionData(product, resource, action) {
   if (!cmdObj.options) {
     return { name: action, syntax, desc };
   }
-  let opts = transOpts(cmdObj.options);
-  if (opts._required) {
-    for (let option of opts._required) {
-      if (Array.isArray(option)) {
-        continue;
+  let parse = new Parse({});
+  let result = parse.transOpts(cmdObj);
+  for (let optName of result.index) {
+    if (Array.isArray(optName)) {
+      for (let name of optName) {
+        options[name] = getOptionInfo(parse, cmdObj.options[name]);
       }
-      options[option] = {
-        vtype: `*${opts[option].vtype || 'string'}`,
-        desc: opts[option].desc[lang]
-      };
+    } else {
+      options[optName] = getOptionInfo(parse, cmdObj.options[optName]);
     }
-  }
-  for (let option of opts._transed) {
-    if (opts._required.indexOf(option) !== -1) {
-      continue;
-    }
-    options[option] = {
-      vtype: cmdObj.options[option].vtype || 'string',
-      desc: cmdObj.options[option].desc[lang]
-    };
   }
   return { name: action, syntax, desc, options };
 }
