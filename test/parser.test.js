@@ -455,7 +455,7 @@ describe('parser.js', function () {
     err = parser.optionValidate('flag2');
     assert.deepStrictEqual(err, {
       prompt: i18n.concatPromt(i18n.includeRelationErr, i18n.requireOptionErr),
-      values: ['flag[*].value','need', 'flag2']
+      values: ['flag[*].value', 'need', 'flag2']
     });
   });
 
@@ -612,7 +612,7 @@ describe('parser.js', function () {
             { mappingKey: 'key2', mappingValue: 'value2' }
           ],
         },
-        mappingFlag2: 'value2' 
+        mappingFlag2: 'value2'
       }
     );
   });
@@ -629,7 +629,7 @@ describe('parser.js', function () {
       }
     };
     let values = {
-      flag:'value1',
+      flag: 'value1',
       flag2: 'value2'
     };
     let parser = new Parse(ctx);
@@ -639,7 +639,7 @@ describe('parser.js', function () {
       {
         root: {
           mappingFlag: 'value1',
-          mappingFlag2: 'value2' 
+          mappingFlag2: 'value2'
         }
       }
     );
@@ -650,7 +650,7 @@ describe('parser.js', function () {
     let parser = new Parse(ctx);
     let err = parser.parse();
     assert.strictEqual(err, undefined);
-    assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'number-flag': 2 });
+    assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'number-flag': 2, 'unchanged-flag': 'unchanged' });
   });
 
   it('parse: conflict', function () {
@@ -820,9 +820,9 @@ describe('parser.js', function () {
     result = parser.transOpts(cmdObj);
     assert.deepStrictEqual(result, { index: [['flag', 'conflict-flag'], 'flag4', 'flag2', 'flag3'], endRequiredIndex: 0 });
 
-    cmdObj.options.flag5 = {required: true };
+    cmdObj.options.flag5 = { required: true };
     cmdObj.options.flag6 = { index: 0, required: true };
     result = parser.transOpts(cmdObj);
-    assert.deepStrictEqual(result, { index: ['flag6','flag5', ['flag', 'conflict-flag'], 'flag4', 'flag2', 'flag3'], endRequiredIndex: 2 });
+    assert.deepStrictEqual(result, { index: ['flag6', 'flag5', ['flag', 'conflict-flag'], 'flag4', 'flag2', 'flag3'], endRequiredIndex: 2 });
   });
 });
