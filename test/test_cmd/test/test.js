@@ -7,7 +7,7 @@ exports.cmdObj = {
   options: {
     flag: {},
     'number-flag': {
-      alias:'n',
+      alias: 'n',
       vtype: 'number',
     },
     'boolean-flag': {
@@ -15,6 +15,11 @@ exports.cmdObj = {
     },
     'unrecognized-flag': {
       vtype: 'unrecognized'
+    },
+    'unchanged-flag': {
+      vtype: 'string',
+      unchanged: true,
+      default: 'unchanged'
     }
   }
 };
