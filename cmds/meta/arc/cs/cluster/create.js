@@ -135,6 +135,7 @@ Default value: true. We recommend that you use the default value.`
     'proxy-mode': {
       mapping: 'CreateClusterRequest.proxyMode',
       vtype: 'string',
+      default:'ipvs',
       desc: {
         zh: 'kube-proxy代理模式,默认为iptables',
         en: `The kube-proxy mode. Valid values: iptables and ipvs. Default value: iptables.`
@@ -387,6 +388,7 @@ PostPaid: pay-as-you-go.`
     'cpu-policy': {
       mapping: 'CreateClusterRequest.cpuPolicy',
       vtype: 'string',
+      default: 'none',
       desc: {
         zh: 'CPU策略。集群版本为1.12.6及以上版本支持static 和 none两种策略。默认为none',
         en: `The CPU policy. For Kubernetes 1.12.6 and later, valid values of cpu_policy include static and none. Default value: none.`
