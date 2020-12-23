@@ -53,6 +53,13 @@ describe('parser.js', function () {
     assert.strictEqual('    arc-test test [子命令]\n    arc-test test <arg1> [arg2] [选项]', helper.ui.toString());
   });
 
+  it('getDesc', function () {
+    let helper = new Helper(ctx);
+    helper.cmdObj = { desc: { zh: '测试数据', en: 'test data' } };
+    helper.getDesc();
+    assert.strictEqual('\n  测试数据\n', helper.ui.toString());
+  });
+
   it('getSubList', function () {
     let helper = new Helper(ctx);
     helper.getSubList();
@@ -66,14 +73,14 @@ describe('parser.js', function () {
   it('getOptions()', function () {
     let helper = new Helper(ctx);
     helper.cmdObj.options = {
-      'conflict-flag':{
-        desc:{
-          zh:'冲突选项1'
+      'conflict-flag': {
+        desc: {
+          zh: '冲突选项1'
         }
       },
-      'conflict-flag2':{
-        desc:{
-          zh:'冲突选项2'
+      'conflict-flag2': {
+        desc: {
+          zh: '冲突选项2'
         }
       },
       flag: {
@@ -81,7 +88,7 @@ describe('parser.js', function () {
         desc: {
           zh: '测试flag'
         },
-        choices:[
+        choices: [
           'value1',
           'value2'
         ]
@@ -91,10 +98,10 @@ describe('parser.js', function () {
         desc: {
           zh: '测试flag2'
         },
-        alias:'f'
+        alias: 'f'
       }
     };
-    helper.cmdObj.conflicts=[
+    helper.cmdObj.conflicts = [
       {
         optNames: ['conflict-flag', 'conflict-flag2'],
       }
@@ -110,18 +117,18 @@ describe('parser.js', function () {
     helper.ui.toString());
   });
 
-  it('helper()',function(){
+  it('helper()', function () {
     let helper = new Helper(ctx);
     helper.cmds = ['test'];
     helper.cmdObj.options = {
-      'conflict-flag':{
-        desc:{
-          zh:'冲突选项1'
+      'conflict-flag': {
+        desc: {
+          zh: '冲突选项1'
         }
       },
-      'conflict-flag2':{
-        desc:{
-          zh:'冲突选项2'
+      'conflict-flag2': {
+        desc: {
+          zh: '冲突选项2'
         }
       },
       flag: {
@@ -129,7 +136,7 @@ describe('parser.js', function () {
         desc: {
           zh: '测试flag'
         },
-        choices:[
+        choices: [
           'value1',
           'value2'
         ]
@@ -139,25 +146,28 @@ describe('parser.js', function () {
         desc: {
           zh: '测试flag2'
         },
-        alias:'f'
+        alias: 'f'
       }
     };
     helper.helper();
     assert.strictEqual('usage:\n' +
-       '    arc-test test [子命令]\n' +
-       '    arc-test test <arg1> [arg2] [选项]\n' +
-       '子命令:\n' +
-       '    option-type                         测试各个类型的参数\n' +
-       '    relation                            测试类型间关系逻辑\n' +
-       '    parser                              单元测试辅助命令\n' +
-       '选项:\n' +
-       '  --flag                                *[string]           测试flag\n' +
-       '                                        [可选值: value1\n' +
-       '                                        , value2]\n' +
-       '  --conflict-flag                       [string]            冲突选项1\n' +
-       '  --conflict-flag2                      [string]            冲突选项2\n' +
-       '  -f,--flag2                            [number]            测试flag2',
+      '    arc-test test [子命令]\n' +
+      '    arc-test test <arg1> [arg2] [选项]\n' +
+      '\n' +
+      '  测试命令\n' +
+      '\n' +
+      '子命令:\n' +
+      '    option-type                         测试各个类型的参数\n' +
+      '    relation                            测试类型间关系逻辑\n' +
+      '    parser                              单元测试辅助命令\n' +
+      '选项:\n' +
+      '  --flag                                *[string]           测试flag\n' +
+      '                                        [可选值: value1\n' +
+      '                                        , value2]\n' +
+      '  --conflict-flag                       [string]            冲突选项1\n' +
+      '  --conflict-flag2                      [string]            冲突选项2\n' +
+      '  -f,--flag2                            [number]            测试flag2',
     helper.ui.toString());
   });
-  
+
 });
