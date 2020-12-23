@@ -94,12 +94,12 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
         zh: '容器网段，不能和VPC网段冲突。当选择系统自动创建VPC时，默认使用172.16.0.0/16网段。当创建flannel网络类型的集群时，该字段为必填',
         en: `The CIDR block of containers. This CIDR block cannot overlap with that of the VPC. If the VPC is automatically created by the system, the CIDR block of containers is set to 172.16.0.0/16.`
       },
-      attributes:{
+      attributes: {
         required: [
           {
             'addons[*].name': {
-              type:'equal',
-              value:'flannel'
+              type: 'equal',
+              value: 'flannel'
             }
           }
         ]
@@ -240,10 +240,8 @@ Default value: true. We recommend that you use the default value.`
     },
     'worker-data-disks': {
       mapping: 'CreateClusterRequest.workerDataDisks',
-      dependency: true,
       vtype: 'array',
       subType: 'map',
-      mappingType: require('@alicloud/cs20151215').CreateClusterRequestWorkerDataDisks,
       desc: {
         zh: `Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效`,
         en: `The data disk configurations of worker nodes, such as the disk type and disk size. This parameter takes effect only if worker_data_disk is set to true.`
@@ -268,6 +266,7 @@ Default value: true. We recommend that you use the default value.`
       },
       options: {
         autoSnapshotPolicyId: {
+          mapping: 'autoSnapshotPolicyId',
           desc: {
             zh: '是否开启云盘备份',
             en: `Whether to enable snapshot`
@@ -278,6 +277,7 @@ Default value: true. We recommend that you use the default value.`
           ]
         },
         category: {
+          mapping: 'category',
           desc: {
             zh: '数据盘类型',
             en: `the type of the data disks`
@@ -289,12 +289,14 @@ Default value: true. We recommend that you use the default value.`
           ]
         },
         size: {
+          mapping: 'size',
           desc: {
             zh: '数据盘大小，单位为GiB',
             en: ` the size of a data disk. Unit: GiB.`
           }
         },
         encrypted: {
+          mapping: 'encrypted',
           desc: {
             zh: '是否对数据盘加密',
             en: `specifies whether to encrypt data disks.`
@@ -400,12 +402,14 @@ PostPaid: pay-as-you-go.`
       example: `name=docker,version=19.03.5`,
       options: {
         name: {
+          mapping: 'name',
           desc: {
             zh: '容器运行时名称',
             en: ` runtime name `
           }
         },
         version: {
+          mapping: 'version',
           desc: {
             zh: '容器运行时版本',
             en: ` runtime version `
@@ -664,7 +668,6 @@ PostPaid: pay-as-you-go.`
       mapping: 'CreateClusterRequest.tags',
       vtype: 'array',
       subType: 'map',
-      mappingType: require('@alicloud/cs20151215').CreateClusterRequestTags,
       desc: {
         zh: '给集群打tag标签：key：标签名称；value：标签值',
         en: `The tags of the cluster.`
@@ -672,12 +675,14 @@ PostPaid: pay-as-you-go.`
       example: `key=tier,value=backend`,
       options: {
         key: {
+          mapping: 'key',
           desc: {
             zh: '标签名称',
             en: `the name of the tag.`
           }
         },
         value: {
+          mapping: 'value',
           desc: {
             zh: '标签值',
             en: `the value of the tag.`
@@ -689,7 +694,6 @@ PostPaid: pay-as-you-go.`
       mapping: 'CreateClusterRequest.addons',
       vtype: 'array',
       subType: 'map',
-      mappingType: require('@alicloud/cs20151215').CreateClusterRequestAddons,
       desc: {
         zh: `Kubernetes集群的addon插件的组合
 网络插件：包含Flannel和Terway网络插件，二选一。
@@ -709,6 +713,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
       options: {
         name: {
+          mapping: 'name',
           required: true,
           desc: {
             zh: 'addon插件名称',
@@ -716,6 +721,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
           }
         },
         disable: {
+          mapping: 'disable',
           vtype: 'boolean',
           desc: {
             zh: '取值为空时默认取最新版本',
@@ -723,6 +729,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
           }
         },
         config: {
+          mapping: 'config',
           desc: {
             zh: '取值为空时表示无需配置',
             en: `Optional`
@@ -742,8 +749,8 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         required: [
           {
             'addons[*].name': {
-              type:'include',
-              value:'terway'
+              type: 'include',
+              value: 'terway'
             }
           }
         ]
