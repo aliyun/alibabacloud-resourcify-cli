@@ -20,6 +20,7 @@ exports.cmdObj = {
     },
     'key-pair': {
       mapping: 'ScaleOutClusterRequest.keyPair',
+      vtype: 'string',
       desc: {
         zh: 'key_pair名称',
         en: `The name of the key pair. You must set key_pair or login_password.`
@@ -27,6 +28,7 @@ exports.cmdObj = {
     },
     'login-password': {
       mapping: 'ScaleOutClusterRequest.loginPassword',
+      vtype: 'string',
       desc: {
         zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号），和key_pair 二选一。',
         en: `The SSH logon password. The password must be 8 to 30 characters in length and contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters. You must set login_password or key_pair.`
@@ -44,7 +46,6 @@ exports.cmdObj = {
       mapping: 'ScaleOutClusterRequest.workerDataDisks',
       vtype: 'array',
       subType: 'map',
-      mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestWorkerDataDisks,
       desc: {
         zh: `Worker数据盘类型、大小等配置的组合`,
         en: `The data disk configurations of worker nodes, such as the disk type and disk size. This parameter takes effect only if worker-data-disk is set to true.`
@@ -82,6 +83,7 @@ exports.cmdObj = {
           ]
         },
         size: {
+          vtype: 'number',
           mapping: 'size',
           desc: {
             zh: '数据盘大小，单位为GiB',
@@ -98,6 +100,15 @@ exports.cmdObj = {
             'true',
             'false'
           ]
+        },
+        'auto-snapshot-policy-id': {
+          mapping: 'autoSnapshotPolicyId',
+          vtype: 'string',
+          desc: {
+            zh: '开启云盘备份时的自动备份策略',
+            en: `Automatic backup strategy when cloud disk backup is enabled`
+          },
+          required: true
         }
       }
     },
@@ -266,9 +277,36 @@ Default value: PostPaid.`
     },
     'cpu-policy': {
       mapping: 'ScaleOutClusterRequest.cpuPolicy',
+      vtype: 'string',
       desc: {
         zh: 'CPU策略。集群版本为1.12.6及以上版本支持static 和 none两种策略。默认为none',
         en: `The CPU policy. For Kubernetes 1.12.6 and later, valid values of cpu_policy include static and none. Default value: none.`
+      },
+      default: 'none'
+    },
+    'image-id': {
+      mapping: 'ScaleOutClusterRequest.imageId',
+      vtype: 'string',
+      desc: {
+        zh: '自定义镜像',
+        en: `Custom Image`
+      }
+    },
+    'user-data': {
+      mapping: 'ScaleOutClusterRequest.userData',
+      vtype: 'string',
+      desc: {
+        zh: '节点自定义数据',
+        en: `User Data`
+      }
+    },
+    'rds-instances': {
+      mapping: 'ScaleOutClusterRequest.rdsInstances',
+      vtype: 'array',
+      subType: 'string',
+      desc: {
+        zh: 'RDS实例',
+        en: `RDS instances`
       }
     },
     'vswitch-ids': {
@@ -285,7 +323,6 @@ Default value: PostPaid.`
       mapping: 'ScaleOutClusterRequest.tags',
       vtype: 'array',
       subType: 'map',
-      mappingType: require('@alicloud/cs20151215').ScaleOutClusterRequestTags,
       desc: {
         zh: '给集群打tag标签：key：标签名称；value：标签值',
         en: `The tags of the cluster.
@@ -340,6 +377,30 @@ value: the value of the tag.`
           desc: {
             zh: '调度策略。',
             en: `the effect of taint`
+          }
+        }
+      }
+    },
+    'runtime': {
+      mapping: 'ScaleOutClusterRequest.runtime',
+      vtype: 'map',
+      desc: {
+        zh: '容器运行时，一般为docker，包括2个信息：name和version',
+        en: `The runtime of containers. Default value: docker. Specify the runtime name and version.`
+      },
+      options: {
+        name: {
+          mapping: 'name',
+          desc: {
+            zh: '容器运行时名称',
+            en: ` runtime name `
+          }
+        },
+        version: {
+          mapping: 'version',
+          desc: {
+            zh: '容器运行时版本',
+            en: ` runtime version `
           }
         }
       }

@@ -12,7 +12,6 @@ exports.cmdObj = {
   options: {
     'addons': {
       mapping: 'UnInstallClusterAddonsRequest.addons',
-      mappingType: require(`@alicloud/cs20151215`).UnInstallClusterAddonsRequestAddons,
       vtype: 'array',
       subType: 'map',
       desc: {

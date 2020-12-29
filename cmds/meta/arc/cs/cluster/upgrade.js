@@ -12,6 +12,7 @@ exports.cmdObj = {
   options: {
     'component-name': {
       mapping: 'UpgradeClusterRequest.componentName',
+      vtype: 'string',
       desc: {
         zh: '组件名称，升级集群时取值：k8s',
         en: `Component name, value when upgrading the cluster: k8s.`
@@ -19,6 +20,7 @@ exports.cmdObj = {
     },
     'version': {
       mapping: 'UpgradeClusterRequest.version',
+      vtype: 'string',
       desc: {
         zh: '集群当前版本',
         en: `Current version of the cluster`
@@ -26,6 +28,7 @@ exports.cmdObj = {
     },
     'next-version': {
       mapping: 'UpgradeClusterRequest.nextVersion',
+      vtype: 'string',
       desc: {
         zh: '集群可升级版本',
         en: `The target version of the upgrade.`

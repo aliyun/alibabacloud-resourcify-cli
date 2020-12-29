@@ -10,6 +10,26 @@ exports.cmdObj = {
     en: `query nodes in a cluster.`
   },
   options: {
+    'instance-ids': {
+      mapping: 'DescribeClusterNodesRequest.instanceIds',
+      vtype: 'array',
+      subType: 'string',
+      desc: {
+        zh: '节点实例ID，按照实例ID进行过滤',
+        // TODO
+        en: ``
+      },
+      attributes: {
+        show: [
+          {
+            'nodepool-id': {
+              type: 'equal',
+              value: undefined
+            }
+          }
+        ]
+      }
+    },
     'page-size': {
       mapping: 'DescribeClusterNodesRequest.pageSize',
       desc: {
@@ -26,6 +46,7 @@ exports.cmdObj = {
     },
     'nodepool-id': {
       mapping: 'DescribeClusterNodesRequest.nodepoolId',
+      vtype: 'string',
       desc: {
         zh: '节点池ID',
         en: `The ID of the node pool.`
