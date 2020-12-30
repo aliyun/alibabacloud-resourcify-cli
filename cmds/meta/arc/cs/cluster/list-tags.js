@@ -10,14 +10,6 @@ exports.cmdObj = {
     en: `query tags that are attached to resources.`
   },
   options: {
-    'resource-type': {
-      mapping: 'ListTagResourcesRequest.resourceType',
-      required: true,
-      desc: {
-        zh: '资源类型定义',
-        en: `The type of the resource.`
-      }
-    },
     'next-token': {
       mapping: 'ListTagResourcesRequest.nextToken',
       desc: {
@@ -27,6 +19,8 @@ exports.cmdObj = {
     },
     'resource-ids': {
       mapping: 'ListTagResourcesRequest.resourceIds',
+      vtype: 'array',
+      subType: 'string',
       desc: {
         zh: '要查询的集群ID列表',
         en: `The IDs of the resources to query.`
@@ -34,12 +28,28 @@ exports.cmdObj = {
     },
     tags: {
       mapping: 'ListTagResourcesRequest.tags',
-      vtype: 'string',
+      vtype: 'array',
+      subType: 'map',
       desc: {
         zh: '给集群打tag标签：key：标签名称；value：标签值',
         en: `The list of tags to query. This list is a JSON string that contains a maximum of 20 key-value pairs.`
       },
-      example: `[{"key":"env","value","dev"},{"key":"dev", "value":"IT"}]`
+      options: {
+        key: {
+          mapping: 'key',
+          desc: {
+            zh: '标签名称',
+            en: `the name of the tag.`
+          }
+        },
+        value: {
+          mapping: 'value',
+          desc: {
+            zh: '标签值',
+            en: `the value of the tag.`
+          }
+        }
+      }
     },
   }
 };

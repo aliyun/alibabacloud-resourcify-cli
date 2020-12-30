@@ -10,20 +10,31 @@ exports.cmdObj = {
     en: `modify the tags of a cluster.`
   },
   options: {
-    key: {
-      required: true,
-      mapping: 'ModifyClusterTagsRequest.key',
+    'body': {
+      mapping: 'ModifyClusterTagsRequest.body',
+      vtype: 'array',
+      subType: 'map',
       desc: {
-        zh: '标签名称',
-        en: `The name of the tag to be modified.`
-      }
-    },
-    value: {
-      required: true,
-      mapping: 'ModifyClusterTagsRequest.value',
-      desc: {
-        zh: '标签值',
-        en: `The value of the tag to be modified.`
+        zh: '集群标签列表',
+        en: 'Cluster tag list'
+      },
+      options: {
+        key: {
+          required: true,
+          mapping: 'key',
+          desc: {
+            zh: '标签名称',
+            en: `The name of the tag to be modified.`
+          }
+        },
+        value: {
+          required: true,
+          mapping: 'value',
+          desc: {
+            zh: '标签值',
+            en: `The value of the tag to be modified.`
+          }
+        }
       }
     }
   },

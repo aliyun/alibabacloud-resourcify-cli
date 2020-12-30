@@ -29,6 +29,7 @@ exports.cmdObj = {
     },
     name: {
       mapping: 'CreateClusterRequest.name',
+      vtype: 'string',
       desc: {
         zh: '集群名称， 集群名称可以使用大小写英文字母、中文、数字、中划线。',
         en: `The name of the cluster. The name can contain uppercase letters, lowercase letters, Chinese characters, digits, and hyphens (-).`
@@ -38,18 +39,18 @@ exports.cmdObj = {
       mapping: 'CreateClusterRequest.keyPair',
       desc: {
         zh: 'key_pair名称',
-        en: `The name of the key pair.`
+        en: `key pair.`
       }
     },
     'login-password': {
       mapping: 'CreateClusterRequest.loginPassword',
+      vtype: 'string',
       desc: {
         zh: 'SSH登录密码。密码规则为8~30 个字符，且至少同时包含三项（大小写字母、数字和特殊符号）',
         en: `The SSH logon password. The password must be 8 to 30 characters in length and contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters`
       }
     },
     'snat-entry': {
-      required: true,
       mapping: 'CreateClusterRequest.snatEntry',
       vtype: 'boolean',
       desc: {
@@ -111,7 +112,8 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
       desc: {
         zh: '是否安装云监控插件',
         en: 'Specifies whether to install the CloudMonitor agent.'
-      }
+      },
+      default: false
     },
     'disable-rollback': {
       mapping: 'CreateClusterRequest.disableRollback',
@@ -122,7 +124,8 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
 true: retains the resources.
 false: releases the resources.
 Default value: true. We recommend that you use the default value.`
-      }
+      },
+      default: false
     },
     'endpoint-public-access': {
       mapping: 'CreateClusterRequest.endpointPublicAccess',
@@ -130,7 +133,36 @@ Default value: true. We recommend that you use the default value.`
       desc: {
         zh: '是否开启公网API Server',
         en: `Specifies whether to enable Internet access to the API server.`
-      }
+      },
+      default: true
+    },
+    'format-disk': {
+      mapping: 'CreateClusterRequest.formatDisk',
+      vtype: 'boolean',
+      desc: {
+        zh: '使用已有实例创建集群时，是否对实例进行数据盘挂载，将容器和镜像存储在数据盘',
+        // TODO
+        en: ``
+      },
+      default: false
+    },
+    'image-id': {
+      mapping: 'CreateClusterRequest.imageId',
+      vtype: 'string',
+      desc: {
+        zh: '镜像ID',
+        en: `Image Id`
+      },
+    },
+    'instances': {
+      mapping: 'CreateClusterRequest.instances',
+      vtype: 'array',
+      subType: 'string',
+      desc: {
+        zh: 'ECS实例ID列表，会作为worker节点加入集群',
+        // TODO
+        en: ``
+      },
     },
     'proxy-mode': {
       mapping: 'CreateClusterRequest.proxyMode',
@@ -144,6 +176,16 @@ Default value: true. We recommend that you use the default value.`
         'iptables',
         'ipvs'
       ]
+    },
+    'rds-instances': {
+      mapping: 'CreateClusterRequest.rdsInstances',
+      vtype: 'array',
+      subType: 'string',
+      desc: {
+        zh: '如果指定了RDS实例列表，集群节点ECS会自动加入RDS访问白名单。',
+        // TODO
+        en: ``
+      },
     },
     'security-group-id': {
       mapping: 'CreateClusterRequest.securityGroupId',
@@ -159,7 +201,8 @@ Default value: true. We recommend that you use the default value.`
       desc: {
         zh: 'Service网络的网段，不能和VPC网段及Pod网络网段冲突。当选择系统自动创建VPC时，默认使用172.19.0.0/20网段',
         en: `The CIDR block of services. This CIDR block cannot overlap with that of the VPC or containers. If the VPC is automatically created by the system, the CIDR block of services is set to 172.19.0.0/20.`
-      }
+      },
+      default: '172.19.0.0/20'
     },
     'timeout-mins': {
       mapping: 'CreateClusterRequest.timeoutMins',
@@ -167,15 +210,16 @@ Default value: true. We recommend that you use the default value.`
       desc: {
         zh: '集群资源栈创建超时时间，以分钟为单位，默认值 60',
         en: `The timeout period in minutes during which a resource creation operation must be completed. Default value: 60.`
-      }
+      },
+      default: 60
     },
     'vpcid': {
       required: true,
       mapping: 'CreateClusterRequest.vpcid',
       vtype: 'string',
       desc: {
-        zh: 'vpcId和vswitchid只能同时都设置对应的值',
-        en: `The ID of the VPC. If this parameter is not specified, the system automatically creates a VPC that uses CIDR block 192.168.0.0/16.`
+        zh: '集群使用的VPC',
+        en: `The ID of the VPC.`
       }
     },
     'worker-auto-renew': {
@@ -185,6 +229,7 @@ Default value: true. We recommend that you use the default value.`
         zh: '是否开启Worker节点自动续费',
         en: `Specifies whether to enable auto renewal for worker nodes`
       },
+      default: false,
       attributes: {
         show: [
           {
@@ -231,14 +276,6 @@ Default value: true. We recommend that you use the default value.`
         ]
       }
     },
-    'worker-data-disk': {
-      mapping: 'CreateClusterRequest.workerDataDisk',
-      vtype: 'boolean',
-      desc: {
-        zh: '表示worker节点是否挂载数据盘',
-        en: `Specifies whether to mount data disks to worker nodes`
-      },
-    },
     'worker-data-disks': {
       mapping: 'CreateClusterRequest.workerDataDisks',
       vtype: 'array',
@@ -247,50 +284,27 @@ Default value: true. We recommend that you use the default value.`
         zh: `Worker数据盘类型、大小等配置的组合。该参数只有在挂载Worker节点数据盘时有效`,
         en: `The data disk configurations of worker nodes, such as the disk type and disk size. This parameter takes effect only if worker_data_disk is set to true.`
       },
-      attributes: {
-        show: [
-          {
-            'worker-data-disk': {
-              type: 'equal',
-              value: true
-            }
-          }
-        ],
-        required: [
-          {
-            'worker-data-disk': {
-              type: 'equal',
-              value: true
-            }
-          }
-        ]
-      },
       options: {
         autoSnapshotPolicyId: {
           mapping: 'autoSnapshotPolicyId',
+          vtype: 'string',
           desc: {
-            zh: '是否开启云盘备份',
-            en: `Whether to enable snapshot`
-          },
-          choices: [
-            'true',
-            'false'
-          ]
+            zh: '选择自动快照策略ID，云盘会按照快照策略自动备份。',
+            // TODO
+            en: ``
+          }
         },
         category: {
           mapping: 'category',
+          vtype: 'string',
           desc: {
             zh: '数据盘类型',
             en: `the type of the data disks`
-          },
-          choices: [
-            'cloud',
-            'cloud_efficiency',
-            'cloud_ssd'
-          ]
+          }
         },
         size: {
           mapping: 'size',
+          vtype: 'string',
           desc: {
             zh: '数据盘大小，单位为GiB',
             en: ` the size of a data disk. Unit: GiB.`
@@ -298,6 +312,7 @@ Default value: true. We recommend that you use the default value.`
         },
         encrypted: {
           mapping: 'encrypted',
+          vtype: 'string',
           desc: {
             zh: '是否对数据盘加密',
             en: `specifies whether to encrypt data disks.`
@@ -322,7 +337,8 @@ PostPaid: pay-as-you-go.`
       choices: [
         'PrePaid',
         'PostPaid'
-      ]
+      ],
+      default: 'PostPaid'
     },
     'worker-period': {
       mapping: 'CreateClusterRequest.workerPeriod',
@@ -381,7 +397,7 @@ PostPaid: pay-as-you-go.`
       vtype: 'array',
       subType: 'string',
       desc: {
-        zh: 'Worker节点ECS规格类型代码',
+        zh: 'Worker节点实例规格，可以配置多个规格。',
         en: `The ECS instance types of worker nodes`
       }
     },
@@ -421,6 +437,7 @@ PostPaid: pay-as-you-go.`
     },
     platform: {
       mapping: 'CreateClusterRequest.platform',
+      vtype: 'string',
       desc: {
         zh: '运行pod的主机的平台架构，如 x86',
         en: `The architecture of the nodes that run pods, for example, x86.`
@@ -498,7 +515,7 @@ PostPaid: pay-as-you-go.`
       maxindex: 3,
       subType: 'string',
       desc: {
-        zh: 'Master节点交换机ID列表，交换机个数取值范围为1~3。为确保集群的高可用性，推荐您选择3个交换机，且分布在不同的可用区。',
+        zh: 'Master节点虚拟交换ID。指定的实例规格数量需要和master_count保持一致, 和master_vswitch_ids中的元素一一对应',
         en: `The VSwitch IDs of master nodes. Specify one to three VSwitch IDs. We recommend that you specify three VSwitches in different zones to ensure high availability.`
       }
     },
@@ -506,7 +523,6 @@ PostPaid: pay-as-you-go.`
       required: true,
       mapping: 'CreateClusterRequest.workerVswitchIds',
       vtype: 'array',
-      maxindex: 3,
       subType: 'string',
       desc: {
         zh: 'Worker节点的虚拟交换机ID列表',
@@ -519,10 +535,12 @@ PostPaid: pay-as-you-go.`
       desc: {
         zh: '是否开放公网SSH登录',
         en: `Specifies whether to enable SSH logon.`
-      }
+      },
+      default: false
     },
     'node-port-range': {
       mapping: 'CreateClusterRequest.nodePortRange',
+      vtype: 'string',
       desc: {
         zh: '节点服务端口。取值范围为[30000，65535]',
         en: `The service port range of nodes. Valid values: 30000 to 65535.`
@@ -585,14 +603,6 @@ PostPaid: pay-as-you-go.`
               value: 'PrePaid'
             }
           }
-        ],
-        required: [
-          {
-            'master-instance-charge-type': {
-              type: 'equal',
-              value: 'PrePaid'
-            }
-          }
         ]
       }
     },
@@ -624,6 +634,7 @@ PostPaid: pay-as-you-go.`
     },
     'master-period-unit': {
       mapping: 'CreateClusterRequest.masterPeriodUnit',
+      vtype: 'string',
       desc: {
         zh: '当指定为PrePaid的时候需要指定周期。Month：以月为计时单位',
         en: `The unit of the subscription duration. This parameter is required if worker_instance_charge_type is set to PrePaid. A value of Month indicates that the subscription duration is measured in months.`
@@ -651,16 +662,18 @@ PostPaid: pay-as-you-go.`
       mapping: 'CreateClusterRequest.masterCount',
       vtype: 'number',
       desc: {
-        zh: 'Master实例个数，默认是3',
+        zh: 'Master实例个数',
         en: `The number of master nodes. Valid values: 3 and 5. Default value: 3.`
       },
       choices: [
         3,
         5
-      ]
+      ],
+      default: 3
     },
     'node-cidr-mask': {
       mapping: 'CreateClusterRequest.nodeCidrMask',
+      vtype: 'string',
       desc: {
         zh: '节点网络的网络前缀',
         en: `The prefix length of the node CIDR block.`
@@ -692,6 +705,43 @@ PostPaid: pay-as-you-go.`
         }
       }
     },
+    'taints': {
+      mapping: 'CreateClusterRequest.taints',
+      vtype: 'array',
+      subType: 'map',
+      desc: {
+        zh: '节点污点信息',
+        en: `taints for nodes`
+      },
+      options: {
+        key: {
+          mapping: 'key',
+          desc: {
+            zh: '污点key',
+            en: `the name of the taints.`
+          }
+        },
+        value: {
+          mapping: 'value',
+          desc: {
+            zh: '污点值',
+            en: `the value of the taints.`
+          }
+        },
+        'effect': {
+          mapping: 'effect',
+          desc: {
+            zh: '调度策略',
+            en: `Scheduling strategy.`
+          },
+          choices: [
+            'NoSchedule',
+            'NoExecute',
+            'PreferNoSchedule'
+          ]
+        }
+      }
+    },
     'addons': {
       mapping: 'CreateClusterRequest.addons',
       vtype: 'array',
@@ -716,6 +766,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       options: {
         name: {
           mapping: 'name',
+          vtype: 'string',
           required: true,
           desc: {
             zh: 'addon插件名称',
@@ -732,6 +783,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         },
         config: {
           mapping: 'config',
+          vtype: 'string',
           desc: {
             zh: '取值为空时表示无需配置',
             en: `Optional`
@@ -758,17 +810,6 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         ]
       }
     },
-    'private-zone': {
-      mapping: 'CreateClusterRequest.privateZone',
-      desc: {
-        zh: '是否开启PrivateZone用于服务发现',
-        en: `Whether to enable PrivateZone for service discovery`
-      },
-      choices: [
-        'true',
-        'false'
-      ]
-    },
     'is-enterprise': {
       mapping: 'CreateClusterRequest.isEnterpriseSecurityGroup',
       vtype: 'boolean',
@@ -785,8 +826,83 @@ Ingress: The nginx-ingress-controller component is installed by default.`
             }
           }
         ]
+      },
+      default: false
+    },
+    'keep-instance-name': {
+      mapping: 'CreateClusterRequest.keepInstanceName',
+      vtype: 'boolean',
+      desc: {
+        zh: '使用已有实例创建集群时，是否保留实例名称，如果不保留，则实例名称格式为worker-k8s-for-cs-<clusterid>',
+        // TODO
+        en: ``
+      },
+      default: false
+    },
+    'user-data': {
+      mapping: 'CreateClusterRequest.userData',
+      vtype: 'string',
+      desc: {
+        zh: '节点自定义数据，Windows 支持 bat 和 powershell 两种格式，在 Base64 编码前，第一行为 [bat] 或者 [powershell]。Linux 支持 shell 脚本。如果您使用的自定义脚本大小大于 1 KB，建议您将脚本上传到 OSS，通过 OSS 内网端点拉取脚本执行。 创建集群或添加节点提交成功不代表实例自定义脚本执行成功，请自行确定脚本执行情况。',
+        // TODO
+        en: ``
       }
-    }
+    },
+    'user-ca': {
+      mapping: 'CreateClusterRequest.userCa',
+      vtype: 'string',
+      desc: {
+        zh: '用户自定义集群CA',
+        // TODO
+        en: ``
+      },
+    },
+    'cluster-domain': {
+      mapping: 'CreateClusterRequest.clusterDomain',
+      vtype: 'string',
+      desc: {
+        zh: '集群本地域名',
+        // TODO
+        en: ``
+      },
+      default: 'cluster.local'
+    },
+    'node-name-mode': {
+      mapping: 'CreateClusterRequest.nodeNameMode',
+      vtype: 'string',
+      desc: {
+        zh: '自定义集群节点名称',
+        // TODO
+        en: ``
+      }
+    },
+    'custom-san': {
+      mapping: 'CreateClusterRequest.customSan',
+      vtype: 'string',
+      desc: {
+        zh: '集群自定义证书SAN',
+        // TODO
+        en: ``
+      }
+    },
+    'service-account-issuer': {
+      mapping: 'CreateClusterRequest.serviceAccountIssuer',
+      vtype: 'string',
+      desc: {
+        zh: '服务账户令牌卷投影。serviceaccount token中的签发身份，即token payload中的iss字段。',
+        // TODO
+        en: ``
+      }
+    },
+    'api-audiences': {
+      mapping: 'CreateClusterRequest.apiAudiences',
+      vtype: 'string',
+      desc: {
+        zh: '服务账户令牌卷投影。合法的请求token身份，用于apiserver服务端认证请求token是否合法。',
+        // TODO
+        en: ``
+      }
+    },
   },
   conflicts: [
     {

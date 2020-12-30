@@ -11,7 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'release-node': {
-      mapping: 'RemoveClusterNodesRequest.releaseNode',
+      mapping: 'DeleteClusterNodesRequest.releaseNode',
       vtype: 'boolean',
       desc: {
         zh: '是否同时释放ECS',
@@ -19,7 +19,7 @@ exports.cmdObj = {
       }
     },
     'drain-node': {
-      mapping: 'RemoveClusterNodesRequest.drainNode',
+      mapping: 'DeleteClusterNodesRequest.drainNode',
       vtype: 'boolean',
       desc: {
         zh: '是否排空节点上的Pod',
@@ -27,7 +27,7 @@ exports.cmdObj = {
       }
     },
     nodes: {
-      mapping: 'RemoveClusterNodesRequest.nodes',
+      mapping: 'DeleteClusterNodesRequest.nodes',
       vtype: 'array',
       subType: 'string',
       desc: {
@@ -54,12 +54,12 @@ exports.run = async function (ctx) {
     regionId: profile.region,
     type: profile.type
   });
-  let RemoveClusterNodesRequest = require(`@alicloud/cs20151215`).RemoveClusterNodesRequest;
-  let request = new RemoveClusterNodesRequest(ctx.mappingValue.RemoveClusterNodesRequest);
+  let DeleteClusterNodesRequest = require(`@alicloud/cs20151215`).DeleteClusterNodesRequest;
+  let request = new DeleteClusterNodesRequest(ctx.mappingValue.DeleteClusterNodesRequest);
 
   let client = new Client(config);
   try {
-    await client.removeClusterNodesWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
+    await client.deleteClusterNodesWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }

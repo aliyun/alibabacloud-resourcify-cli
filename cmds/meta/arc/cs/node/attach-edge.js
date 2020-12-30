@@ -11,9 +11,9 @@ exports.cmdObj = {
   },
   options: {
     'is_edge_worker': {
-      vtype: 'AttachInstancesRequest.boolean',
+      vtype: 'boolean',
       required: true,
-      mapping: 'isEdgeWorker',
+      mapping: 'AttachInstancesRequest.isEdgeWorker',
       desc: {
         zh: `是否为边缘节点。接入ENS节点时需要配置为true`,
         en: `Specifies whether to configure the worker node as an edge node. Set the value to true.`

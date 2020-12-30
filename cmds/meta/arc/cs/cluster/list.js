@@ -11,6 +11,7 @@ exports.cmdObj = {
   options: {
     name: {
       mapping: 'DescribeClustersRequest.name',
+      vtype: 'string',
       desc: {
         zh: '根据集群Name进行模糊匹配查询',
         en: `Fuzzy matching query based on cluster name`
@@ -18,6 +19,7 @@ exports.cmdObj = {
     },
     'cluster-type': {
       mapping: 'DescribeClustersRequest.clusterType',
+      vtype: 'string',
       desc: {
         zh: '集群类型',
         en: `Cluster type`

@@ -12,6 +12,7 @@ exports.cmdObj = {
   options: {
     'region': {
       mapping: 'DescribeAddonsRequest.region',
+      vtype: 'string',
       desc: {
         zh: '阿里云区域',
         en: `The ID of the region to query.`

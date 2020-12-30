@@ -12,7 +12,6 @@ exports.cmdObj = {
   options: {
     'body': {
       mapping: 'InstallClusterAddonsRequest.body',
-      mappingType: require(`@alicloud/cs20151215`).InstallClusterAddonsRequestBody,
       vtype: 'array',
       subType: 'map',
       desc: {
@@ -22,6 +21,7 @@ exports.cmdObj = {
       options: {
         'name': {
           mapping: 'name',
+          vtype: 'string',
           desc: {
             zh: 'addon名称',
             en: `The name of the add-on.`
@@ -29,28 +29,15 @@ exports.cmdObj = {
         },
         'version': {
           mapping: 'version',
+          vtype: 'string',
           desc: {
             zh: '插件版本',
             en: `The version of the add-on.`
           }
         },
-        'disabled': {
-          mapping: 'disabled',
-          vtype: 'boolean',
-          desc: {
-            zh: '是否禁止默认安装',
-            en: `Specifies whether to disable automatic installation of the add-on.`
-          }
-        },
-        'required': {
-          mapping: 'required',
-          desc: {
-            zh: '是否默认安装',
-            en: `Specifies whether to enable automatic installation of the add-on.`
-          }
-        },
         'config': {
           mapping: 'config',
+          vtype: 'string',
           desc: {
             zh: '配置信息',
             en: 'The configurations of the add-on.'

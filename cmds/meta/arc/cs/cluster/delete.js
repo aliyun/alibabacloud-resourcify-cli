@@ -18,6 +18,34 @@ exports.cmdObj = {
         zh: '资源名称',
         en: `Resoure name`
       },
+      attributes: {
+        show: [
+          { 
+            'retain-all-resources': {
+              type: 'equal',
+              value: false
+            }
+          }
+        ]
+      }
+    },
+    'keep-slb': {
+      mapping: 'DeleteClusterRequest.keepSlb',
+      vtype: 'boolean',
+      default: false,
+      desc: {
+        zh: '是否保留SLB',
+        en: 'Whether to keep SLB'
+      }
+    },
+    'retain-all-resources': {
+      mapping: 'DeleteClusterRequest.retainAllResources',
+      vtype: 'boolean',
+      default: false,
+      desc: {
+        zh: '是否保留所有资源',
+        en: 'Whether to keep all resources'
+      }
     }
   },
   args: [
