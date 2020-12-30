@@ -413,6 +413,25 @@ describe('parser.js', function () {
     assert.strictEqual(err, undefined);
   });
 
+  it('relation validate: maxindex', function () {
+    let err;
+    let parser = new Parse(ctx);
+    parser.options = {
+      flag: {
+        vtype: 'array',
+        subType: 'string',
+        maxindex: 3
+      },
+    };
+    parser.parsedValue = { flag: ['value1', 'value2', 'value3'] };
+    err = parser.optionValidate('flag');
+    assert.strictEqual(err, undefined);
+
+    parser.parsedValue = { flag: ['value1', 'value2', 'value3', 'value4'] };
+    err = parser.optionValidate('flag');
+    assert.deepStrictEqual(err, { prompt: i18n.outOfIndex, values: ['flag', 3] });
+  });
+
   it('relation validate: subOptions equal relation', function () {
     let err;
     let parser = new Parse(ctx);
