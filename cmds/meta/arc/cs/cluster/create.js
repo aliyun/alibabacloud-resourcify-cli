@@ -167,7 +167,7 @@ Default value: true. We recommend that you use the default value.`
     'proxy-mode': {
       mapping: 'CreateClusterRequest.proxyMode',
       vtype: 'string',
-      default:'ipvs',
+      default: 'ipvs',
       desc: {
         zh: 'kube-proxy代理模式,默认为iptables',
         en: `The kube-proxy mode. Valid values: iptables and ipvs. Default value: iptables.`
@@ -908,6 +908,9 @@ Ingress: The nginx-ingress-controller component is installed by default.`
     {
       optNames: ['key-pair', 'login-password'],
       required: true
+    },
+    {
+      optNames: ['security-group-id', 'is-enterprise']
     }
   ]
 };
