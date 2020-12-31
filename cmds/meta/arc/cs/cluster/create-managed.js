@@ -11,6 +11,7 @@ exports.cmdObj = {
   },
   options: {
     name: {
+      required: true,
       mapping: 'CreateClusterRequest.name',
       vtype: 'string',
       desc: {
@@ -519,6 +520,7 @@ PostPaid: pay-as-you-go.`
       }
     },
     'service-cidr': {
+      required: true,
       mapping: 'CreateClusterRequest.serviceCidr',
       vtype: 'string',
       desc: {

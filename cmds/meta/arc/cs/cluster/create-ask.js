@@ -20,6 +20,7 @@ exports.cmdObj = {
       }
     },
     name: {
+      required: true,
       mapping: 'CreateClusterRequest.name',
       vtype: 'string',
       desc: {

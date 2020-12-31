@@ -28,6 +28,7 @@ exports.cmdObj = {
       },
     },
     name: {
+      required: true,
       mapping: 'CreateClusterRequest.name',
       vtype: 'string',
       desc: {
@@ -196,6 +197,7 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'service-cidr': {
+      required: true,
       mapping: 'CreateClusterRequest.serviceCidr',
       vtype: 'string',
       desc: {

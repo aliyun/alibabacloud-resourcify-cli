@@ -6,9 +6,21 @@ exports.cmdObj = {
     en: `Action of container service cluster`
   },
   sub: {
-    'create': {
+    'create-kubernetes': {
       zh: '创建专有版集群',
       en: `Create a dedicated cluster`
+    },
+    'create-managed': {
+      zh: '创建托管版集群',
+      en: `Create a hosting cluster`
+    },
+    'create-ask': {
+      zh: '创建 ASK 集群',
+      en: `Create a ASK cluster`
+    },
+    'create-edge': {
+      zh: '创建边缘版集群',
+      en: `Create a ACK edge cluster`
     },
     'delete': {
       zh: '删除集群',
