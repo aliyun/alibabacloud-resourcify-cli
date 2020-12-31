@@ -844,4 +844,28 @@ describe('parser.js', function () {
     result = parser.transOpts(cmdObj);
     assert.deepStrictEqual(result, { index: ['flag6', 'flag5', ['flag', 'conflict-flag'], 'flag4', 'flag2', 'flag3'], endRequiredIndex: 2 });
   });
+
+  it('conditionCheck is ok!', function() {
+    let parser = new Parse(ctx);
+    const conditionEqual = {
+      type: 'equal',
+      value: ['a', 'b']
+    };
+    assert.ok(parser.conditionCheck('a', conditionEqual));
+    assert.deepStrictEqual(parser.conditionCheck('c', conditionEqual), false);
+
+    const conditionInclude = {
+      type: 'include',
+      value: ['a', 'b']
+    };
+    assert.ok(parser.conditionCheck(['a'], conditionInclude));
+    assert.deepStrictEqual(parser.conditionCheck(['c', 'd'], conditionInclude), false);
+
+    const conditionNoInclude = {
+      type: 'noInclude',
+      value: ['a', 'b']
+    };
+    assert.ok(parser.conditionCheck(['c', 'd'], conditionNoInclude));
+    assert.deepStrictEqual(parser.conditionCheck(['a', 'b'], conditionNoInclude), false);
+  });
 });
