@@ -11,7 +11,6 @@ exports.cmdObj = {
   },
   options: {
     region: {
-      required: true,
       mapping: 'CreateClusterRequest.regionId',
       alias: 'r',
       desc: {

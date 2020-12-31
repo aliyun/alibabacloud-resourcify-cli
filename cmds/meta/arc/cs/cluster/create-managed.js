@@ -58,7 +58,6 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     region: {
-      required: true,
       mapping: 'CreateClusterRequest.regionId',
       alias: 'r',
       desc: {
