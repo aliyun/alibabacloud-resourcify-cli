@@ -11,6 +11,7 @@ exports.cmdObj = {
   },
   options: {
     'count': {
+      required: true,
       mapping: 'ScaleOutClusterRequest.count',
       vtype: 'number',
       desc: {
@@ -113,6 +114,7 @@ exports.cmdObj = {
       }
     },
     'worker-instance-types': {
+      required: true,
       mapping: 'ScaleOutClusterRequest.workerInstanceTypes',
       vtype: 'array',
       subType: 'string',
@@ -409,6 +411,7 @@ value: the value of the tag.`
   conflicts: [
     {
       optNames: ['key-pair', 'login-password'],
+      required: true
     }
   ],
   args: [
