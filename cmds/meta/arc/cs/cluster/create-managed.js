@@ -28,6 +28,67 @@ exports.cmdObj = {
         en: `The type of the cluster`
       }
     },
+    'addons': {
+      mapping: 'CreateClusterRequest.addons',
+      vtype: 'array',
+      subType: 'map',
+      desc: {
+        zh: `Kubernetes集群的addon插件的组合
+网络插件：包含Flannel和Terway网络插件，二选一。
+    当选择flannel类型网络时："container-cidr"为必传参数，且addons值必须包含flannel，例如:[{"name":"flannel"}]。
+    当选择terway类型网络时："pod-vswitch-ids"为必传参数，且addons值必须包含terway-eni,例如： [{"name": "terway-eni"}]。
+日志服务：可选，如果不开启日志服务时，将无法使用集群审计功能。
+Ingress：默认开启安装Ingress组件nginx-ingress-controller`,
+        en: `The add-ons to be installed for the cluster.
+Configure the parameters of add-ons as follows:
+name: Required. The name of the add-on.
+version: Optional. The default value is the latest version.
+config: Optional.
+Network plug-in: Select Flannel or Terway.
+Log Service: Optional. If Log Service is disabled, the cluster audit feature is unavailable.
+Ingress: The nginx-ingress-controller component is installed by default.`
+      },
+      example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
+      options: {
+        name: {
+          mapping: 'name',
+          vtype: 'string',
+          required: true,
+          desc: {
+            zh: 'addon插件名称',
+            en: `The name of the add-on.`
+          }
+        },
+        disable: {
+          mapping: 'disable',
+          vtype: 'boolean',
+          desc: {
+            zh: '取值为空时默认取最新版本',
+            en: `The default value is the latest version`
+          }
+        },
+        config: {
+          mapping: 'config',
+          vtype: 'string',
+          desc: {
+            zh: '取值为空时表示无需配置',
+            en: `Optional`
+          }
+        }
+      }
+    },
+    'vswitch-ids': {
+      required: true,
+      mapping: 'CreateClusterRequest.vswitchIds',
+      vtype: 'array',
+      subType: 'string',
+      maxindex: 3,
+      desc: {
+        zh: '交换机ID。List长度范围为[1,3]',
+        // TODO
+        en: ``
+      }
+    },
     'disable-rollback': {
       mapping: 'CreateClusterRequest.disableRollback',
       vtype: 'boolean',
@@ -68,6 +129,7 @@ Default value: true. We recommend that you use the default value.`
     'snat-entry': {
       mapping: 'CreateClusterRequest.snatEntry',
       vtype: 'boolean',
+      default: false,
       desc: {
         zh: `是否为网络配置SNAT：
 当已有VPC能访问公网环境时，设置为 false。
@@ -102,6 +164,7 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
     'deletion-protection': {
       mapping: 'CreateClusterRequest.deletionProtection',
       vtype: 'boolean',
+      default: false,
       desc: {
         zh: '是否开启集群删除保护，防止通过控制台或API误删除集群',
         en: `Specifies whether to enable cluster deletion protection. If this option is enabled, the cluster cannot be deleted by operations in the console or API operations.`
@@ -110,6 +173,7 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
     'node-cidr-mask': {
       mapping: 'CreateClusterRequest.nodeCidrMask',
       vtype: 'string',
+      default: '25',
       desc: {
         zh: '节点网络的网络前缀',
         en: `The prefix length of the node CIDR block.`
@@ -160,55 +224,6 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
       desc: {
         zh: '时区',
         en: `timezone`
-      }
-    },
-    'addons': {
-      mapping: 'CreateClusterRequest.addons',
-      vtype: 'array',
-      subType: 'map',
-      desc: {
-        zh: `Kubernetes集群的addon插件的组合
-网络插件：包含Flannel和Terway网络插件，二选一。
-    当选择flannel类型网络时："container-cidr"为必传参数，且addons值必须包含flannel，例如:[{"name":"flannel"}]。
-    当选择terway类型网络时："pod-vswitch-ids"为必传参数，且addons值必须包含terway-eni,例如： [{"name": "terway-eni"}]。
-日志服务：可选，如果不开启日志服务时，将无法使用集群审计功能。
-Ingress：默认开启安装Ingress组件nginx-ingress-controller`,
-        en: `The add-ons to be installed for the cluster.
-Configure the parameters of add-ons as follows:
-name: Required. The name of the add-on.
-version: Optional. The default value is the latest version.
-config: Optional.
-Network plug-in: Select Flannel or Terway.
-Log Service: Optional. If Log Service is disabled, the cluster audit feature is unavailable.
-Ingress: The nginx-ingress-controller component is installed by default.`
-      },
-      example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
-      options: {
-        name: {
-          mapping: 'name',
-          vtype: 'string',
-          required: true,
-          desc: {
-            zh: 'addon插件名称',
-            en: `The name of the add-on.`
-          }
-        },
-        disable: {
-          mapping: 'disable',
-          vtype: 'boolean',
-          desc: {
-            zh: '取值为空时默认取最新版本',
-            en: `The default value is the latest version`
-          }
-        },
-        config: {
-          mapping: 'config',
-          vtype: 'string',
-          desc: {
-            zh: '取值为空时表示无需配置',
-            en: `Optional`
-          }
-        }
       }
     },
     'cluster-spec': {
@@ -372,6 +387,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       }
     },
     'worker-instance-charge-type': {
+      required: true,
       mapping: 'CreateClusterRequest.workerInstanceChargeType',
       desc: {
         zh: `Worker节点付费类型:
@@ -445,7 +461,7 @@ PostPaid: pay-as-you-go.`
         zh: '是否开启Worker节点自动续费',
         en: `Specifies whether to enable auto renewal for worker nodes`
       },
-      default: false,
+      default: true,
       attributes: {
         show: [
           {
@@ -467,7 +483,6 @@ PostPaid: pay-as-you-go.`
     },
     'worker-auto-renew-period': {
       mapping: 'CreateClusterRequest.workerAutoRenewPeriod',
-      dependency: true,
       vtype: 'number',
       desc: {
         zh: 'Worker节点自动续费周期，当选择预付费和自动续费时才生效',
@@ -476,17 +491,17 @@ PostPaid: pay-as-you-go.`
       attributes: {
         show: [
           {
-            'worker-auto-renew': {
+            'worker-instance-charge-type': {
               type: 'equal',
-              value: true
+              value: 'PrePaid'
             }
           }
         ],
         required: [
           {
-            'worker-auto-renew': {
+            'worker-instance-charge-type': {
               type: 'equal',
-              value: true
+              value: 'PrePaid'
             }
           }
         ]
@@ -512,8 +527,8 @@ PostPaid: pay-as-you-go.`
         required: [
           {
             'addons[*].name': {
-              type: 'equal',
-              value: 'flannel'
+              type: 'noInclude',
+              value: ['terway-eni', 'terway-eiip']
             }
           }
         ]
@@ -597,8 +612,7 @@ PostPaid: pay-as-you-go.`
         zh: '集群本地域名',
         // TODO
         en: ``
-      },
-      default: 'cluster.local'
+      }
     },
     'custom-san': {
       mapping: 'CreateClusterRequest.customSan',
@@ -694,7 +708,7 @@ PostPaid: pay-as-you-go.`
           {
             'addons[*].name': {
               type: 'include',
-              value: 'terway'
+              value: ['terway-eni', 'terway-eiip']
             }
           }
         ]
@@ -735,6 +749,9 @@ PostPaid: pay-as-you-go.`
     {
       optNames: ['key-pair', 'login-password'],
       required: true
+    },
+    {
+      optNames: ['security-group-id', 'is-enterprise']
     }
   ]
 };

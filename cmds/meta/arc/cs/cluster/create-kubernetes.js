@@ -51,9 +51,59 @@ exports.cmdObj = {
         en: `The SSH logon password. The password must be 8 to 30 characters in length and contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters`
       }
     },
+    'addons': {
+      mapping: 'CreateClusterRequest.addons',
+      vtype: 'array',
+      subType: 'map',
+      desc: {
+        zh: `Kubernetes集群的addon插件的组合
+网络插件：包含Flannel和Terway网络插件，二选一。
+    当选择flannel类型网络时："container-cidr"为必传参数，且addons值必须包含flannel，例如:[{"name":"flannel"}]。
+    当选择terway类型网络时："pod-vswitch-ids"为必传参数，且addons值必须包含terway-eni,例如： [{"name": "terway-eni"}]。
+日志服务：可选，如果不开启日志服务时，将无法使用集群审计功能。
+Ingress：默认开启安装Ingress组件nginx-ingress-controller`,
+        en: `The add-ons to be installed for the cluster.
+Configure the parameters of add-ons as follows:
+name: Required. The name of the add-on.
+version: Optional. The default value is the latest version.
+config: Optional.
+Network plug-in: Select Flannel or Terway.
+Log Service: Optional. If Log Service is disabled, the cluster audit feature is unavailable.
+Ingress: The nginx-ingress-controller component is installed by default.`
+      },
+      example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
+      options: {
+        name: {
+          mapping: 'name',
+          vtype: 'string',
+          required: true,
+          desc: {
+            zh: 'addon插件名称',
+            en: `The name of the add-on.`
+          }
+        },
+        disable: {
+          mapping: 'disable',
+          vtype: 'boolean',
+          desc: {
+            zh: '取值为空时默认取最新版本',
+            en: `The default value is the latest version`
+          }
+        },
+        config: {
+          mapping: 'config',
+          vtype: 'string',
+          desc: {
+            zh: '取值为空时表示无需配置',
+            en: `Optional`
+          }
+        }
+      }
+    },
     'snat-entry': {
       mapping: 'CreateClusterRequest.snatEntry',
       vtype: 'boolean',
+      default: true,
       desc: {
         zh: `是否为网络配置SNAT：
 当已有VPC能访问公网环境时，设置为 false。
@@ -89,6 +139,15 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
         en: `The system disk size of a worker node. Unit: GiB.`
       }
     },
+    'worker-system-disk-snapshot-policy-id': {
+      mapping: 'CreateClusterRequest.workerSystemDiskSnapshotPolicyId',
+      vtype: 'string',
+      desc: {
+        zh: 'Worker节点系统盘采用的自动快照策略ID。',
+        // TODO
+        en: ``
+      }
+    },
     'container-cidr': {
       mapping: 'CreateClusterRequest.containerCidr',
       vtype: 'string',
@@ -100,8 +159,8 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
         required: [
           {
             'addons[*].name': {
-              type: 'equal',
-              value: 'flannel'
+              type: 'noInclude',
+              value: ['terway-eni', 'terway-eiip']
             }
           }
         ]
@@ -126,7 +185,7 @@ true: retains the resources.
 false: releases the resources.
 Default value: true. We recommend that you use the default value.`
       },
-      default: false
+      default: true
     },
     'endpoint-public-access': {
       mapping: 'CreateClusterRequest.endpointPublicAccess',
@@ -135,7 +194,7 @@ Default value: true. We recommend that you use the default value.`
         zh: '是否开启公网API Server',
         en: `Specifies whether to enable Internet access to the API server.`
       },
-      default: true
+      default: false
     },
     'format-disk': {
       mapping: 'CreateClusterRequest.formatDisk',
@@ -231,7 +290,7 @@ Default value: true. We recommend that you use the default value.`
         zh: '是否开启Worker节点自动续费',
         en: `Specifies whether to enable auto renewal for worker nodes`
       },
-      default: false,
+      default: true,
       attributes: {
         show: [
           {
@@ -253,7 +312,6 @@ Default value: true. We recommend that you use the default value.`
     },
     'worker-auto-renew-period': {
       mapping: 'CreateClusterRequest.workerAutoRenewPeriod',
-      dependency: true,
       vtype: 'number',
       desc: {
         zh: 'Worker节点自动续费周期，当选择预付费和自动续费时才生效',
@@ -262,17 +320,17 @@ Default value: true. We recommend that you use the default value.`
       attributes: {
         show: [
           {
-            'worker-auto-renew': {
+            'worker-instance-charge-type': {
               type: 'equal',
-              value: true
+              value: 'PrePaid'
             }
           }
         ],
         required: [
           {
-            'worker-auto-renew': {
+            'worker-instance-charge-type': {
               type: 'equal',
-              value: true
+              value: 'PrePaid'
             }
           }
         ]
@@ -327,7 +385,9 @@ Default value: true. We recommend that you use the default value.`
       }
     },
     'worker-instance-charge-type': {
+      required: true,
       mapping: 'CreateClusterRequest.workerInstanceChargeType',
+      vtype: 'string',
       desc: {
         zh: `Worker节点付费类型:
 PrePaid：预付费
@@ -440,6 +500,7 @@ PostPaid: pay-as-you-go.`
     platform: {
       mapping: 'CreateClusterRequest.platform',
       vtype: 'string',
+      default: 'AliyunLinux',
       desc: {
         zh: '运行pod的主机的平台架构，如 x86',
         en: `The architecture of the nodes that run pods, for example, x86.`
@@ -448,6 +509,7 @@ PostPaid: pay-as-you-go.`
     'os-type': {
       mapping: 'CreateClusterRequest.osType',
       vtype: 'string',
+      default: 'Linux',
       desc: {
         zh: '运行pod的主机的操作系统类型',
         en: `The operating system of the nodes that run pods. For example, Linux and Windows.`
@@ -464,6 +526,7 @@ PostPaid: pay-as-you-go.`
     'deletion-protection': {
       mapping: 'CreateClusterRequest.deletionProtection',
       vtype: 'boolean',
+      default: false,
       desc: {
         zh: '是否开启集群删除保护，防止通过控制台或API误删除集群',
         en: `Specifies whether to enable cluster deletion protection. If this option is enabled, the cluster cannot be deleted by operations in the console or API operations.`
@@ -473,22 +536,34 @@ PostPaid: pay-as-you-go.`
       required: true,
       mapping: 'CreateClusterRequest.masterSystemDiskCategory',
       vtype: 'string',
+      default: 'cloud_ssd',
       desc: {
         zh: 'Master节点系统盘类型',
         en: `The system disk type of master nodes`
       },
       choices: [
         'cloud_efficiency',
-        'cloud_ssd'
+        'cloud_ssd',
+        'cloud_essd'
       ]
     },
     'master-system-disk-size': {
       required: true,
       mapping: 'CreateClusterRequest.masterSystemDiskSize',
       vtype: 'number',
+      default: 40,
       desc: {
-        zh: 'Master节点系统盘大小，单位为GiB',
+        zh: 'Master节点系统盘类型，取值范围[40,500]，单位：GiB',
         en: `The system disk size of a master node. Unit: GiB.`
+      }
+    },
+    'master-system-disk-snapshot-policy-id': {
+      mapping: 'CreateClusterRequest.masterSystemDiskSnapshotPolicyId',
+      vtype: 'string',
+      desc: {
+        zh: 'Master节点系统盘采用的自动快照策略ID',
+        // TODO
+        en: ``
       }
     },
     'num-of-nodes': {
@@ -514,7 +589,6 @@ PostPaid: pay-as-you-go.`
       required: true,
       mapping: 'CreateClusterRequest.masterVswitchIds',
       vtype: 'array',
-      maxindex: 3,
       subType: 'string',
       desc: {
         zh: 'Master节点虚拟交换ID。指定的实例规格数量需要和master_count保持一致, 和master_vswitch_ids中的元素一一对应',
@@ -547,10 +621,11 @@ PostPaid: pay-as-you-go.`
         zh: '节点服务端口。取值范围为[30000，65535]',
         en: `The service port range of nodes. Valid values: 30000 to 65535.`
       },
-      example: `30000-32767`
     },
     'master-instance-charge-type': {
+      required: true,
       mapping: 'CreateClusterRequest.masterInstanceChargeType',
+      default: 'PostPaid',
       desc: {
         zh: `Master节点付费类型:
 PrePaid：预付费
@@ -590,9 +665,18 @@ PostPaid: pay-as-you-go.`
         ]
       }
     },
+    'timezone': {
+      mapping: 'CreateClusterRequest.timezone',
+      vtype: 'string',
+      desc: {
+        zh: '时区',
+        en: `timezone`
+      }
+    },
     'master-auto-renew': {
       mapping: 'CreateClusterRequest.masterAutoRenew',
       vtype: 'boolean',
+      default: true,
       desc: {
         zh: 'Master节点是否自动续费',
         en: `Specifies whether to enable auto renewal for master nodes.`
@@ -611,6 +695,7 @@ PostPaid: pay-as-you-go.`
     'master-auto-renew-period': {
       mapping: 'CreateClusterRequest.masterAutoRenewPeriod',
       vtype: 'number',
+      default: 1,
       desc: {
         zh: 'Master节点自动续费周期，当选择预付费和自动续费时才生效，且为必选值',
         en: `The auto renewal period for master nodes. This parameter takes effect and is required only if master-instance-charge-type is set to PrePaid and master-auto-renew is set to true. If master-period-unit is set to Month, valid values of master-auto-renew-period include 1, 2, 3, 6, and 12.`
@@ -618,17 +703,17 @@ PostPaid: pay-as-you-go.`
       attributes: {
         show: [
           {
-            'master-auto-renew': {
+            'master-instance-charge-type': {
               type: 'equal',
-              value: true
+              value: 'PrePaid'
             }
           }
         ],
         required: [
           {
-            'master-auto-renew': {
+            'master-instance-charge-type': {
               type: 'equal',
-              value: true
+              value: 'PrePaid'
             }
           }
         ]
@@ -661,6 +746,7 @@ PostPaid: pay-as-you-go.`
       }
     },
     'master-count': {
+      required: true,
       mapping: 'CreateClusterRequest.masterCount',
       vtype: 'number',
       desc: {
@@ -744,55 +830,6 @@ PostPaid: pay-as-you-go.`
         }
       }
     },
-    'addons': {
-      mapping: 'CreateClusterRequest.addons',
-      vtype: 'array',
-      subType: 'map',
-      desc: {
-        zh: `Kubernetes集群的addon插件的组合
-网络插件：包含Flannel和Terway网络插件，二选一。
-    当选择flannel类型网络时："container-cidr"为必传参数，且addons值必须包含flannel，例如:[{"name":"flannel"}]。
-    当选择terway类型网络时："pod-vswitch-ids"为必传参数，且addons值必须包含terway-eni,例如： [{"name": "terway-eni"}]。
-日志服务：可选，如果不开启日志服务时，将无法使用集群审计功能。
-Ingress：默认开启安装Ingress组件nginx-ingress-controller`,
-        en: `The add-ons to be installed for the cluster.
-Configure the parameters of add-ons as follows:
-name: Required. The name of the add-on.
-version: Optional. The default value is the latest version.
-config: Optional.
-Network plug-in: Select Flannel or Terway.
-Log Service: Optional. If Log Service is disabled, the cluster audit feature is unavailable.
-Ingress: The nginx-ingress-controller component is installed by default.`
-      },
-      example: `name=flannel name=csi-plugin name=csi-provisioner name=nginx-ingress-controller,disabled=true`,
-      options: {
-        name: {
-          mapping: 'name',
-          vtype: 'string',
-          required: true,
-          desc: {
-            zh: 'addon插件名称',
-            en: `The name of the add-on.`
-          }
-        },
-        disable: {
-          mapping: 'disable',
-          vtype: 'boolean',
-          desc: {
-            zh: '取值为空时默认取最新版本',
-            en: `The default value is the latest version`
-          }
-        },
-        config: {
-          mapping: 'config',
-          vtype: 'string',
-          desc: {
-            zh: '取值为空时表示无需配置',
-            en: `Optional`
-          }
-        }
-      }
-    },
     'pod-vswitch-ids': {
       mapping: 'CreateClusterRequest.podVswitchIds',
       vtype: 'array',
@@ -806,7 +843,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
           {
             'addons[*].name': {
               type: 'include',
-              value: 'terway'
+              value: ['terway-eni', 'terway-eiip']
             }
           }
         ]
@@ -829,7 +866,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
           }
         ]
       },
-      default: false
+      default: true
     },
     'keep-instance-name': {
       mapping: 'CreateClusterRequest.keepInstanceName',
@@ -839,7 +876,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         // TODO
         en: ``
       },
-      default: false
+      default: true
     },
     'user-data': {
       mapping: 'CreateClusterRequest.userData',
@@ -866,8 +903,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         zh: '集群本地域名',
         // TODO
         en: ``
-      },
-      default: 'cluster.local'
+      }
     },
     'node-name-mode': {
       mapping: 'CreateClusterRequest.nodeNameMode',
@@ -882,7 +918,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       mapping: 'CreateClusterRequest.customSan',
       vtype: 'string',
       desc: {
-        zh: '集群自定义证书SAN',
+        zh: '自定义证书SAN，多个IP或域名以英文逗号（,）分隔',
         // TODO
         en: ``
       }

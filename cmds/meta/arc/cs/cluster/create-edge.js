@@ -28,119 +28,6 @@ exports.cmdObj = {
         en: `The type of the cluster`
       },
     },
-    'disable-rollback': {
-      mapping: 'CreateClusterRequest.disableRollback',
-      vtype: 'boolean',
-      desc: {
-        zh: '失败是否回滚',
-        en: `Specifies whether to retain all resources if the operation fails. Valid values:
-  true: retains the resources.
-  false: releases the resources.
-  Default value: true. We recommend that you use the default value.`
-      },
-      default: false
-    },
-    'timeout-mins': {
-      mapping: 'CreateClusterRequest.timeoutMins',
-      vtype: 'number',
-      desc: {
-        zh: '集群资源栈创建超时时间，以分钟为单位，默认值 60',
-        en: `The timeout period in minutes during which a resource creation operation must be completed. Default value: 60.`
-      },
-      default: 60
-    },
-    'kubernetes-version': {
-      mapping: 'CreateClusterRequest.kubernetesVersion',
-      vtype: 'string',
-      desc: {
-        zh: 'Kubernetes集群版本，默认最新版',
-        en: `The Kubernetes version. We recommend that you use the latest version.`
-      }
-    },
-    region: {
-      mapping: 'CreateClusterRequest.regionId',
-      alias: 'r',
-      desc: {
-        zh: '集群所在地域ID',
-        en: `The ID of the region where the cluster is deployed.`
-      }
-    },
-    'snat-entry': {
-      mapping: 'CreateClusterRequest.snatEntry',
-      vtype: 'boolean',
-      desc: {
-        zh: `是否为网络配置SNAT：
-当已有VPC能访问公网环境时，设置为 false。
-当已有VPC不能访问公网环境时：
-设置为true，表示配置SNAT，此时可以访问公网环境。
-设置为false，表示不配置SNAT，此时不能访问公网环境`,
-        en: `Specifies whether to enable Source Network Address Translation (SNAT).
-If the VPC has Internet access, set this parameter to false.
-If the VPC has no Internet access, valid values include:
-true: configures SNAT. This enables the cluster to access the Internet.
-false: does not configure SNAT. The prevents the cluster from accessing the Internet.`
-      }
-    },
-    'cloud-monitor-flags': {
-      mapping: 'CreateClusterRequest.cloudMonitorFlags',
-      vtype: 'boolean',
-      desc: {
-        zh: '是否安装云监控插件',
-        en: 'Specifies whether to install the CloudMonitor agent.'
-      },
-      default: false
-    },
-    'endpoint-public-access': {
-      mapping: 'CreateClusterRequest.endpointPublicAccess',
-      vtype: 'boolean',
-      desc: {
-        zh: '是否开启公网API Server',
-        en: `Specifies whether to enable Internet access to the API server.`
-      },
-      default: true
-    },
-    'deletion-protection': {
-      mapping: 'CreateClusterRequest.deletionProtection',
-      vtype: 'boolean',
-      desc: {
-        zh: '是否开启集群删除保护，防止通过控制台或API误删除集群',
-        en: `Specifies whether to enable cluster deletion protection. If this option is enabled, the cluster cannot be deleted by operations in the console or API operations.`
-      }
-    },
-    'node-cidr-mask': {
-      mapping: 'CreateClusterRequest.nodeCidrMask',
-      vtype: 'string',
-      desc: {
-        zh: '节点网络的网络前缀',
-        en: `The prefix length of the node CIDR block.`
-      }
-    },
-    tags: {
-      mapping: 'CreateClusterRequest.tags',
-      vtype: 'array',
-      subType: 'map',
-      desc: {
-        zh: '给集群打tag标签：key：标签名称；value：标签值',
-        en: `The tags of the cluster.`
-      },
-      example: `key=tier,value=backend`,
-      options: {
-        key: {
-          mapping: 'key',
-          desc: {
-            zh: '标签名称',
-            en: `the name of the tag.`
-          }
-        },
-        value: {
-          mapping: 'value',
-          desc: {
-            zh: '标签值',
-            en: `the value of the tag.`
-          }
-        }
-      }
-    },
     'addons': {
       mapping: 'CreateClusterRequest.addons',
       vtype: 'array',
@@ -190,7 +77,135 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         }
       }
     },
+    'disable-rollback': {
+      mapping: 'CreateClusterRequest.disableRollback',
+      vtype: 'boolean',
+      desc: {
+        zh: '失败是否回滚',
+        en: `Specifies whether to retain all resources if the operation fails. Valid values:
+  true: retains the resources.
+  false: releases the resources.
+  Default value: true. We recommend that you use the default value.`
+      },
+      default: false
+    },
+    'timeout-mins': {
+      mapping: 'CreateClusterRequest.timeoutMins',
+      vtype: 'number',
+      desc: {
+        zh: '集群资源栈创建超时时间，以分钟为单位，默认值 60',
+        en: `The timeout period in minutes during which a resource creation operation must be completed. Default value: 60.`
+      },
+      default: 60
+    },
+    'kubernetes-version': {
+      mapping: 'CreateClusterRequest.kubernetesVersion',
+      vtype: 'string',
+      desc: {
+        zh: 'Kubernetes集群版本，默认最新版',
+        en: `The Kubernetes version. We recommend that you use the latest version.`
+      }
+    },
+    region: {
+      mapping: 'CreateClusterRequest.regionId',
+      alias: 'r',
+      desc: {
+        zh: '集群所在地域ID',
+        en: `The ID of the region where the cluster is deployed.`
+      }
+    },
+    'snat-entry': {
+      mapping: 'CreateClusterRequest.snatEntry',
+      vtype: 'boolean',
+      default: false,
+      desc: {
+        zh: `是否为网络配置SNAT：
+当已有VPC能访问公网环境时，设置为 false。
+当已有VPC不能访问公网环境时：
+设置为true，表示配置SNAT，此时可以访问公网环境。
+设置为false，表示不配置SNAT，此时不能访问公网环境`,
+        en: `Specifies whether to enable Source Network Address Translation (SNAT).
+If the VPC has Internet access, set this parameter to false.
+If the VPC has no Internet access, valid values include:
+true: configures SNAT. This enables the cluster to access the Internet.
+false: does not configure SNAT. The prevents the cluster from accessing the Internet.`
+      }
+    },
+    'vswitch-ids': {
+      required: true,
+      mapping: 'CreateClusterRequest.vswitchIds',
+      vtype: 'array',
+      subType: 'string',
+      maxindex: 3,
+      desc: {
+        zh: '交换机ID。List长度范围为[1,3]',
+        // TODO
+        en: ``
+      }
+    },
+    'cloud-monitor-flags': {
+      mapping: 'CreateClusterRequest.cloudMonitorFlags',
+      vtype: 'boolean',
+      desc: {
+        zh: '是否安装云监控插件',
+        en: 'Specifies whether to install the CloudMonitor agent.'
+      },
+      default: false
+    },
+    'endpoint-public-access': {
+      mapping: 'CreateClusterRequest.endpointPublicAccess',
+      vtype: 'boolean',
+      desc: {
+        zh: '是否开启公网API Server',
+        en: `Specifies whether to enable Internet access to the API server.`
+      },
+      default: true
+    },
+    'deletion-protection': {
+      mapping: 'CreateClusterRequest.deletionProtection',
+      vtype: 'boolean',
+      default: false,
+      desc: {
+        zh: '是否开启集群删除保护，防止通过控制台或API误删除集群',
+        en: `Specifies whether to enable cluster deletion protection. If this option is enabled, the cluster cannot be deleted by operations in the console or API operations.`
+      }
+    },
+    'node-cidr-mask': {
+      mapping: 'CreateClusterRequest.nodeCidrMask',
+      vtype: 'string',
+      desc: {
+        zh: '节点网络的网络前缀',
+        en: `The prefix length of the node CIDR block.`
+      },
+    },
+    tags: {
+      mapping: 'CreateClusterRequest.tags',
+      vtype: 'array',
+      subType: 'map',
+      desc: {
+        zh: '给集群打tag标签：key：标签名称；value：标签值',
+        en: `The tags of the cluster.`
+      },
+      example: `key=tier,value=backend`,
+      options: {
+        key: {
+          mapping: 'key',
+          desc: {
+            zh: '标签名称',
+            en: `the name of the tag.`
+          }
+        },
+        value: {
+          mapping: 'value',
+          desc: {
+            zh: '标签值',
+            en: `the value of the tag.`
+          }
+        }
+      }
+    },
     'profile': {
+      required: true,
       mapping: 'CreateClusterRequest.profile',
       vtype: 'string',
       desc: {
@@ -238,6 +253,24 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       desc: {
         zh: 'Worker节点系统盘大小，单位为GiB',
         en: `The system disk size of a worker node. Unit: GiB.`
+      }
+    },
+    'container-cidr': {
+      mapping: 'CreateClusterRequest.containerCidr',
+      vtype: 'string',
+      desc: {
+        zh: '容器网段，不能和VPC网段冲突。当选择系统自动创建VPC时，默认使用172.16.0.0/16网段。当创建flannel网络类型的集群时，该字段为必填',
+        en: `The CIDR block of containers. This CIDR block cannot overlap with that of the VPC. If the VPC is automatically created by the system, the CIDR block of containers is set to 172.16.0.0/16.`
+      },
+      attributes: {
+        required: [
+          {
+            'addons[*].name': {
+              type: 'noInclude',
+              value: ['terway-eni', 'terway-eiip']
+            }
+          }
+        ]
       }
     },
     'worker-data-disks': {
@@ -289,6 +322,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       }
     },
     'worker-instance-charge-type': {
+      required: true,
       mapping: 'CreateClusterRequest.workerInstanceChargeType',
       desc: {
         zh: `Worker节点付费类型:
@@ -311,24 +345,6 @@ PostPaid: pay-as-you-go.`
       desc: {
         zh: '集群使用的VPC',
         en: `The ID of the VPC.`
-      }
-    },
-    'container-cidr': {
-      mapping: 'CreateClusterRequest.containerCidr',
-      vtype: 'string',
-      desc: {
-        zh: '容器网段，不能和VPC网段冲突。当选择系统自动创建VPC时，默认使用172.16.0.0/16网段。当创建flannel网络类型的集群时，该字段为必填',
-        en: `The CIDR block of containers. This CIDR block cannot overlap with that of the VPC. If the VPC is automatically created by the system, the CIDR block of containers is set to 172.16.0.0/16.`
-      },
-      attributes: {
-        required: [
-          {
-            'addons[*].name': {
-              type: 'equal',
-              value: 'flannel'
-            }
-          }
-        ]
       }
     },
     'service-cidr': {
@@ -381,7 +397,7 @@ PostPaid: pay-as-you-go.`
           }
         ]
       },
-      default: false
+      default: true
     },
     'rds-instances': {
       mapping: 'CreateClusterRequest.rdsInstances',
@@ -398,6 +414,9 @@ PostPaid: pay-as-you-go.`
     {
       optNames: ['key-pair', 'login-password'],
       required: true
+    },
+    {
+      optNames: ['security-group-id', 'is-enterprise']
     }
   ]
 };
