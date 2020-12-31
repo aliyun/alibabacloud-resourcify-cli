@@ -665,11 +665,11 @@ describe('parser.js', function () {
   });
 
   it('parse()', function () {
-    ctx.args = ['test', '--flag=string', '-n', '2'];
+    ctx.args = ['test', '--flag=string', '-n', '2','--profile','test'];
     let parser = new Parse(ctx);
     let err = parser.parse();
     assert.strictEqual(err, undefined);
-    assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'number-flag': 2, 'unchanged-flag': 'unchanged' });
+    assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'number-flag': 2, 'unchanged-flag': 'unchanged', region: 'cn-hangzhou',profile:'test' });
   });
 
   it('parse: conflict', function () {
