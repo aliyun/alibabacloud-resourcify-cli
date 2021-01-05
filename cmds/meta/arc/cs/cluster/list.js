@@ -24,6 +24,22 @@ exports.cmdObj = {
         zh: '集群类型',
         en: `Cluster type`
       }
+    },
+    'page-size': {
+      mapping: 'DescribeClustersRequest.pageSize',
+      vtype: 'number',
+      desc: {
+        zh: '每页显示的记录数',
+        en: `page size`
+      }
+    },
+    'page-number': {
+      mapping: 'DescribeClustersRequest.pageNumber',
+      vtype: 'number',
+      desc: {
+        zh: '总页数',
+        en: `page number`
+      }
     }
   }
 };
@@ -38,13 +54,13 @@ exports.run = async function (ctx) {
     regionId: profile.region,
     type: profile.type
   });
-  let DescribeClustersRequest = require(`@alicloud/cs20151215`).DescribeClustersRequest;
-  let request = new DescribeClustersRequest(ctx.mappingValue.DescribeClustersRequest);
+  let DescribeClustersV1Request = require(`@alicloud/cs20151215`).DescribeClustersV1Request;
+  let request = new DescribeClustersV1Request(ctx.mappingValue.DescribeClustersRequest);
 
   let client = new Client(config);
   let result;
   try {
-    result = await client.describeClustersWithOptions(request, {}, runtime.getRuntimeOption());
+    result = await client.describeClustersV1WithOptions(request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }

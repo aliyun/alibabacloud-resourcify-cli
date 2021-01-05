@@ -387,7 +387,6 @@ false: does not configure SNAT. The prevents the cluster from accessing the Inte
       }
     },
     'worker-instance-charge-type': {
-      required: true,
       mapping: 'CreateClusterRequest.workerInstanceChargeType',
       desc: {
         zh: `Worker节点付费类型:
