@@ -185,7 +185,6 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       }
     },
     'zoneId': {
-      required: true,
       mapping: 'CreateClusterRequest.zoneId',
       vtype: 'string',
       desc: {
@@ -195,16 +194,30 @@ Ingress: The nginx-ingress-controller component is installed by default.`
       }
     }, 
     'vpcid': {
-      required: true,
       mapping: 'CreateClusterRequest.vpcid',
       vtype: 'string',
       desc: {
         zh: '集群使用的VPC',
         en: `The ID of the VPC.`
-      }
+      }, 
+      attributes: {
+        show: [
+          {
+            'vswitch-ids': {
+              type: 'any'
+            }
+          }
+        ],
+        required: [
+          {
+            'vswitch-ids': {
+              type: 'any'
+            }
+          }
+        ],
+      },
     },
     'vswitch-ids': {
-      required: true,
       mapping: 'CreateClusterRequest.vswitchIds',
       vtype: 'array',
       subType: 'string',
@@ -246,6 +259,10 @@ Ingress: The nginx-ingress-controller component is installed by default.`
   conflicts: [
     {
       optNames: ['security-group-id', 'is-enterprise']
+    },
+    {
+      optNames: ['vswitch-ids', 'zoneId'],
+      required: true
     }
   ]
 };
