@@ -5,7 +5,8 @@
   "bin": {
     "arc": "bin/arc.js",
     "arc-tool": "bin/arc-tool.js",
-    "arc-cs": "bin/arc-cs.js"
+    "arc-cs": "bin/arc-cs.js",
+    "arc-display": "bin/arc-display.js"
   },
   "scripts": {
     "test": "mocha -t 3000 -R spec test/*.test.js",
@@ -30,8 +31,12 @@
     "@alicloud/rds20140815": "^1.0.0",
     "@alicloud/rpc-client": "^1.2.0",
     "cliui": "^6.0.0",
+    "commander": "^6.2.1",
+    "console.table": "^0.10.0",
     "inquirer": "^7.3.2",
     "jmespath": "^0.15.0",
+    "json2csv": "^5.0.5",
+    "json2yaml": "^1.1.0",
     "koa": "^2.13.0",
     "koa-router": "^9.4.0",
     "koa-static": "^5.0.0"
