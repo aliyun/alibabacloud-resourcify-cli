@@ -22,7 +22,7 @@
     "@alicloud/alidns20150109": "^1.0.0",
     "@alicloud/cms20190101": "^1.0.0",
     "@alicloud/credentials": "^2.1.0",
-    "@alicloud/cs20151215": "^2.2.1",
+    "@alicloud/cs20151215": "^2.2.3",
     "@alicloud/eci20180808": "^1.1.0",
     "@alicloud/ecs20140526": "^1.0.0",
     "@alicloud/nas20170626": "^1.0.0",
