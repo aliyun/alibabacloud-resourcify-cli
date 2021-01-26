@@ -6,28 +6,41 @@ let output = require('../../../../../lib/output.js');
 
 exports.cmdObj = {
   desc: {
-    zh: '查询集群Addons升级状态',
-    en: `query the upgrade status of a cluster add-on.`
+    en: 'Scaleout node pools',
+    zh: '扩容节点池节点'
   },
   options: {
-    'component-ids': {
-      required: true,
-      mapping: 'DescribeClusterAddonsUpgradeStatusRequest.componentIds',
-      vtype: 'array',
-      subType: 'string',
+    'count': {
+      mapping: 'ScaleClusterNodePoolRequest.count',
+      vtype: 'number',
       desc: {
-        zh: '组件名称',
-        en: ''
+        en: '',
+        zh: '扩容节点数量。受当前集群节点配额限制，单次操作最多扩容500个节点'
       }
     }
   },
   args: [
     {
       name: 'clusterId',
-      required: true
+      required: true,
+      vtype: 'string',
+      desc: {
+        zh: '容器实例Id',
+        en: ''
+      }
+    },
+    {
+      name: 'nodepoolId',
+      required: true,
+      vtype: 'string',
+      desc: {
+        zh: '节点池Id',
+        en: ''
+      }
     }
   ]
 };
+
 
 exports.run = async function (ctx) {
   let profile = await runtime.getConfigOption(ctx.profile);
@@ -39,14 +52,12 @@ exports.run = async function (ctx) {
     regionId: profile.region,
     type: profile.type
   });
-
-  let DescribeClusterAddonsUpgradeStatusRequest = require(`@alicloud/cs20151215`).DescribeClusterAddonsUpgradeStatusRequest;
-  let request = new DescribeClusterAddonsUpgradeStatusRequest(ctx.mappingValue.DescribeClusterAddonsUpgradeStatusRequest);
-
+  let ScaleClusterNodePoolRequest = require(`@alicloud/cs20151215`).ScaleClusterNodePoolRequest;
+  let request = new ScaleClusterNodePoolRequest(ctx.mappingValue.ScaleClusterNodePoolRequest);
   let client = new Client(config);
   let result;
   try {
-    result = await client.describeClusterAddonsUpgradeStatusWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
+    result = await client.scaleClusterNodePoolWithOptions(ctx.argv[0], ctx.argv[1], request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }
@@ -55,4 +66,5 @@ exports.run = async function (ctx) {
   }
   let data = JSON.stringify(result, null, 2);
   output.log(data);
+
 };

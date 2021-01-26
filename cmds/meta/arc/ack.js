@@ -17,6 +17,10 @@ exports.cmdObj = {
     addon: {
       zh: '集群插件操作',
       en: `action of add-on`
-    }
+    },
+    nodepool: {
+      zh: '集群节点池操作',
+      en: 'action of nodepools'
+    },
   }
 };
