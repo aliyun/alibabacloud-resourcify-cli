@@ -1,34 +1,43 @@
 'use strict';
 
-const assert = require('assert');
-const config = require('../lib/config.js');
 const fs = require('fs');
 const path = require('path');
+
+const assert = require('assert');
+const config = require('../lib/config.js');
+
 describe('config.js', function () {
   let confPath = path.join(__dirname, 'arc.json');
   config.setConfigPath(confPath);
+
   beforeEach(function () {
     if (fs.existsSync(confPath)) {
       fs.unlinkSync(confPath);
     }
   });
+
   after(function () {
     if (fs.existsSync(confPath)) {
       fs.unlinkSync(confPath);
     }
   });
+
   it('function getConfig()', function () {
     let conf = config.getConfig();
     assert.strictEqual(conf, null, 'conf should be null when configFilePath does not exist');
   });
+
   it('function getProfile()', function () {
     let { profile } = config.getProfile();
+
     let initProfile = {
       access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
-      access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
+      access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRET,
+      sts_token: undefined,
       region: 'cn-hangzhou',
       language: 'zh'
     };
+
     assert.deepStrictEqual(profile, initProfile, 'profile return initProifle when configFilePath doesnot exit');
     let conf = {
       'profiles': {
@@ -133,7 +142,8 @@ describe('config.js', function () {
       access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
       access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
       region: 'cn-hangzhou',
-      language: 'zh'
+      language: 'zh',
+      sts_token: undefined
     };
     assert.deepStrictEqual(profile, initProfile);
     assert.strictEqual(name, 'test3');
