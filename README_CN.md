@@ -31,12 +31,14 @@ $ npm i @alicloud/arc -g
 
 现有包含的命令行工具如下：
 
-1. `arc`: 调用 ARC 支持的所有阿里云资源命令  
+1. `arc`: 调用 ARC 支持的所有阿里云资源命令
 `arc <product> <resource> <action> [options]`
-2. `arc-tool`: 调用 ARC 本身相关命令  
+2. `arc-tool`: 调用 ARC 本身相关命令
 `arc-tool <command> [subCommand] [options]`
-3. `arc-cs`: 调用 CS 相关资源命令  
+3. `arc-cs`: 调用 CS 相关资源命令
 `arc-cs <resource> <action> [options]`
+4. `arc-display`: 支持 jmespath 查询结果和自定义输出格式
+`arc-display --query <query> --format <format>`
 
 ## 全局选项
 

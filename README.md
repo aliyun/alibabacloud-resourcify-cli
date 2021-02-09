@@ -22,7 +22,7 @@ ARC is a brand-new Alibaba Cloud CLI environment oriented to resourceization, an
 
 ## Installation
 
-*Please confirm that you have a Node.js development environment before installation. You can find it from https://nodejs.org/ *
+* Please confirm that you have a Node.js development environment before installation. You can find it from https://nodejs.org/ .*
 
 Install ARC using the following command:
 
@@ -36,8 +36,10 @@ The currently included command line tools are as follows:
 `arc <product> <resource> <action> [options]`
 2. `arc-tool`: call related commands of ARC itself
 `arc-tool <command> [subCommand] [options]`
-3. `arc-cs`: Call CS related resource commands
+3. `arc-cs`: call CS related resource commands
 `arc-cs <resource> <action> [options]`
+4. `arc-display`: support query results with jmespath and custom output format
+`arc-display --query <query> --format <format>`
 
 ## Global options
 
