@@ -9,7 +9,7 @@
 [npm-image]: https://img.shields.io/npm/v/@alicloud/arc.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@alicloud/arc
 [travis-image]: https://img.shields.io/travis/aliyun/alibabacloud-resourcify-cli/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/aliyun/alibabacloud-resourcify-cli
+[travis-url]: https://travis-ci.com/aliyun/alibabacloud-resourcify-cli
 [cov-image]: https://codecov.io/gh/aliyun/alibabacloud-resourcify-cli/branch/master/graph/badge.svg
 [cov-url]: https://codecov.io/gh/aliyun/alibabacloud-resourcify-cli
 [alerts-image]:https://img.shields.io/lgtm/alerts/g/aliyun/alibabacloud-resourcify-cli.svg?logo=lgtm&logoWidth=18
