@@ -21,7 +21,7 @@ ARC 是面向资源化的全新阿里云 CLI 环境，是多个命令行工具�
 
 ## 安装
 
-*安装前请确认具有 Node.js 开发环境，您可以从 https://nodejs.org/ 下载*
+> 安装前请确认具有 Node.js 开发环境，您可以从 https://nodejs.org/ 下载
 
 使用以下命令安装 ARC ：
 
