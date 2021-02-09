@@ -22,7 +22,7 @@ ARC is a brand-new Alibaba Cloud CLI environment oriented to resourceization, an
 
 ## Installation
 
-* Please confirm that you have a Node.js development environment before installation. You can find it from https://nodejs.org/ .*
+> Please confirm that you have a Node.js development environment before installation. You can find it from https://nodejs.org/
 
 Install ARC using the following command:
 
