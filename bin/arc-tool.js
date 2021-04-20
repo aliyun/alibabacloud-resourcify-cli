@@ -6,4 +6,4 @@
 
 const { run } = require('../lib/run.js');
 
-run('arc-tool','cmds/meta/arc-tool');
+run('arc-tool', 'cmds/meta/arc-tool');
