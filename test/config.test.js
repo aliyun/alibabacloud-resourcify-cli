@@ -4,11 +4,11 @@ const fs = require('fs');
 const path = require('path');
 
 const assert = require('assert');
-const config = require('../lib/config.js');
+const Config = require('../lib/config.js');
 
 describe('config.js', function () {
   let confPath = path.join(__dirname, 'arc.json');
-  config.setConfigPath(confPath);
+  const config = new Config(confPath);
 
   beforeEach(function () {
     if (fs.existsSync(confPath)) {
@@ -62,6 +62,7 @@ describe('config.js', function () {
     profileInfo = config.getProfile('test2');
     assert.deepStrictEqual(profileInfo.profile, conf.profiles.test2, 'Get the specified profile');
   });
+
   it('function updateProfile()', function () {
     let name = 'test';
     let profile = {
@@ -70,6 +71,7 @@ describe('config.js', function () {
       'region': 'cn-hangzhou',
       'language': 'zh'
     };
+
     let expConf = {
       profiles: {
         test: profile
@@ -80,6 +82,7 @@ describe('config.js', function () {
     let conf = config.getConfig();
     assert.deepStrictEqual(conf, expConf, 'Configuration should be successful');
   });
+
   it('function delete()', function () {
     let initConf = {
       'profiles': {
