@@ -15,6 +15,7 @@ describe('parser.js', function () {
       language: 'zh'
     }
   };
+
   beforeEach(function () {
     ctx['cmdFilePath'] = path.join(metaFilePath, 'test/test_cmd/test');
     ctx.args = [];
