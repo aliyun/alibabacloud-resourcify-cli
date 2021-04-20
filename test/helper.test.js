@@ -1,6 +1,8 @@
 'use strict';
+
 const assert = require('assert');
 const path = require('path');
+
 let Helper = require('../lib/helper.js');
 let { metaFilePath } = require('../lib/arc_config.js');
 
@@ -14,6 +16,7 @@ describe('parser.js', function () {
       language: 'zh'
     }
   };
+
   beforeEach(function () {
     ctx['cmdFilePath'] = path.join(metaFilePath, 'test/test_cmd/test');
     ctx.args = [];
