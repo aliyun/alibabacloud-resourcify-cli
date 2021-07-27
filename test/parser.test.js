@@ -3,7 +3,6 @@ const assert = require('assert');
 const path = require('path');
 const i18n = require('../lib/i18n.js');
 let Parse = require('../lib/parser.js');
-let { metaFilePath } = require('../lib/arc_config.js');
 
 describe('parser.js', function () {
   let ctx = {
@@ -17,7 +16,7 @@ describe('parser.js', function () {
   };
 
   beforeEach(function () {
-    ctx['cmdFilePath'] = path.join(metaFilePath, 'test/test_cmd/test');
+    ctx['cmdFilePath'] = path.join(__dirname, 'test_cmd/test');
     ctx.args = [];
   });
 

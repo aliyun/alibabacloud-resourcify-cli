@@ -4,9 +4,8 @@ const assert = require('assert');
 const path = require('path');
 
 let Helper = require('../lib/helper.js');
-let { metaFilePath } = require('../lib/arc_config.js');
 
-describe('parser.js', function () {
+describe('helper.js', function () {
   let ctx = {
     rootCmdName: 'arc-test',
     profile: {
@@ -18,7 +17,7 @@ describe('parser.js', function () {
   };
 
   beforeEach(function () {
-    ctx['cmdFilePath'] = path.join(metaFilePath, 'test/test_cmd/test');
+    ctx['cmdFilePath'] = path.join(__dirname, 'test_cmd/test');
     ctx.args = [];
   });
 
