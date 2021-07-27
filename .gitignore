@@ -104,3 +104,4 @@ dist
 .tern-port
 node_modules
 front/build
+.DS_Store

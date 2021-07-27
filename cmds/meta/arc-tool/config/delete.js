@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('../../../../lib/config.js');
+const Config = require('../../../../lib/config.js');
 
 exports.cmdObj = {
   usage: [
@@ -19,5 +19,6 @@ exports.cmdObj = {
 };
 
 exports.run = function (ctx) {
+  const config = new Config();
   config.delete(ctx.argv[0]);
 };

@@ -1,5 +1,7 @@
 'use strict';
-const config = require('../../../lib/config.js');
+
+const Config = require('../../../lib/config.js');
+
 exports.cmdObj = {
   desc: {
     zh: '交互式配置CLI，根据提示输入参数值，完成后自动将现有配置作为默认配置',
@@ -89,5 +91,6 @@ exports.run = function (ctx) {
   profile['access_key_secret'] = ctx.parsedValue['access-key-secret'];
   profile['region'] = ctx.parsedValue['region'] || ctx.profile.region;
   profile['language'] = ctx.parsedValue['language'] || ctx.profile.language;
+  const config = new Config();
   config.updateProfile(ctx.profileName, profile);
 };
