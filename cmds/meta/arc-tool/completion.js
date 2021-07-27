@@ -1,6 +1,5 @@
 'use strict';
 
-const output = require('../../../lib/output.js');
 exports.cmdObj = {
   desc: {
     zh: '自动补全',
@@ -17,11 +16,12 @@ exports.cmdObj = {
     }
   ]
 };
+
 function getBashCompletionScript() {
-  let packageInfo = require('../../../package.json');
-  let bins = Object.keys(packageInfo.bin);
+  const packageInfo = require('../../../package.json');
+  const bins = Object.keys(packageInfo.bin);
   let script = '';
-  for (let bin of bins) {
+  for (const bin of bins) {
     script += `complete -C ${bin} ${bin}\n`;
   }
   script = `
@@ -34,10 +34,10 @@ ${script}
 }
 
 function getZshCompletionScript() {
-  let packageInfo = require('../../../package.json');
-  let bins = Object.keys(packageInfo.bin);
+  const packageInfo = require('../../../package.json');
+  const bins = Object.keys(packageInfo.bin);
   let script = '';
-  for (let bin of bins) {
+  for (const bin of bins) {
     script += `compdef "_arc_completion ${bin}" ${bin}\n`;
   }
   script = `
@@ -65,6 +65,6 @@ exports.run = function (ctx) {
   } else {
     script = getZshCompletionScript();
   }
-  output.log(script);
+  console.log(script);
 };
 

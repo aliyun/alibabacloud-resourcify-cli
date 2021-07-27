@@ -23,55 +23,55 @@ function getSubList(dirPath, nextDir) {
   if (nextDir) {
     dirPath = path.join(dirPath, nextDir);
   }
-  let descPath = dirPath + '.js';
+  const descPath = dirPath + '.js';
 
-  let meta = require(descPath);
-  let data = {};
+  const meta = require(descPath);
+  const data = {};
   if (!meta.cmdObj.sub) {
     return '';
   }
 
-  let subs = Object.keys(meta.cmdObj.sub);
-  for (let sub of subs) {
+  const subs = Object.keys(meta.cmdObj.sub);
+  for (const sub of subs) {
     data[sub] = getSubList(dirPath, sub);
   }
   return data;
 }
 
 function getProductData(product) {
-  let descPath = path.join(rootPath, product) + '.js';
-  let meta = require(descPath);
-  let syntax = [
+  const descPath = path.join(rootPath, product) + '.js';
+  const meta = require(descPath);
+  const syntax = [
     `arc ${product} [resources]`,
     `arc-${product} [resources]`
   ];
-  let desc = meta.cmdObj.desc[lang];
-  let resources = {};
-  let subs = Object.keys(meta.cmdObj.sub);
-  for (let resource of subs) {
+  const desc = meta.cmdObj.desc[lang];
+  const resources = {};
+  const subs = Object.keys(meta.cmdObj.sub);
+  for (const resource of subs) {
     resources[resource] = meta.cmdObj.sub[resource][lang];
   }
   return { name: product, syntax, desc, resources };
 }
 
 function getResourceData(product, resource) {
-  let descPath = path.join(rootPath, product, resource) + '.js';
-  let meta = require(descPath);
-  let syntax = [
+  const descPath = path.join(rootPath, product, resource) + '.js';
+  const meta = require(descPath);
+  const syntax = [
     `arc ${product} ${resource} [action]`,
     `arc-${product} ${resource} [action]`
   ];
-  let desc = meta.cmdObj.desc[lang];
-  let actions = {};
-  let subs = Object.keys(meta.cmdObj.sub);
-  for (let action of subs) {
+  const desc = meta.cmdObj.desc[lang];
+  const actions = {};
+  const subs = Object.keys(meta.cmdObj.sub);
+  for (const action of subs) {
     actions[action] = meta.cmdObj.sub[action][lang];
   }
   return { name: resource, syntax, desc, actions };
 }
 
 function getOptionInfo(parse, option) {
-  let info = {
+  const info = {
     vtype: option.vtype || 'string',
     desc: option.desc[lang],
     remark: ''
@@ -83,7 +83,7 @@ function getOptionInfo(parse, option) {
     if (option.attributes.show) {
       info.remark = i18n.conditionNotMetPrompt[lang] + ':\n';
       for (let i = 0; i < option.attributes.show.length; i++) {
-        let prompt = parse.getConditionPrompt(option.attributes.show[i]);
+        const prompt = parse.getConditionPrompt(option.attributes.show[i]);
         info.remark =info.remark+ util.format(prompt.prompt[lang], ...prompt.values)+'\n';
         if (option.attributes.show[i + 1]) {
           info.remark = info.remark + i18n.orKeyWord[lang] + '\n';
@@ -93,7 +93,7 @@ function getOptionInfo(parse, option) {
     if (option.attributes.required) {
       info.remark = info.remark + i18n.requiredConditionPrompt[lang] + ':\n';
       for (let i = 0; i < option.attributes.required.length; i++) {
-        let prompt = parse.getConditionPrompt(option.attributes.required[i]);
+        const prompt = parse.getConditionPrompt(option.attributes.required[i]);
         info.remark =info.remark+ util.format(prompt.prompt[lang], ...prompt.values)+'\n';
         if (option.attributes.required[i + 1]) {
           info.remark = info.remark + i18n.orKeyWord[lang] + '\n';
@@ -106,15 +106,15 @@ function getOptionInfo(parse, option) {
 }
 
 function getActionData(product, resource, action) {
-  let descPath = path.join(rootPath, product, resource, action) + '.js';
-  let cmdObj = require(descPath).cmdObj;
+  const descPath = path.join(rootPath, product, resource, action) + '.js';
+  const cmdObj = require(descPath).cmdObj;
   let syntax;
   let syntaxSuffix = '';
   if (cmdObj.usage) {
     syntax = cmdObj.usage;
   } else {
     if (cmdObj.args) {
-      for (let value of cmdObj.args) {
+      for (const value of cmdObj.args) {
         if (value.required) {
           syntaxSuffix += `<${value.name}> `;
         } else {
@@ -135,17 +135,17 @@ function getActionData(product, resource, action) {
     ];
   }
 
-  let desc = cmdObj.desc[lang];
-  let options = {};
+  const desc = cmdObj.desc[lang];
+  const options = {};
 
   if (!cmdObj.options) {
     return { name: action, syntax, desc };
   }
-  let parse = new Parse({});
-  let result = parse.transOpts(cmdObj);
-  for (let optName of result.index) {
+  const parse = new Parse({});
+  const result = parse.transOpts(cmdObj);
+  for (const optName of result.index) {
     if (Array.isArray(optName)) {
-      for (let name of optName) {
+      for (const name of optName) {
         options[name] = getOptionInfo(parse, cmdObj.options[name]);
       }
     } else {
@@ -192,29 +192,29 @@ exports.run = function (rootCtx) {
   });
   app.use(koaStatic(path.join(__dirname, '../../../front/build')));
   router.get('/product', async (ctx, next) => {
-    let data = getSubList(rootPath);
+    const data = getSubList(rootPath);
     ctx.body = data;
   });
   router.get('/product/:product', async (ctx, next) => {
-    let product = ctx.params.product;
-    let data = getData(product);
+    const product = ctx.params.product;
+    const data = getData(product);
     ctx.body = data;
   });
   router.get('/resource/:product/:resource', async (ctx, next) => {
-    let product = ctx.params.product;
-    let resource = ctx.params.resource;
-    let data = getData(product, resource);
+    const product = ctx.params.product;
+    const resource = ctx.params.resource;
+    const data = getData(product, resource);
     ctx.body = data;
   });
   router.get('/action/:product/:resource/:action', async (ctx, next) => {
-    let product = ctx.params.product;
-    let resource = ctx.params.resource;
-    let action = ctx.params.action;
-    let data = getData(product, resource, action);
+    const product = ctx.params.product;
+    const resource = ctx.params.resource;
+    const action = ctx.params.action;
+    const data = getData(product, resource, action);
     ctx.body = data;
   });
   router.get('/', async (ctx, next) => {
-    let data = fs.readFileSync(path.join(__dirname, '../../../front/build/index.html'));
+    const data = fs.readFileSync(path.join(__dirname, '../../../front/build/index.html'));
     ctx.type = 'text/html;charset=utf-8';
     ctx.body = data;
   });

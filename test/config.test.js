@@ -7,7 +7,7 @@ const assert = require('assert');
 const Config = require('../lib/config.js');
 
 describe('config.js', function () {
-  let confPath = path.join(__dirname, 'arc.json');
+  const confPath = path.join(__dirname, 'arc.json');
   const config = new Config(confPath);
 
   beforeEach(function () {
@@ -23,14 +23,14 @@ describe('config.js', function () {
   });
 
   it('function getConfig()', function () {
-    let conf = config.getConfig();
+    const conf = config.getConfig();
     assert.strictEqual(conf, null, 'conf should be null when configFilePath does not exist');
   });
 
   it('function getProfile()', function () {
-    let { profile } = config.getProfile();
+    const { profile } = config.getProfile();
 
-    let initProfile = {
+    const initProfile = {
       access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
       access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRET,
       sts_token: undefined,
@@ -39,7 +39,7 @@ describe('config.js', function () {
     };
 
     assert.deepStrictEqual(profile, initProfile, 'profile return initProifle when configFilePath doesnot exit');
-    let conf = {
+    const conf = {
       'profiles': {
         'test': {
           'access_key_id': 'access_key_id',
@@ -64,27 +64,27 @@ describe('config.js', function () {
   });
 
   it('function updateProfile()', function () {
-    let name = 'test';
-    let profile = {
+    const name = 'test';
+    const profile = {
       'access_key_id': 'access_key_id',
       'access_key_secret': 'access_key_secret',
       'region': 'cn-hangzhou',
       'language': 'zh'
     };
 
-    let expConf = {
+    const expConf = {
       profiles: {
         test: profile
       },
       default: name
     };
     config.updateProfile(name, profile);
-    let conf = config.getConfig();
+    const conf = config.getConfig();
     assert.deepStrictEqual(conf, expConf, 'Configuration should be successful');
   });
 
   it('function delete()', function () {
-    let initConf = {
+    const initConf = {
       'profiles': {
         'test': {
           'access_key_id': 'access_key_id',
@@ -106,8 +106,8 @@ describe('config.js', function () {
     // interrupt process.exit()
     // config.delete('test')
     config.delete('test2');
-    let actualConf = config.getConfig();
-    let expConf = {
+    const actualConf = config.getConfig();
+    const expConf = {
       'profiles': {
         'test': {
           'access_key_id': 'access_key_id',
@@ -122,7 +122,7 @@ describe('config.js', function () {
   });
 
   it('getProfile(): unexist profile name', function () {
-    let initConf = {
+    const initConf = {
       'profiles': {
         'test': {
           'access_key_id': 'access_key_id',
@@ -140,8 +140,8 @@ describe('config.js', function () {
       'default': 'test'
     };
     fs.writeFileSync(confPath, JSON.stringify(initConf));
-    let { name, profile } = config.getProfile('test3');
-    let initProfile = {
+    const { name, profile } = config.getProfile('test3');
+    const initProfile = {
       access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
       access_key_secret: process.env.ALIBABACLOUD_ACCESS_KEY_SECRET || process.env.ALICLOUD_ACCESS_KEY_SECRE,
       region: 'cn-hangzhou',

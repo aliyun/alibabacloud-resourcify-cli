@@ -7,7 +7,7 @@ const json = require('../lib/json_filter.js');
 describe('json_filter.js', function () {
   it('normal', function () {
     let result;
-    let value = { a: '1', b: '2', c: 3 };
+    const value = { a: '1', b: '2', c: 3 };
     result = json.search(value, 'a');
     assert.strictEqual(result, '1');
     result = json.search(value, 'c');
@@ -16,7 +16,7 @@ describe('json_filter.js', function () {
 
   it('map', function () {
     let result;
-    let value = {
+    const value = {
       a: {
         key: '1',
         value: '2'
@@ -30,20 +30,19 @@ describe('json_filter.js', function () {
   });
 
   it('array',function(){
-    let result;
-    let value = {
+    const value = {
       a: {
         key: ['1','3','4'],
         value: '2'
       },
     };
-    result = json.search(value, 'a.key[2]');
+    const result = json.search(value, 'a.key[2]');
     assert.strictEqual(result, '4');
   });
 
   it('arrayMap',function(){
     let result;
-    let value = {
+    const value = {
       a: {
         key: [{
           key:'1',
@@ -66,7 +65,7 @@ describe('json_filter.js', function () {
 
   it('array *', function () {
     let result;
-    let value = {
+    const value = {
       a: {
         key: [{
           key: '1',

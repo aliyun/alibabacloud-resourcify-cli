@@ -1,6 +1,5 @@
 'use strict';
 const Config = require('../../../../lib/config.js');
-let output = require('../../../../lib/output.js');
 
 exports.cmdObj = {
   usage: ['arc-tool config list [--profile profileName]'],
@@ -14,9 +13,9 @@ exports.run = function () {
   const config = new Config();
   const conf = config.getConfig();
   if (!conf) {
-    output.error('No configuration currently exists');
+    console.error('No configuration currently exists');
     return;
   }
 
-  output.log(JSON.stringify(conf, null, 2));
+  console.log(JSON.stringify(conf, null, 2));
 };

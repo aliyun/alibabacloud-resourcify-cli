@@ -1,8 +1,7 @@
 'use strict';
 
-let { default: Client } = require(`@alicloud/cs20151215`);
-let runtime = require('../../../../../lib/runtime.js');
-let output = require('../../../../../lib/output.js');
+const { default: Client } = require(`@alicloud/cs20151215`);
+const runtime = require('../../../../../lib/runtime.js');
 
 exports.cmdObj = {
   desc: {
@@ -954,27 +953,27 @@ PostPaid: pay-as-you-go.`
 };
 
 exports.run = async function (ctx) {
-  let profile = await runtime.getConfigOption(ctx.profile);
-  let { Config } = require('@alicloud/openapi-client');
-  let config = new Config({
+  const profile = await runtime.getConfigOption(ctx.profile);
+  const { Config } = require('@alicloud/openapi-client');
+  const config = new Config({
     accessKeyId: profile.access_key_id,
     accessKeySecret: profile.access_key_secret,
     securityToken: profile.sts_token,
     regionId: profile.region,
     type: profile.type
   });
-  let CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
-  let request = new CreateClusterRequest(ctx.mappingValue.CreateClusterRequest);
-  let client = new Client(config);
+  const CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
+  const request = new CreateClusterRequest(ctx.mappingValue.CreateClusterRequest);
+  const client = new Client(config);
   let result;
   try {
     result = await client.createClusterWithOptions(request, {}, runtime.getRuntimeOption());
   } catch (e) {
-    output.error(e.message);
+    console.error(e.message);
   }
   if (result) {
     result = result.body;
   }
-  let data = JSON.stringify(result, null, 2);
-  output.log(data);
+  const data = JSON.stringify(result, null, 2);
+  console.log(data);
 };

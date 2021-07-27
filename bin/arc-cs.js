@@ -8,4 +8,4 @@ const path = require('path');
 
 const { run } = require('../lib/run.js');
 
-run('arc-cs', path.join(__dirname, 'cmds/meta/arc/cs'));
+run('arc-cs', path.join(__dirname, '../cmds/meta/arc/cs'));
