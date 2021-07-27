@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('../../../../lib/config.js');
+const Config = require('../../../../lib/config.js');
 
 exports.cmdObj = {
   desc: {
@@ -32,5 +32,6 @@ exports.run = function (ctx) {
   } else {
     ctx.profile[ctx.argv[0]] = ctx.argv[1];
   }
+  const config = new Config();
   config.updateProfile(ctx.profileName, ctx.profile);
 };
