@@ -2,7 +2,7 @@
 const assert = require('assert');
 const path = require('path');
 const i18n = require('../lib/i18n.js');
-const Parse = require('../lib/parser.js');
+const Parser = require('../lib/parser.js');
 
 describe('parser.js', function () {
   const ctx = {
@@ -22,7 +22,7 @@ describe('parser.js', function () {
 
   it('argv parse correct', function () {
     ctx.args = ['argv', '--option', 'value'];
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const argvCtx = parser.argvParse(ctx.args);
     assert.deepStrictEqual(argvCtx.argv, ['argv']);
     assert.deepStrictEqual(argvCtx.args, ['--option', 'value']);
@@ -30,7 +30,7 @@ describe('parser.js', function () {
 
   it('empty argv parse', function () {
     ctx.args = ['--option', 'value'];
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let argvCtx = parser.argvParse(ctx.args);
     assert.deepStrictEqual(argvCtx.argv, []);
     assert.deepStrictEqual(argvCtx.args, ['--option', 'value']);
@@ -61,7 +61,7 @@ describe('parser.js', function () {
       key: {
       }
     };
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let opts = parser.addAlias(options);
     let expectOpts = {
       region: {
@@ -101,7 +101,7 @@ describe('parser.js', function () {
   });
 
   it('processString()', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let result;
     result = parser.processString([]);
     assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
@@ -114,7 +114,7 @@ describe('parser.js', function () {
   });
 
   it('processBoolean()', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let result;
     result = parser.processBoolean([]);
     assert.deepStrictEqual(result, { value: true });
@@ -133,7 +133,7 @@ describe('parser.js', function () {
   });
 
   it('processNumber()', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let result;
     result = parser.processNumber([]);
     assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
@@ -149,7 +149,7 @@ describe('parser.js', function () {
   });
 
   it('processMap()', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let result;
     result = parser.processMap(['{"key":"1","value":"2"}', '{"key":"1","value":"2"}']);
     assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
@@ -168,7 +168,7 @@ describe('parser.js', function () {
   });
 
   it('processMapArray()', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let result;
     result = parser.processMapArray(['key=key1,value']);
     assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
@@ -178,7 +178,7 @@ describe('parser.js', function () {
   });
 
   it('processArray()', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let result;
     result = parser.processArray({}, []);
     assert.deepStrictEqual(result, { err: { prompt: i18n.vTypeMatchErr, values: [] } });
@@ -212,7 +212,7 @@ describe('parser.js', function () {
     const obj = {};
     const flagName = 'flag';
     let result;
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
 
     result = parser.processValue(obj, {}, flagName, []);
     assert.deepStrictEqual(result, { prompt: i18n.vTypeMatchErr, values: [] });
@@ -238,7 +238,7 @@ describe('parser.js', function () {
 
   it('parseOne()', function () {
     let result;
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
 
     parser.options = { flag1: { vtype: 'string' }, flag2: { vtype: 'number' } };
     result = parser.parseOne(['--flag1=value', '--flag2', '1']);
@@ -290,7 +290,7 @@ describe('parser.js', function () {
   });
 
   it('parseFlag(args)', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
 
     parser.options = { flag: { vtype: 'array', subType: 'map', options: { key: {}, value: {} } } };
     parser.args = ['--flag.0.key=key1', '--flag.0.value=value1', '--flag.1.key=key2', '--flag.1.value=value2'];
@@ -307,7 +307,7 @@ describe('parser.js', function () {
 
   it('command and help command check', function () {
     ctx.args = ['test', 'help'];
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.parse();
     assert.ok(parser.help);
     assert.deepStrictEqual(parser.cmds, ['test']);
@@ -317,7 +317,7 @@ describe('parser.js', function () {
 
   it('There is no run method, the help information is automatically displayed', function () {
     ctx.args = [];
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.parse();
     assert.ok(parser.help);
     assert.deepStrictEqual(parser.cmds, []);
@@ -326,7 +326,7 @@ describe('parser.js', function () {
   });
 
   it('getOptionByName(): array', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.options = {
       'flag': {
         vtype: 'array',
@@ -363,7 +363,7 @@ describe('parser.js', function () {
   });
 
   it('getOptionByName(): map', function () {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.options = {
       'flag': {
         vType: 'map',
@@ -390,7 +390,7 @@ describe('parser.js', function () {
 
   it('relation validate: required', function () {
     let err;
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.options = {
       flag: {
         vtype: 'string',
@@ -415,7 +415,7 @@ describe('parser.js', function () {
 
   it('relation validate: maxindex', function () {
     let err;
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.options = {
       flag: {
         vtype: 'array',
@@ -434,7 +434,7 @@ describe('parser.js', function () {
 
   it('relation validate: subOptions equal relation', function () {
     let err;
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.options = {
       flag: {
         vtype: 'array',
@@ -490,7 +490,7 @@ describe('parser.js', function () {
       }
     };
     const values = { flag: 'value', flag2: 2 };
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const mappingValue = {};
     parser.valueToAPIStruct(options, values, mappingValue);
     assert.deepStrictEqual(mappingValue, { mappingFlag: 'value', mappingFlag2: 2 });
@@ -524,7 +524,7 @@ describe('parser.js', function () {
       },
       flag2: 'value2'
     };
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const mappingValue = {};
     parser.valueToAPIStruct(options, values, mappingValue);
     assert.deepStrictEqual(mappingValue,
@@ -570,7 +570,7 @@ describe('parser.js', function () {
       ],
       flag2: 'value2'
     };
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const mappingValue = {};
     parser.valueToAPIStruct(options, values, mappingValue);
     assert.deepStrictEqual(mappingValue,
@@ -620,7 +620,7 @@ describe('parser.js', function () {
         ],
       flag2: 'value2'
     };
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const mappingValue = {};
     parser.valueToAPIStruct(options, values, mappingValue);
     assert.deepStrictEqual(mappingValue,
@@ -651,7 +651,7 @@ describe('parser.js', function () {
       flag: 'value1',
       flag2: 'value2'
     };
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const mappingValue = {};
     parser.valueToAPIStruct(options, values, mappingValue);
     assert.deepStrictEqual(mappingValue,
@@ -666,7 +666,7 @@ describe('parser.js', function () {
 
   it('parse()', function () {
     ctx.args = ['test', '--flag=string', '-n', '2','--profile','test'];
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const err = parser.parse();
     assert.strictEqual(err, undefined);
     assert.deepStrictEqual(parser.parsedValue, { flag: 'string', 'number-flag': 2, 'unchanged-flag': 'unchanged', region: 'cn-hangzhou',profile:'test' });
@@ -674,7 +674,7 @@ describe('parser.js', function () {
 
   it('parse: conflict', function () {
     let err;
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.options = {
       'flag1': {
         vtype: 'string',
@@ -723,7 +723,7 @@ describe('parser.js', function () {
 
   it('Level dependency check: normal', function () {
     let err;
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     parser.options = {
       flag: {
         vtype: 'string',
@@ -823,7 +823,7 @@ describe('parser.js', function () {
         }
       ]
     };
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     let result = parser.transOpts(cmdObj);
     assert.deepStrictEqual(result, { index: [['flag', 'conflict-flag'], ['flag3', 'flag4'], 'flag2'], endRequiredIndex: 0 });
 
@@ -846,7 +846,7 @@ describe('parser.js', function () {
   });
 
   it('conditionCheck is ok!', function() {
-    const parser = new Parse(ctx);
+    const parser = new Parser(ctx);
     const conditionEqual = {
       type: 'equal',
       value: ['a', 'b']
