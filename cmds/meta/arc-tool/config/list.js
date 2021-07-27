@@ -1,5 +1,5 @@
 'use strict';
-const config = require('../../../../lib/config.js');
+const Config = require('../../../../lib/config.js');
 let output = require('../../../../lib/output.js');
 
 exports.cmdObj = {
@@ -11,11 +11,12 @@ exports.cmdObj = {
 };
 
 exports.run = function () {
-  let conf = config.getConfig();
+  const config = new Config();
+  const conf = config.getConfig();
   if (!conf) {
     output.error('No configuration currently exists');
-  } else {
-    let data = JSON.stringify(conf, null, 2);
-    output.log(data);
+    return;
   }
+
+  output.log(JSON.stringify(conf, null, 2));
 };
