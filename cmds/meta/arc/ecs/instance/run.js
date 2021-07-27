@@ -20,7 +20,7 @@ exports.cmdObj={
 如果您不指定launch-template-id或launch-template-name以确定启动模板，也不通过指定image-family选用镜像族系最新可用的自定义镜像，则该选项为必选。`
       },
       sufficient:function(val){
-        let optList={};
+        const optList={};
         if (!val){
           optList['ImageFamily']=false;
         }

@@ -86,7 +86,7 @@ exports.preInteractive = function (ctx) {
 };
 
 exports.run = function (ctx) {
-  let profile = {};
+  const profile = {};
   profile['access_key_id'] = ctx.parsedValue['access-key-id'];
   profile['access_key_secret'] = ctx.parsedValue['access-key-secret'];
   profile['region'] = ctx.parsedValue['region'] || ctx.profile.region;

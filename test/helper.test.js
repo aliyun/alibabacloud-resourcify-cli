@@ -3,10 +3,10 @@
 const assert = require('assert');
 const path = require('path');
 
-let Helper = require('../lib/helper.js');
+const Helper = require('../lib/helper.js');
 
 describe('helper.js', function () {
-  let ctx = {
+  const ctx = {
     rootCmdName: 'arc-test',
     profile: {
       access_key_id: process.env.ALIBABACLOUD_ACCESS_KEY_ID || process.env.ALICLOUD_ACCESS_KEY_ID,
@@ -22,7 +22,7 @@ describe('helper.js', function () {
   });
 
   it('getSyntax()', function () {
-    let helper = new Helper(ctx);
+    const helper = new Helper(ctx);
     helper.cmds = ['test'];
     helper.getSyntax();
     assert.strictEqual('    arc-test test [子命令]', helper.ui.toString());
@@ -56,14 +56,14 @@ describe('helper.js', function () {
   });
 
   it('getDesc', function () {
-    let helper = new Helper(ctx);
+    const helper = new Helper(ctx);
     helper.cmdObj = { desc: { zh: '测试数据', en: 'test data' } };
     helper.getDesc();
     assert.strictEqual('\n  测试数据\n', helper.ui.toString());
   });
 
   it('getSubList', function () {
-    let helper = new Helper(ctx);
+    const helper = new Helper(ctx);
     helper.getSubList();
     assert.strictEqual('子命令:\n' +
       '    option-type                         测试各个类型的参数\n' +
@@ -73,7 +73,7 @@ describe('helper.js', function () {
   });
 
   it('getOptions()', function () {
-    let helper = new Helper(ctx);
+    const helper = new Helper(ctx);
     helper.cmdObj.options = {
       'conflict-flag': {
         desc: {
@@ -120,7 +120,7 @@ describe('helper.js', function () {
   });
 
   it('helper()', function () {
-    let helper = new Helper(ctx);
+    const helper = new Helper(ctx);
     helper.cmds = ['test'];
     helper.cmdObj.options = {
       'conflict-flag': {

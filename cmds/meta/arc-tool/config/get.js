@@ -1,7 +1,5 @@
 'use strict';
 
-const output = require('../../../../lib/output.js');
-
 exports.cmdObj = {
   usage: [
     'arc config get [--profile profileName]'
@@ -13,6 +11,6 @@ exports.cmdObj = {
 };
 
 exports.run = function (ctx) {
-  let data = JSON.stringify(ctx.profile, null, 2);
-  output.log(data);
+  const data = JSON.stringify(ctx.profile, null, 2);
+  console.log(data);
 };
