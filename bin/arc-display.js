@@ -25,9 +25,9 @@ process.stdin.on('end', function () {
   try {
     const output = display(input, program.query, program.format);
     // output
-    process.stdout.write(output);
+    console.log(output);
   } catch (ex) {
-    process.stderr.write(`display result failed, caused by:\n` + ex.stack);
+    console.log(`display result failed, caused by:\n` + ex.stack);
     process.exit(-1);
   }
 });
