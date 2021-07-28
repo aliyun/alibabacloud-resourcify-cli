@@ -55,7 +55,7 @@ exports.cmdObj = {
       vtype: 'boolean',
       desc: {
         zh: '实例删除保护，防止通过控制台或API误删除释放节点',
-        // TODO 
+        // TODO
         en: ''
       }
     },
@@ -128,7 +128,7 @@ exports.cmdObj = {
         }
       },
       desc: {
-        // TODO 
+        // TODO
         zh: '',
         en: ''
       }
