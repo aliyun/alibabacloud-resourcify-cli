@@ -4,8 +4,6 @@
 
 'use strict';
 
-const path = require('path');
-
 const { run } = require('../lib/run');
 
-run('arc-tool', path.join(__dirname, '../cmds/meta/arc-tool'), process.argv.slice(2));
+run('arc-tool', require('../cmds/meta/arc-tool'), process.argv.slice(2));
