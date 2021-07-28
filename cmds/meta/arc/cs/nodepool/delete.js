@@ -43,7 +43,7 @@ exports.run = async function (ctx) {
     regionId: profile.region,
     type: profile.type
   });
-  
+
   const client = new Client(config);
   let result;
   try {

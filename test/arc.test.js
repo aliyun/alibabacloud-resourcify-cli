@@ -53,7 +53,6 @@ describe('arc', function () {
 
   it('arc cs', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs']);
-    assert.strictEqual(code, 1);
     assert.strictEqual(stdout, `usage:
     arc cs [子命令]
     arc cs [选项]
@@ -68,11 +67,11 @@ describe('arc', function () {
   -i,--interaction                      [boolean]           交互式填充参数
 `);
     assert.strictEqual(stderr, '');
+    assert.strictEqual(code, 1);
   });
 
   it('arc-tool', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc-tool.js'));
-    assert.strictEqual(code, 1);
     assert.strictEqual(stdout, `usage:
     arc-tool  [子命令]
 
@@ -84,5 +83,6 @@ describe('arc', function () {
     serve                               启动帮助文档web服务器
 `);
     assert.strictEqual(stderr, '');
+    assert.strictEqual(code, 1);
   });
 });

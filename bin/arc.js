@@ -1,10 +1,11 @@
-#!/usr/bin/env node
-
-// AlibabaCloud Resourcify CLI
-
 'use strict';
 
-const { run } = require('../lib/run.js');
+const ARC = require('../cmds/meta/arc');
 
-// 运行
-run('arc', require('../cmds/meta/arc'), process.argv.slice(2));
+const arc = new ARC('arc');
+arc.handle(process.argv.slice(2)).then(() => {
+  process.exit(0);
+}, (err) => {
+  console.log(err.stack);
+  process.exit(-1);
+});

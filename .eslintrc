@@ -67,7 +67,8 @@
         "global-require": 0,
         "no-console": 0,
         "require-yield": 0,
-        "prefer-const": "error"
+        "prefer-const": "error",
+        "no-trailing-spaces": "error"
     },
     "env": {
         "es6": true,

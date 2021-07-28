@@ -19,7 +19,7 @@ exports.cmdObj = {
       },
       attributes: {
         show: [
-          { 
+          {
             'retain-all-resources': {
               type: 'equal',
               value: false

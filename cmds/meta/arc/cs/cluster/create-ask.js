@@ -119,7 +119,7 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         // TODO
         en: ``
       }
-    }, 
+    },
     tags: {
       mapping: 'CreateClusterRequest.tags',
       vtype: 'array',
@@ -191,14 +191,14 @@ Ingress: The nginx-ingress-controller component is installed by default.`
         // TODO
         en: ``
       }
-    }, 
+    },
     'vpcid': {
       mapping: 'CreateClusterRequest.vpcid',
       vtype: 'string',
       desc: {
         zh: '集群使用的VPC',
         en: `The ID of the VPC.`
-      }, 
+      },
       attributes: {
         show: [
           {
