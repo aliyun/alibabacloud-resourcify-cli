@@ -6,6 +6,6 @@
 
 const path = require('path');
 
-const { run } = require('../lib/run.js');
+const { run } = require('../lib/run');
 
-run('arc-tool', path.join(__dirname, '../cmds/meta/arc-tool'));
+run('arc-tool', path.join(__dirname, '../cmds/meta/arc-tool'), process.argv.slice(2));
