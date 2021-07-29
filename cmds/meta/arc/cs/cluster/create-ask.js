@@ -11,7 +11,7 @@ exports.cmdObj = {
   options: {
     'cluster-type': {
       mapping: 'CreateClusterRequest.clusterType',
-      unchanged: true,
+      readonly: true,
       default: 'Ask',
       desc: {
         zh: '集群类型',

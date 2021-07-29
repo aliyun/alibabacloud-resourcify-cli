@@ -20,7 +20,7 @@ exports.cmdObj = {
     },
     'cluster-type': {
       mapping: 'CreateClusterRequest.clusterType',
-      unchanged: true,
+      readonly: true,
       default: 'ManagedKubernetes',
       desc: {
         zh: '集群类型',
