@@ -6,7 +6,7 @@
 
 const ACK = require('../cmds/meta/arc/cs');
 
-const ack = new ACK('arc-cs');
+const ack = new ACK('arc-ack');
 ack.handle(process.argv.slice(2)).then(() => {
   process.exit(0);
 }, (err) => {
