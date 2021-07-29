@@ -1,8 +1,12 @@
 'use strict';
 
 const Config = require('../../../lib/config.js');
+const i18n = require('../../../lib/i18n.js');
 
 const Command = require('../../../lib/command');
+
+const ListCommand = require('./config/list');
+const GetCommand = require('./config/get');
 
 const { loadContext } = require('../../../lib/context');
 const inquirer = require('inquirer');
@@ -13,6 +17,26 @@ function confusePwd(pwd) {
   }
 
   return pwd.substr(0, 3) + '****' + pwd.substr(-4);
+}
+
+async function ask(name, message, required, language) {
+  const question = {
+    type: 'input',
+    name: name,
+    message: message + '\n' + name
+  };
+
+  if (required) {
+    question['validate'] = function (val) {
+      if (val === '') {
+        return i18n.emptyValueErr[language];
+      }
+      return true;
+    };
+  }
+
+  const answers = await inquirer.prompt([question]);
+  return answers[name];
 }
 
 module.exports = class extends Command {
@@ -73,6 +97,21 @@ module.exports = class extends Command {
         }
       }
     });
+    this.registerCommand(new ListCommand('list'));
+    this.registerCommand(new GetCommand('get'));
+  }
+
+  validateOptions(parsed) {
+    const keys = Object.keys(this.def.options || {});
+    console.log(parsed);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const option = this.def.options[key];
+      if (option.required && !parsed[key]) {
+        throw new Error(`required --${key}`);
+      }
+      console.log(option);
+    }
   }
 
   async run(args) {
@@ -80,37 +119,25 @@ module.exports = class extends Command {
     const profile = ctx.profile;
     const language = profile.language || 'zh';
 
-    if (ctx.parsed['access-key-id']) {
-      profile['access_key_id'] = ctx.parsed['access-key-id'];
-    } else {
-      const questions = [];
-      const keys = Object.keys(this.def.options);
-      for (let i = 0; i < keys.length; i++) {
-        const name = keys[i];
-        const question = {
-          type: 'input',
-          name: name,
-          message: name,
-        };
-        const option = this.def.options[name];
-        if (option.required) {
-          question['validate'] = function (val) {
-            if (val === '') {
-              return i18n.emptyValueErr[language];
-            }
-            return true;
-          };
-        }
-        questions.push(question);
-      }
-
-      const answers = await inquirer.prompt(questions);
-      profile['access_key_id'] = ctx.parsed['access-key-id'];
+    const [ help ] = ctx.argv;
+    if (help) {
+      await this.help(language);
+      return;
     }
-    profile['access_key_id'] = ctx.parsed['access-key-id'];
-    profile['access_key_secret'] = ctx.parsed['access-key-secret'];
-    profile['region'] = ctx.parsed['region'] || ctx.profile.region;
-    profile['language'] = ctx.parsed['language'] || ctx.profile.language;
+
+    if (ctx.parsed.interaction) {
+      profile['access_key_id'] = await ask('access-key-id', this.def.options['access-key-id'].desc[language], true, language);
+      profile['access_key_secret'] = await ask('access-key-secret', this.def.options['access-key-secret'].desc[language], true, language);
+      profile['region'] = await ask('access-key-secret', this.def.options['access-key-secret'].desc[language], true, language);
+      profile['language'] = await ask('language', this.def.options['language'].desc[language], true, language);
+    } else {
+      this.validateOptions(ctx.parsed);
+      profile['access_key_id'] = ctx.parsed['access-key-id'];
+      profile['access_key_secret'] = ctx.parsed['access-key-secret'];
+      profile['region'] = ctx.parsed['region'] || ctx.profile.region;
+      profile['language'] = ctx.parsed['language'] || ctx.profile.language;
+    }
+
     const config = new Config();
     config.updateProfile(ctx.profileName, profile);
   }
