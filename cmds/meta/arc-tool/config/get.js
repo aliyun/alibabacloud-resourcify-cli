@@ -1,7 +1,7 @@
 'use strict';
 
-const Command = require("../../../../lib/command");
-const { loadContext } = require("../../../../lib/context");
+const Command = require('../../../../lib/command');
+const { loadContext } = require('../../../../lib/context');
 
 module.exports = class extends Command {
   constructor(name) {

@@ -7,6 +7,8 @@ const Command = require('../../../lib/command');
 
 const ListCommand = require('./config/list');
 const GetCommand = require('./config/get');
+const DeleteCommand = require('./config/delete');
+const SetCommand = require('./config/set');
 
 const { loadContext } = require('../../../lib/context');
 const inquirer = require('inquirer');
@@ -99,19 +101,8 @@ module.exports = class extends Command {
     });
     this.registerCommand(new ListCommand('list'));
     this.registerCommand(new GetCommand('get'));
-  }
-
-  validateOptions(parsed) {
-    const keys = Object.keys(this.def.options || {});
-    console.log(parsed);
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const option = this.def.options[key];
-      if (option.required && !parsed[key]) {
-        throw new Error(`required --${key}`);
-      }
-      console.log(option);
-    }
+    this.registerCommand(new DeleteCommand('delete'));
+    this.registerCommand(new SetCommand('set'));
   }
 
   async run(args) {

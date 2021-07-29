@@ -6,7 +6,6 @@ const Command = require('../../../../lib/command');
 module.exports = class extends Command {
   constructor(name) {
     super(name, {
-      usage: ['arc-tool config list'],
       desc: {
         zh: '列举指定配置所有信息，未指定则返回默认',
         en: `List all the information of the specified configuration, return to the default if not specified`
