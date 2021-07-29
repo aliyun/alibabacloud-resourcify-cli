@@ -4,6 +4,12 @@
 
 'use strict';
 
-const { run } = require('../lib/run');
+const ARCTool = require('../cmds/meta/arc-tool');
 
-run('arc-tool', require('../cmds/meta/arc-tool'), process.argv.slice(2));
+const c = new ARCTool('arc-tool');
+c.handle(process.argv.slice(2)).then(() => {
+  process.exit(0);
+}, (err) => {
+  console.log(err.stack);
+  process.exit(-1);
+});

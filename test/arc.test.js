@@ -34,46 +34,45 @@ function spawn(modulePath, args, options) {
 describe('arc', function () {
   it('arc', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'));
-    assert.strictEqual(code, 1);
-    assert.strictEqual(stdout, `usage:
-    arc  [子命令]
-    arc  [选项]
+    assert.strictEqual(stderr, '');
+    assert.strictEqual(stdout, `用法:
+    arc [子命令]
+    arc [选项]
 
   阿里云资源化命令行工具，用于云服务资源操作
 
 子命令:
     cs                                  容器服务
+
 选项:
   --profile                             [string]            指定要使用的配置文件
   --region                              [string]            指定阿里云区域
   -i,--interaction                      [boolean]           交互式填充参数
 `);
-    assert.strictEqual(stderr, '');
+    assert.strictEqual(code, 0);
   });
 
   it('arc cs', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs']);
-    assert.strictEqual(stdout, `usage:
+    assert.strictEqual(stdout, `用法:
     arc cs [子命令]
-    arc cs [选项]
 
-  阿里云资源化命令行工具，用于云服务资源操作
+  容器服务k8s版
 
 子命令:
-    cs                                  容器服务
-选项:
-  --profile                             [string]            指定要使用的配置文件
-  --region                              [string]            指定阿里云区域
-  -i,--interaction                      [boolean]           交互式填充参数
+    cluster                             集群相关操作
+    node                                集群节点操作
+    addon                               集群插件操作
+    nodepool                            集群节点池操作
 `);
     assert.strictEqual(stderr, '');
-    assert.strictEqual(code, 1);
+    assert.strictEqual(code, 0);
   });
 
   it('arc-tool', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc-tool.js'));
-    assert.strictEqual(stdout, `usage:
-    arc-tool  [子命令]
+    assert.strictEqual(stdout, `用法:
+    arc-tool [子命令]
 
   阿里云资源化命令行工具，用于配置、自动补全等辅助设置
 
@@ -83,6 +82,6 @@ describe('arc', function () {
     serve                               启动帮助文档web服务器
 `);
     assert.strictEqual(stderr, '');
-    assert.strictEqual(code, 1);
+    assert.strictEqual(code, 0);
   });
 });
