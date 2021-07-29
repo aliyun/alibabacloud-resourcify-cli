@@ -1,4 +1,8 @@
+#!/usr/bin/env node
+
 'use strict';
+
+// AlibabaCloud Resourcify CLI
 
 const ARC = require('../cmds/meta/arc');
 

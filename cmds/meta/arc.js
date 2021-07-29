@@ -3,7 +3,7 @@
 const Command = require('../../lib/command');
 const CSCommand = require('./arc/cs');
 
-class ARC extends Command {
+module.exports = class extends Command {
   constructor(name) {
     super(name, {
       desc: {
@@ -46,6 +46,4 @@ class ARC extends Command {
   async run(args) {
     await this.help();
   }
-}
-
-module.exports = ARC;
+};
