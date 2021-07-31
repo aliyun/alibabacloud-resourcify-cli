@@ -31,7 +31,6 @@ module.exports = class extends Command {
   }
 
   async run(args) {
-    console.log(args);
     await this.help();
   }
 };

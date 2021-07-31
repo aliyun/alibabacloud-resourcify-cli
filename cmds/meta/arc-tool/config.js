@@ -110,23 +110,17 @@ module.exports = class extends Command {
     const profile = ctx.profile;
     const language = profile.language || 'zh';
 
-    const [ help ] = ctx.argv;
-    if (help) {
-      await this.help(language);
-      return;
-    }
-
-    if (ctx.parsed.interaction) {
+    if (ctx.parsed.has('interaction')) {
       profile['access_key_id'] = await ask('access-key-id', this.def.options['access-key-id'].desc[language], true, language);
       profile['access_key_secret'] = await ask('access-key-secret', this.def.options['access-key-secret'].desc[language], true, language);
-      profile['region'] = await ask('access-key-secret', this.def.options['access-key-secret'].desc[language], true, language);
+      profile['region'] = await ask('region', this.def.options['region'].desc[language], true, language);
       profile['language'] = await ask('language', this.def.options['language'].desc[language], true, language);
     } else {
       this.validateOptions(ctx.parsed);
-      profile['access_key_id'] = ctx.parsed['access-key-id'];
-      profile['access_key_secret'] = ctx.parsed['access-key-secret'];
-      profile['region'] = ctx.parsed['region'] || ctx.profile.region;
-      profile['language'] = ctx.parsed['language'] || ctx.profile.language;
+      profile['access_key_id'] = ctx.parsed.get('access-key-id');
+      profile['access_key_secret'] = ctx.parsed.get('access-key-secret');
+      profile['region'] = ctx.parsed.get('region') || ctx.profile.region;
+      profile['language'] = ctx.parsed.get('language') || ctx.profile.language;
     }
 
     const config = new Config();
