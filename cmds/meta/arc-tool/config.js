@@ -21,11 +21,14 @@ function confusePwd(pwd) {
   return pwd.substr(0, 3) + '****' + pwd.substr(-4);
 }
 
-async function ask(name, message, required, language) {
+async function ask(options) {
+  const {name, message, required, language} = options;
   const question = {
     type: 'input',
     name: name,
-    message: message + '\n' + name
+    message: message + '\n' + name,
+    default: options.default,
+    filter: options.filter
   };
 
   if (required) {
@@ -111,10 +114,41 @@ module.exports = class extends Command {
     const language = profile.language || 'zh';
 
     if (ctx.parsed.has('interaction')) {
-      profile['access_key_id'] = await ask('access-key-id', this.def.options['access-key-id'].desc[language], true, language);
-      profile['access_key_secret'] = await ask('access-key-secret', this.def.options['access-key-secret'].desc[language], true, language);
-      profile['region'] = await ask('region', this.def.options['region'].desc[language], true, language);
-      profile['language'] = await ask('language', this.def.options['language'].desc[language], true, language);
+      console.log(profile);
+      profile['access_key_id'] = await ask({
+        name: 'access-key-id',
+        message: this.def.options['access-key-id'].desc[language],
+        required: true,
+        default: profile.access_key_id,
+        language
+      });
+      profile['access_key_secret'] = await ask({
+        name: 'access-key-secret',
+        message: this.def.options['access-key-secret'].desc[language],
+        default: confusePwd(profile.access_key_secret),
+        required: true,
+        language,
+        filter: function (val) {
+          if (val === confusePwd(profile.access_key_secret)) {
+            return profile.access_key_secret;
+          }
+          return val;
+        }
+      });
+      profile['region'] = await ask({
+        name: 'region',
+        message: this.def.options['region'].desc[language],
+        required: true,
+        default: profile.region,
+        language
+      });
+      profile['language'] = await ask({
+        name: 'language',
+        message: this.def.options['language'].desc[language],
+        required: true,
+        default: profile.language,
+        language
+      });
     } else {
       this.validateOptions(ctx.parsed);
       profile['access_key_id'] = ctx.parsed.get('access-key-id');
@@ -127,16 +161,3 @@ module.exports = class extends Command {
     config.updateProfile(ctx.profileName, profile);
   }
 };
-
-// exports.preInteractive = function (ctx) {
-//   exports.cmdObj.options['access-key-id'].default = ctx.profile.access_key_id;
-//   exports.cmdObj.options['access-key-secret'].default = confusePwd(ctx.profile.access_key_secret);
-//   exports.cmdObj.options['access-key-secret'].filter = function (val) {
-//     if (val === confusePwd(ctx.profile.access_key_secret)) {
-//       return ctx.profile.access_key_secret;
-//     }
-//     return val;
-//   };
-//   exports.cmdObj.options.language.default = ctx.profile.language;
-//   exports.cmdObj.options.region.default = ctx.profile.region;
-// };
