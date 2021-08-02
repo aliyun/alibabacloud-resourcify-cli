@@ -141,6 +141,24 @@ describe('arc', function () {
     assert.strictEqual(code, 0);
   });
 
+  it('arc cs addon', async () => {
+    const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs', 'addon']);
+    assert.strictEqual(stdout, `用法:
+    arc cs addon [子命令]
+
+  集群插件操作
+
+子命令:
+    list                                查询指定集群安装的所有Addons的信息
+    get                                 集群安装的Addons详情
+    get-upgrade-status                  查询集群Addons升级状态
+    install                             安装集群插件
+    uninstall                           卸载集群插件
+`);
+    assert.strictEqual(stderr, '');
+    assert.strictEqual(code, 0);
+  });
+
   it('arc cs help', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs', 'help']);
     assert.strictEqual(stdout, `用法:
