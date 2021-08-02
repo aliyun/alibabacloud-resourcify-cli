@@ -123,6 +123,24 @@ describe('arc', function () {
     assert.strictEqual(code, 0);
   });
 
+  it('arc cs node', async () => {
+    const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs', 'node']);
+    assert.strictEqual(stdout, `用法:
+    arc cs node [子命令]
+
+  集群节点操作
+
+子命令:
+    list                                查询集群节点
+    delete                              移除集群节点
+    attach                              添加已有ECS节点到Kubernetes集群
+    attach-edge                         添加已有ENS节点至边缘托管集群
+    get-attach-script                   生成Kubernetes边缘托管版集群的节点接入脚本
+`);
+    assert.strictEqual(stderr, '');
+    assert.strictEqual(code, 0);
+  });
+
   it('arc cs help', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs', 'help']);
     assert.strictEqual(stdout, `用法:
