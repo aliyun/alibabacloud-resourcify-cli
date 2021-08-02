@@ -228,33 +228,41 @@ describe('arc', function () {
   });
 
   it('arc-tool config list', async () => {
-    const {code, stderr} = await spawn(path.join(__dirname, '../bin/arc-tool.js'), ['config', 'list']);
-    //     assert.strictEqual(stdout, `用法:
-    //     arc-tool [子命令]
-
-    //   阿里云资源化命令行工具，用于配置、自动补全等辅助设置
-
-    // 子命令:
-    //     config                              配置CLI
-    //     completion                          自动补全
-    //     serve                               启动帮助文档web服务器
-    // `);
+    const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc-tool.js'), ['config', 'list'], {
+      env: {
+        ...process.env,
+        'ARC_CONFIG_PATH': path.join(__dirname, 'fixtures/arc.json')
+      }
+    });
+    assert.strictEqual(stdout, `{
+  "profiles": {
+    "default": {
+      "region": "cn-hangzhou",
+      "language": "zh",
+      "access_key_id": "id",
+      "access_key_secret": "secret"
+    }
+  },
+  "default": "default"
+}\n`);
     assert.strictEqual(stderr, '');
     assert.strictEqual(code, 0);
   });
 
   it('arc-tool config get', async () => {
-    const {code, stderr} = await spawn(path.join(__dirname, '../bin/arc-tool.js'), ['config', 'get']);
-    //     assert.strictEqual(stdout, `用法:
-    //     arc-tool [子命令]
-
-    //   阿里云资源化命令行工具，用于配置、自动补全等辅助设置
-
-    // 子命令:
-    //     config                              配置CLI
-    //     completion                          自动补全
-    //     serve                               启动帮助文档web服务器
-    // `);
+    const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc-tool.js'), ['config', 'get'], {
+      env: {
+        ...process.env,
+        'ARC_CONFIG_PATH': path.join(__dirname, 'fixtures/arc.json')
+      }
+    });
+    assert.strictEqual(stdout, `{
+  "region": "cn-hangzhou",
+  "language": "zh",
+  "access_key_id": "id",
+  "access_key_secret": "secret"
+}
+`);
     assert.strictEqual(stderr, '');
     assert.strictEqual(code, 0);
   });
