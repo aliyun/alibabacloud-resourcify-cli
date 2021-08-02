@@ -1,23 +1,21 @@
 'use strict';
+
+const path = require('path');
+const fs = require('fs');
+const util = require('util');
+
 const Koa = require('koa');
 const router = require('koa-router')();
 const koaStatic = require('koa-static');
-const path = require('path');
-const fs = require('fs');
+
 const rootPath = path.join(__dirname, '../arc');
 const Parse = require('../../../lib/parser.js');
 const i18n = require('../../../lib/i18n.js');
-const util = require('util');
 
 let lang = 'zh';
 
-
-exports.cmdObj = {
-  desc: {
-    zh: '启动帮助文档web服务器',
-    en: `Start the help document web server`
-  },
-};
+const Command = require('../../../lib/command');
+const { loadContext } = require('../../../lib/context.js');
 
 function getSubList(dirPath, nextDir) {
   if (nextDir) {
@@ -183,52 +181,64 @@ function getData(product, resource, action) {
   return data;
 }
 
-exports.run = function (rootCtx) {
-  lang = rootCtx.profile.language;
-  const app = new Koa();
-  app.use(async (ctx, next) => {
-    console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
-    return await next();
-  });
-  app.use(koaStatic(path.join(__dirname, '../../../front/build')));
-  router.get('/product', async (ctx, next) => {
-    const data = getSubList(rootPath);
-    ctx.body = data;
-  });
-  router.get('/product/:product', async (ctx, next) => {
-    const product = ctx.params.product;
-    const data = getData(product);
-    ctx.body = data;
-  });
-  router.get('/resource/:product/:resource', async (ctx, next) => {
-    const product = ctx.params.product;
-    const resource = ctx.params.resource;
-    const data = getData(product, resource);
-    ctx.body = data;
-  });
-  router.get('/action/:product/:resource/:action', async (ctx, next) => {
-    const product = ctx.params.product;
-    const resource = ctx.params.resource;
-    const action = ctx.params.action;
-    const data = getData(product, resource, action);
-    ctx.body = data;
-  });
-  router.get('/', async (ctx, next) => {
-    const data = fs.readFileSync(path.join(__dirname, '../../../front/build/index.html'));
-    ctx.type = 'text/html;charset=utf-8';
-    ctx.body = data;
-  });
-  app.use(router.routes());
-  app.use((ctx, next) => {
-    return next().catch((err) => {
-      ctx.response.body = {
-        status: 500,
-        message: err.message
-      };
+module.exports = class extends Command {
+  constructor(name) {
+    super(name, {
+      desc: {
+        zh: '启动帮助文档web服务器',
+        en: `Start the help document web server`
+      },
     });
-  });
-  app.listen(8000, function () {
-    const addr = this.address();
-    console.log(`listening on ${addr.address}:${addr.port}, use http://localhost:${addr.port}/`);
-  });
+  }
+
+  async run(args) {
+    const ctx = loadContext(args);
+    lang = ctx.profile.language;
+    const app = new Koa();
+    app.use(async (ctx, next) => {
+      console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
+      return await next();
+    });
+    app.use(koaStatic(path.join(__dirname, '../../../front/build')));
+    router.get('/product', async (ctx, next) => {
+      const data = getSubList(rootPath);
+      ctx.body = data;
+    });
+    router.get('/product/:product', async (ctx, next) => {
+      const product = ctx.params.product;
+      const data = getData(product);
+      ctx.body = data;
+    });
+    router.get('/resource/:product/:resource', async (ctx, next) => {
+      const product = ctx.params.product;
+      const resource = ctx.params.resource;
+      const data = getData(product, resource);
+      ctx.body = data;
+    });
+    router.get('/action/:product/:resource/:action', async (ctx, next) => {
+      const product = ctx.params.product;
+      const resource = ctx.params.resource;
+      const action = ctx.params.action;
+      const data = getData(product, resource, action);
+      ctx.body = data;
+    });
+    router.get('/', async (ctx, next) => {
+      const data = fs.readFileSync(path.join(__dirname, '../../../front/build/index.html'));
+      ctx.type = 'text/html;charset=utf-8';
+      ctx.body = data;
+    });
+    app.use(router.routes());
+    app.use((ctx, next) => {
+      return next().catch((err) => {
+        ctx.response.body = {
+          status: 500,
+          message: err.message
+        };
+      });
+    });
+    app.listen(8000, function () {
+      const addr = this.address();
+      console.log(`listening on ${addr.address}:${addr.port}, use http://localhost:${addr.port}/`);
+    });
+  }
 };

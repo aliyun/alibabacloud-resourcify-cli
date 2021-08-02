@@ -10,12 +10,6 @@ module.exports = class extends Command {
         zh: '阿里云资源化命令行工具，用于云服务资源操作',
         en: `Alibaba Cloud Resourcify CLI, used for operate resources of cloud service`
       },
-      sub: {
-        cs: {
-          zh: '容器服务',
-          en: `Container Service for Kubernetes`
-        }
-      },
       options: {
         profile: {
           desc: {
