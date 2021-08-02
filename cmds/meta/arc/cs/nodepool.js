@@ -2,39 +2,31 @@
 
 const Command = require('../../../../lib/command');
 
+const CreateCommand = require('./nodepool/create');
+const DeleteCommand = require('./nodepool/delete');
+const GetCommand = require('./nodepool/get');
+const ListCommand = require('./nodepool/list');
+const ScaleoutCommand = require('./nodepool/scaleout');
+const UpdateCommand = require('./nodepool/update');
+
 module.exports = class extends Command {
   constructor(name) {
     super(name, {
       desc: {
         zh: '集群节点池操作',
-        en: ``
-      },
-      sub: {
-        'create': {
-          zh: '为集群创建节点池',
-          en: 'Create a cluster node pools'
-        },
-        'delete': {
-          zh: '删除节点池',
-          en: 'Delete the cluster node pool'
-        },
-        'get': {
-          zh: '查询集群指定节点池详情',
-          en: 'Describe the cluster node pool'
-        },
-        'list': {
-          en: 'Describe a cluster node pools',
-          zh: '查询集群内所有节点池详情'
-        },
-        'scaleout': {
-          en: 'Scaleout node pools',
-          zh: '扩容节点池节点'
-        },
-        'update': {
-          en: 'Modify node pools',
-          zh: '更新节点配置'
-        }
+        en: `cluster node pool operations`
       }
     });
+
+    this.registerCommand(new CreateCommand('create'));
+    this.registerCommand(new DeleteCommand('delete'));
+    this.registerCommand(new GetCommand('get'));
+    this.registerCommand(new ListCommand('list'));
+    this.registerCommand(new ScaleoutCommand('scaleout'));
+    this.registerCommand(new UpdateCommand('update'));
+  }
+
+  async run(args) {
+    await this.help();
   }
 };

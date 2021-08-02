@@ -159,6 +159,25 @@ describe('arc', function () {
     assert.strictEqual(code, 0);
   });
 
+  it('arc cs nodepool', async () => {
+    const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs', 'nodepool']);
+    assert.strictEqual(stdout, `用法:
+    arc cs nodepool [子命令]
+
+  集群节点池操作
+
+子命令:
+    create                              为集群创建节点池
+    delete                              删除节点池
+    get                                 查询集群指定节点池详情
+    list                                查询集群内所有节点池详情
+    scaleout                            扩容节点池节点
+    update                              更新节点配置
+`);
+    assert.strictEqual(stderr, '');
+    assert.strictEqual(code, 0);
+  });
+
   it('arc cs help', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs', 'help']);
     assert.strictEqual(stdout, `用法:
