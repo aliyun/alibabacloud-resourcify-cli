@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "default": {
+      "region": "cn-hangzhou",
+      "language": "zh",
+      "access_key_id": "id",
+      "access_key_secret": "secret"
+    }
+  },
+  "default": "default"
+}
