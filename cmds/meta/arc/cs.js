@@ -22,5 +22,21 @@ exports.cmdObj = {
       zh: '集群节点池操作',
       en: 'action of nodepools'
     },
+    permision: {
+      zh: '权限操作',
+      en: 'action of permision'
+    },
+    template: {
+      zh: '模版操作',
+      en: 'action of template'
+    },
+    trigger: {
+      zh: '触发器操作',
+      en: 'action of trigger'
+    },
+    workflow: {
+      zh: '工作流操作',
+      en: 'action of workflow'
+    }
   }
 };
