@@ -97,7 +97,7 @@ module.exports = class extends Command {
     });
     const DescribeClusterAttachScriptsRequest = require(`@alicloud/cs20151215`).DescribeClusterAttachScriptsRequest;
     const request = new DescribeClusterAttachScriptsRequest(ctx.mappingValue.DescribeClusterAttachScriptsRequest);
-  
+
     const client = new Client(config);
     let result;
     try {

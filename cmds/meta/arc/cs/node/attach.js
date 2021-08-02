@@ -174,7 +174,7 @@ module.exports = class extends Command {
     });
     const AttachInstancesRequest = require(`@alicloud/cs20151215`).AttachInstancesRequest;
     const request = new AttachInstancesRequest(ctx.mappingValue.AttachInstancesRequest);
-  
+
     const client = new Client(config);
     let result;
     try {

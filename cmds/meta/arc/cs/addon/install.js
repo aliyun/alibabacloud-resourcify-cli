@@ -8,54 +8,54 @@ const runtime = require('../../../../../lib/runtime.js');
 module.exports = class extends Command {
   constructor(name) {
     super(name, {
-  desc: {
-    zh: '安装集群插件',
-    en: `install an add-on for a cluster.`
-  },
-  options: {
-    'body': {
-      mapping: 'InstallClusterAddonsRequest.body',
-      vtype: 'array',
-      subType: 'map',
       desc: {
-        zh: 'Addon列表',
-        en: `the list of add-on`
+        zh: '安装集群插件',
+        en: `install an add-on for a cluster.`
       },
       options: {
-        'name': {
-          mapping: 'name',
-          vtype: 'string',
+        'body': {
+          mapping: 'InstallClusterAddonsRequest.body',
+          vtype: 'array',
+          subType: 'map',
           desc: {
-            zh: 'addon名称',
-            en: `The name of the add-on.`
-          }
-        },
-        'version': {
-          mapping: 'version',
-          vtype: 'string',
-          desc: {
-            zh: '插件版本',
-            en: `The version of the add-on.`
-          }
-        },
-        'config': {
-          mapping: 'config',
-          vtype: 'string',
-          desc: {
-            zh: '配置信息',
-            en: 'The configurations of the add-on.'
+            zh: 'Addon列表',
+            en: `the list of add-on`
+          },
+          options: {
+            'name': {
+              mapping: 'name',
+              vtype: 'string',
+              desc: {
+                zh: 'addon名称',
+                en: `The name of the add-on.`
+              }
+            },
+            'version': {
+              mapping: 'version',
+              vtype: 'string',
+              desc: {
+                zh: '插件版本',
+                en: `The version of the add-on.`
+              }
+            },
+            'config': {
+              mapping: 'config',
+              vtype: 'string',
+              desc: {
+                zh: '配置信息',
+                en: 'The configurations of the add-on.'
+              }
+            }
           }
         }
-      }
-    }
-  },
-  args: [
-    {
-      name: 'clusterId',
-      required: true
-    }
-  ]
-});
+      },
+      args: [
+        {
+          name: 'clusterId',
+          required: true
+        }
+      ]
+    });
   }
 
   async run(args) {
@@ -72,7 +72,7 @@ module.exports = class extends Command {
     const InstallClusterAddonsRequest = require(`@alicloud/cs20151215`).InstallClusterAddonsRequest;
     const request = new InstallClusterAddonsRequest(ctx.mappingValue.InstallClusterAddonsRequest);
     const client = new Client(config);
-  
+
     try {
       await client.installClusterAddonsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
     } catch (e) {
