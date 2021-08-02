@@ -869,7 +869,7 @@ module.exports = class extends Command {
           }
         }
       },
-    
+
       args: [
         {
           name: 'clusterId',

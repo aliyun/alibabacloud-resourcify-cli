@@ -13,7 +13,7 @@ module.exports = class extends Command {
         zh: '查询集群指定节点池详情'
       },
       options: {
-    
+
       },
       args: [
         {
@@ -49,7 +49,7 @@ module.exports = class extends Command {
       regionId: profile.region,
       type: profile.type
     });
-  
+
     const client = new Client(config);
     let result;
     try {

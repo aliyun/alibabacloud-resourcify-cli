@@ -13,7 +13,7 @@ module.exports = class extends Command {
         zh: '删除节点池'
       },
       options: {
-    
+
       },
       args: [
         {
@@ -49,7 +49,7 @@ module.exports = class extends Command {
       regionId: profile.region,
       type: profile.type
     });
-  
+
     const client = new Client(config);
     let result;
     try {

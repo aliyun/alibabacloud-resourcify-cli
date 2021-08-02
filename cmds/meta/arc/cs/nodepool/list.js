@@ -38,7 +38,7 @@ module.exports = class extends Command {
       regionId: profile.region,
       type: profile.type
     });
-  
+
     const client = new Client(config);
     let result;
     try {

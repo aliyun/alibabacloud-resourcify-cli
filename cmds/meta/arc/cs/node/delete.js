@@ -61,7 +61,7 @@ module.exports = class extends Command {
     });
     const DeleteClusterNodesRequest = require(`@alicloud/cs20151215`).DeleteClusterNodesRequest;
     const request = new DeleteClusterNodesRequest(ctx.mappingValue.DeleteClusterNodesRequest);
-  
+
     const client = new Client(config);
     try {
       await client.deleteClusterNodesWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());

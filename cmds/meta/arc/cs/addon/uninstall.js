@@ -55,9 +55,9 @@ module.exports = class extends Command {
     });
     const UnInstallClusterAddonsRequest = require(`@alicloud/cs20151215`).UnInstallClusterAddonsRequest;
     const request = new UnInstallClusterAddonsRequest(ctx.mappingValue.UnInstallClusterAddonsRequest);
-  
+
     const client = new Client(config);
-  
+
     try {
       await client.unInstallClusterAddonsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
     } catch (e) {
