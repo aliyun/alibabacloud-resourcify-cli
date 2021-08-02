@@ -9,6 +9,10 @@ const { loadContext } = require('../../../../../lib/context');
 module.exports = class extends Command {
   constructor(name) {
     super(name, {
+      short: {
+        zh: '根据模糊查询获取集群信息',
+        en: 'View all clusters'
+      },
       desc: {
         zh: '查看您在容器服务中创建的所有集群（包括Swarm和Kubernetes集群）',
         en: `View all the clusters you created in the container service (including Swarm and Kubernetes clusters)`

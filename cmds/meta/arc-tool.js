@@ -3,6 +3,8 @@
 const Command = require('../../lib/command');
 
 const ConfigCommand = require('./arc-tool/config');
+const ServeCommand = require('./arc-tool/serve');
+const CompletionCommand = require('./arc-tool/completion');
 
 module.exports = class extends Command {
   constructor(name) {
@@ -12,22 +14,16 @@ module.exports = class extends Command {
         en: 'Alibaba Cloud Resourcify CLI, used for settings, such as configuation, autocomplation, etc'
       },
       sub: {
-        'config': {
-          zh: '配置CLI',
-          en: `Configure CLI`
-        },
         completion: {
           zh: '自动补全',
           en: `Autocomplete`
-        },
-        serve: {
-          zh: '启动帮助文档web服务器',
-          en: `Start the help document web server`
         }
       }
     });
 
     this.registerCommand(new ConfigCommand('config'));
+    this.registerCommand(new CompletionCommand('completion'));
+    this.registerCommand(new ServeCommand('serve'));
   }
 
   async run(args) {
