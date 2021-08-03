@@ -4,7 +4,7 @@
 
 // AlibabaCloud Resourcify CLI for ACK
 
-const ACK = require('../cmds/meta/arc/cs');
+const ACK = require('../cmds/arc/cs');
 
 const ack = new ACK('arc-ack');
 ack.handle(process.argv.slice(2)).then(() => {
