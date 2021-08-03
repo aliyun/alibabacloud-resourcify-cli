@@ -70,6 +70,11 @@ exports.run = async function (ctx) {
   } catch (e) {
     output.error(e.message);
   }
+
+  if (result) {
+    result = result.body;
+  }
+
   let data = JSON.stringify(result, null, 2);
   output.log(data);
 };
