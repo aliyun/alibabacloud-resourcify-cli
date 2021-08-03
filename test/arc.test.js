@@ -206,6 +206,7 @@ describe('arc', function () {
     config                              配置CLI
     completion                          自动补全
     serve                               启动帮助文档web服务器
+    version                             获取当前程序版本
 `);
     assert.strictEqual(stderr, '');
     assert.strictEqual(code, 0);
@@ -222,6 +223,7 @@ describe('arc', function () {
     config                              配置CLI
     completion                          自动补全
     serve                               启动帮助文档web服务器
+    version                             获取当前程序版本
 `);
     assert.strictEqual(stderr, '');
     assert.strictEqual(code, 0);

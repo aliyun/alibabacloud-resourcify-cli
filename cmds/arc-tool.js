@@ -5,6 +5,7 @@ const Command = require('../lib/command');
 const ConfigCommand = require('./arc-tool/config');
 const ServeCommand = require('./arc-tool/serve');
 const CompletionCommand = require('./arc-tool/completion');
+const VersionCommand = require('./arc-tool/version');
 
 module.exports = class extends Command {
   constructor(name) {
@@ -24,6 +25,7 @@ module.exports = class extends Command {
     this.registerCommand(new ConfigCommand('config'));
     this.registerCommand(new CompletionCommand('completion'));
     this.registerCommand(new ServeCommand('serve'));
+    this.registerCommand(new VersionCommand('version'));
   }
 
   async run(args) {
