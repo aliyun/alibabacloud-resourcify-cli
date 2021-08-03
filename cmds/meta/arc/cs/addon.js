@@ -25,6 +25,10 @@ exports.cmdObj = {
     'uninstall': {
       zh: '卸载集群插件',
       en: `uninstall an add-on from a cluster.`
+    },
+    'upgrade': {
+      zh:'升级集群插件',
+      en: `upgrade add-on for a cluster.`
     }
   }
 };
