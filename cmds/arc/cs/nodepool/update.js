@@ -2,7 +2,6 @@
 
 const { default: Client } = require(`@alicloud/cs20151215`);
 const Command = require('../../../../lib/command.js');
-const { loadContext } = require('../../../../lib/context.js');
 const runtime = require('../../../../lib/runtime.js');
 
 module.exports = class extends Command {
@@ -893,8 +892,8 @@ module.exports = class extends Command {
     });
   }
 
-  async run(args) {
-    const ctx = loadContext(args);
+  async run(ctx) {
+
     const profile = await runtime.getConfigOption(ctx.profile);
     const { Config } = require('@alicloud/openapi-client');
     const config = new Config({

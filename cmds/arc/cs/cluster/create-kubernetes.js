@@ -1,11 +1,11 @@
 'use strict';
 
 const { default: Client } = require(`@alicloud/cs20151215`);
-const Command = require('../../../../lib/command.js');
-const { loadContext } = require('../../../../lib/context.js');
+const Action = require('../../../../lib/action.js');
+
 const runtime = require('../../../../lib/runtime.js');
 
-module.exports = class extends Command {
+module.exports = class extends Action {
   constructor(name) {
     super(name, {
       desc: {
@@ -958,8 +958,8 @@ PostPaid: pay-as-you-go.`
     });
   }
 
-  async run(args) {
-    const ctx = loadContext(args);
+  async run(ctx) {
+
 
     const profile = await runtime.getConfigOption(ctx.profile);
     const { Config } = require('@alicloud/openapi-client');
