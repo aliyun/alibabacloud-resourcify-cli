@@ -95,12 +95,11 @@ module.exports = class extends Command {
   }
 
   async run(args) {
-    const ctx = loadContext(args);
+    const ctx = loadContext(args, this.def.options);
     const profile = ctx.profile;
     const language = profile.language || 'zh';
 
     if (ctx.parsed.has('interaction')) {
-      console.log(profile);
       profile['access_key_id'] = await ask({
         name: 'access-key-id',
         message: this.def.options['access-key-id'].desc[language],

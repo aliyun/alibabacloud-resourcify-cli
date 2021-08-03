@@ -13,12 +13,6 @@ module.exports = class extends Command {
       desc: {
         zh: '阿里云资源化命令行工具，用于配置、自动补全等辅助设置',
         en: 'Alibaba Cloud Resourcify CLI, used for settings, such as configuation, autocomplation, etc'
-      },
-      sub: {
-        completion: {
-          zh: '自动补全',
-          en: `Autocomplete`
-        }
       }
     });
 
