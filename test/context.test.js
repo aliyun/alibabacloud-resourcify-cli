@@ -2,6 +2,7 @@
 
 const path = require('path');
 const assert = require('assert');
+
 const { loadContext } = require('../lib/context.js');
 
 describe('context.js', function () {
