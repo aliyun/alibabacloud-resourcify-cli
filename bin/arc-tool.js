@@ -4,7 +4,7 @@
 
 'use strict';
 
-const ARCTool = require('../cmds/meta/arc-tool');
+const ARCTool = require('../cmds/arc-tool');
 
 const c = new ARCTool('arc-tool');
 c.handle(process.argv.slice(2)).then(() => {

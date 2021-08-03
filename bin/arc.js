@@ -4,7 +4,7 @@
 
 // AlibabaCloud Resourcify CLI
 
-const ARC = require('../cmds/meta/arc');
+const ARC = require('../cmds/arc');
 
 const arc = new ARC('arc');
 arc.handle(process.argv.slice(2)).then(() => {
