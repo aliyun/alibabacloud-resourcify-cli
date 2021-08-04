@@ -34,4 +34,35 @@ describe('args parse', function () {
       ['aksecret', undefined]
     ]));
   });
+
+  it('alias should ok', function () {
+    let r = parse(['-i'], {});
+    assert.deepStrictEqual(r.parsed, new Map([]));
+    r = parse(['-i'], {
+      interaction: {
+        alias: 'i'
+      }
+    });
+    assert.deepStrictEqual(r.parsed, new Map([
+      ['interaction', undefined]
+    ]));
+
+    r = parse(['-i=test'], {
+      interaction: {
+        alias: 'i'
+      }
+    });
+    assert.deepStrictEqual(r.parsed, new Map([
+      ['interaction', 'test']
+    ]));
+
+    r = parse(['-i', 'test'], {
+      interaction: {
+        alias: 'i'
+      }
+    });
+    assert.deepStrictEqual(r.parsed, new Map([
+      ['interaction', 'test']
+    ]));
+  });
 });

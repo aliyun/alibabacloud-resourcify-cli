@@ -195,6 +195,12 @@ describe('arc', function () {
     assert.strictEqual(code, 0);
   });
 
+  it('arc cs invalidcommand', async () => {
+    const {code, stderr} = await spawn(path.join(__dirname, '../bin/arc.js'), ['cs', 'invalidcommand']);
+    assert.strictEqual(stderr, `'invalidcommand' is not a sub-command. See 'arc cs help'\n`);
+    assert.strictEqual(code, 1);
+  });
+
   it('arc-tool', async () => {
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../bin/arc-tool.js'));
     assert.strictEqual(stdout, `用法:
