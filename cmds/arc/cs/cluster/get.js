@@ -41,7 +41,9 @@ module.exports = class extends Action {
       result = await client.describeClusterDetailWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
     } catch (e) {
       console.error(e.message);
+      return;
     }
+
     if (result) {
       result = result.body;
     }
