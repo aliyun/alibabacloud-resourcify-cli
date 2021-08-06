@@ -24,6 +24,7 @@ module.exports = class extends Command {
       ]
     });
   }
+
   validate (args) {
     // TODO
     if (args.argv[0] && args.argv[1] === undefined) {
