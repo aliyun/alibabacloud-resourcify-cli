@@ -20,6 +20,7 @@ describe('context.js', function () {
     assert.deepStrictEqual(ctx, {
       'argv': [],
       'mappingValue': {},
+      'language': 'zh',
       'parsed': new Map(),
       'profile': {
         'access_key_id': 'id',
@@ -36,6 +37,7 @@ describe('context.js', function () {
     assert.deepStrictEqual(ctx, {
       'argv': [],
       'mappingValue': {},
+      'language': 'zh',
       'parsed': new Map([['profile', 'default']]),
       'profile': {
         'access_key_id': 'id',
