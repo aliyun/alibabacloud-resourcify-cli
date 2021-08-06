@@ -10,6 +10,6 @@ const c = new ARCTool('arc-tool');
 c.handle(process.argv.slice(2)).then(() => {
   process.exit(0);
 }, (err) => {
-  console.log(err.stack);
+  console.error(err.stack);
   process.exit(-1);
 });
