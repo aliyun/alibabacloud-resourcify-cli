@@ -26,7 +26,6 @@ module.exports = class extends Action {
   }
 
   async run(ctx) {
-
     const profile = await runtime.getConfigOption(ctx.profile);
     const { Config } = require('@alicloud/openapi-client');
     const config = new Config({
