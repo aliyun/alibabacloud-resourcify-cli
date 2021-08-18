@@ -14,6 +14,10 @@ exports.cmdObj={
       required: false,
       vtype: 'array',
       subType: 'map',
+      desc: {
+        zh: '权限',
+        en: 'permissions'
+      },
       mappingType: require('@alicloud/cs20151215').GrantPermissionsRequestBody,
       options: {
         'cluster':{
