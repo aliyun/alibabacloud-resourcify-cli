@@ -3,20 +3,24 @@ let { default: Client } = require('@alicloud/cs20151215');
 let runtime = require('../../../../../lib/runtime.js');
 let output = require('../../../../../lib/output.js');
 
-exports.cmdObj={
+exports.cmdObj = {
   desc: {
     zh: '',
     en: ''
   },
   options: {
-    'body':{
+    'body': {
       mapping: 'body',
       required: false,
+      desc: {
+        zh: '组件列表',
+        en: 'components'
+      },
       vtype: 'array',
       subType: 'map',
       mappingType: require('@alicloud/cs20151215').UpgradeClusterAddonsRequestBody,
       options: {
-        'component-name':{
+        'component-name': {
           mapping: 'componentName',
           required: false,
           vtype: 'string',
@@ -25,7 +29,7 @@ exports.cmdObj={
             en: ''
           }
         },
-        'next-version':{
+        'next-version': {
           mapping: 'nextVersion',
           required: false,
           vtype: 'string',
@@ -34,7 +38,7 @@ exports.cmdObj={
             en: ''
           }
         },
-        'version':{
+        'version': {
           mapping: 'version',
           required: false,
           vtype: 'string',
@@ -42,9 +46,11 @@ exports.cmdObj={
             zh: '',
             en: ''
           }
-        },},
+        },
+      },
 
-    },},
+    },
+  },
   args: [{
     name: 'ClusterId',
     required: true
@@ -62,7 +68,7 @@ exports.run = async function (ctx) {
     type: profile.type
   });
   let UpgradeClusterAddonsRequest = require('@alicloud/cs20151215').UpgradeClusterAddonsRequest;
-  let request = new UpgradeClusterAddonsRequest(ctx.mappingValue);  
+  let request = new UpgradeClusterAddonsRequest(ctx.mappingValue);
   let client = new Client(config);
   let result;
   try {

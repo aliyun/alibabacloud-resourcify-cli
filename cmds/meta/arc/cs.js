@@ -22,9 +22,9 @@ exports.cmdObj = {
       zh: '集群节点池操作',
       en: 'action of nodepools'
     },
-    permision: {
+    permission: {
       zh: '权限操作',
-      en: 'action of permision'
+      en: 'action of permission'
     },
     template: {
       zh: '模版操作',
