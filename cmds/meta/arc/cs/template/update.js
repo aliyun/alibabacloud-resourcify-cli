@@ -73,17 +73,9 @@ exports.run = async function (ctx) {
   let UpdateTemplateRequest = require('@alicloud/cs20151215').UpdateTemplateRequest;
   let request = new UpdateTemplateRequest(ctx.mappingValue);  
   let client = new Client(config);
-  let result;
   try {
-    result = await client.updateTemplateWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
+    await client.updateTemplateWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   } catch (e) {
     output.error(e.message);
   }
-
-  if (result) {
-    result = result.body;
-  }
-
-  let data = JSON.stringify(result, null, 2);
-  output.log(data);
 };
