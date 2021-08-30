@@ -22,6 +22,7 @@
     "@alicloud/credentials": "^2.1.1",
     "@alicloud/cs20151215": "^2.2.3",
     "@alicloud/openapi-client": "^0.3.3",
+    "@alicloud/tea-util": "^1.4.2",
     "cliui": "^6.0.0",
     "commander": "^6.2.1",
     "console.table": "^0.10.0",
