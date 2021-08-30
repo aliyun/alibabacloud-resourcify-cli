@@ -1,6 +1,6 @@
 {
   "name": "@alicloud/arc",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "AlibabaCloud resourcify CLI",
   "bin": {
     "arc": "bin/arc.js",
