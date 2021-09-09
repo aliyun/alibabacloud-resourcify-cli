@@ -1,6 +1,6 @@
 {
   "name": "@alicloud/arc",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "AlibabaCloud resourcify CLI",
   "bin": {
     "arc": "bin/arc.js",
@@ -20,8 +20,10 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@alicloud/credentials": "^2.1.1",
-    "@alicloud/cs20151215": "^2.2.3",
-    "@alicloud/openapi-client": "^0.3.3",
+    "@alicloud/cs20151215": "^2.4.5",
+    "@alicloud/openapi-client": "^0.3.4",
+    "@alicloud/openapi-util": "^0.2.6",
+    "@alicloud/tea-typescript": "^1.7.2",
     "@alicloud/tea-util": "^1.4.2",
     "cliui": "^6.0.0",
     "commander": "^6.2.1",
