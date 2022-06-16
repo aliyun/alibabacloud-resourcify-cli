@@ -27,7 +27,7 @@
     "commander": "^6.2.1",
     "console.table": "^0.10.0",
     "inquirer": "^7.3.3",
-    "jmespath": "^0.15.0",
+    "jmespath": "^0.16.0",
     "json2csv": "^5.0.6",
     "json2yaml": "^1.1.0",
     "koa": "^2.13.1",
@@ -37,7 +37,7 @@
   "devDependencies": {
     "codecov": "^3.8.2",
     "eslint": "^8.17.0",
-    "mocha": "^8.4.0",
+    "mocha": "^10.0.0",
     "nyc": "^15.1.0"
   },
   "directories": {
