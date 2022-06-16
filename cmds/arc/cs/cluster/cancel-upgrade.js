@@ -31,10 +31,6 @@ module.exports = class extends Action {
       type: profile.type
     });
     const client = new Client(config);
-    try {
-      await client.cancelClusterUpgradeWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    await client.cancelClusterUpgradeWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
   }
 };

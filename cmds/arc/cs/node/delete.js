@@ -61,10 +61,6 @@ module.exports = class extends Action {
     const request = new DeleteClusterNodesRequest(ctx.mappingValue.DeleteClusterNodesRequest);
 
     const client = new Client(config);
-    try {
-      await client.deleteClusterNodesWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    await client.deleteClusterNodesWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   }
 };

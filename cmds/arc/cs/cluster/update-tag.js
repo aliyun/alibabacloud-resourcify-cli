@@ -65,10 +65,6 @@ module.exports = class extends Action {
     const request = new ModifyClusterTagsRequest(ctx.mappingValue.ModifyClusterTagsRequest);
 
     const client = new Client(config);
-    try {
-      await client.modifyClusterTagsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    await client.modifyClusterTagsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   }
 };

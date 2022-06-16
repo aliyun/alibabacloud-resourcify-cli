@@ -773,12 +773,8 @@ module.exports = class extends Action {
     const CreateClusterRequest = require(`@alicloud/cs20151215`).CreateClusterRequest;
     const request = new CreateClusterRequest(ctx.mappingValue.CreateClusterRequest);
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.createClusterWithOptions(request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+
+    let result = await client.createClusterWithOptions(request, {}, runtime.getRuntimeOption());
 
     if (result) {
       result = result.body;

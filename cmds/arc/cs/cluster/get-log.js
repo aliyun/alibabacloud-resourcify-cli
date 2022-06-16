@@ -34,13 +34,7 @@ module.exports = class extends Action {
     });
 
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.describeClusterLogsWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
-      console.log(result);
-    } catch (e) {
-      console.error(e.message);
-    }
+    let result = await client.describeClusterLogsWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
     if (result) {
       result = result.body;
     }

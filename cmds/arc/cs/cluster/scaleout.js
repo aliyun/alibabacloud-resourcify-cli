@@ -442,12 +442,7 @@ module.exports = class extends Action {
     const request = new ScaleOutClusterRequest(ctx.mappingValue.ScaleOutClusterRequest);
 
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.scaleOutClusterWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    let result = await client.scaleOutClusterWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
     if (result) {
       result = result.body;
     }

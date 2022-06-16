@@ -51,12 +51,8 @@ module.exports = class extends Command {
     });
 
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.describeClusterNodePoolDetailWithOptions(ctx.argv[0], ctx.argv[1], {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    let result = await client.describeClusterNodePoolDetailWithOptions(ctx.argv[0], ctx.argv[1], {}, runtime.getRuntimeOption());
+
     if (result) {
       result = result.body;
     }

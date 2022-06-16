@@ -906,12 +906,7 @@ module.exports = class extends Command {
     const ModifyClusterNodePoolRequest = require(`@alicloud/cs20151215`).ModifyClusterNodePoolRequest;
     const request = new ModifyClusterNodePoolRequest(ctx.mappingValue.ModifyClusterNodePoolRequest);
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.modifyClusterNodePoolWithOptions(ctx.argv[0], ctx.argv[1], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    let result = await client.modifyClusterNodePoolWithOptions(ctx.argv[0], ctx.argv[1], request, {}, runtime.getRuntimeOption());
     if (result) {
       result = result.body;
     }

@@ -56,10 +56,6 @@ module.exports = class extends Action {
 
     const client = new Client(config);
 
-    try {
-      await client.unInstallClusterAddonsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    await client.unInstallClusterAddonsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   }
 };
