@@ -34,12 +34,8 @@ module.exports = class extends Action {
     });
 
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.getUpgradeStatusWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    let result = await client.getUpgradeStatusWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
+
     if (result) {
       result = result.body;
     }

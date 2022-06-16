@@ -36,13 +36,7 @@ module.exports = class extends Action {
       type: profile.type
     });
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.describeClusterDetailWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-      return;
-    }
+    let result = await client.describeClusterDetailWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
 
     if (result) {
       result = result.body;

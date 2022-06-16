@@ -71,10 +71,6 @@ module.exports = class extends Action {
     const request = new InstallClusterAddonsRequest(ctx.mappingValue.InstallClusterAddonsRequest);
     const client = new Client(config);
 
-    try {
-      await client.installClusterAddonsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    await client.installClusterAddonsWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   }
 };

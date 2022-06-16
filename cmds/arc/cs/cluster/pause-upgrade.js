@@ -35,10 +35,6 @@ module.exports = class extends Action {
 
     const client = new Client(config);
 
-    try {
-      await client.pauseClusterUpgradeWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    await client.pauseClusterUpgradeWithOptions(ctx.argv[0], {}, runtime.getRuntimeOption());
   }
 };

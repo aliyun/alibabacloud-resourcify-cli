@@ -68,12 +68,7 @@ module.exports = class extends Action {
     const request = new DescribeClustersV1Request(ctx.mappingValue.DescribeClustersRequest);
 
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.describeClustersV1WithOptions(request, {}, runtime.getRuntimeOption());
-    } catch(e) {
-      console.error(e.message);
-    }
+    let result = await client.describeClustersV1WithOptions(request, {}, runtime.getRuntimeOption());
     if (result) {
       result = result.body;
     }

@@ -59,12 +59,7 @@ module.exports = class extends Command {
     const ScaleClusterNodePoolRequest = require(`@alicloud/cs20151215`).ScaleClusterNodePoolRequest;
     const request = new ScaleClusterNodePoolRequest(ctx.mappingValue.ScaleClusterNodePoolRequest);
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.scaleClusterNodePoolWithOptions(ctx.argv[0], ctx.argv[1], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    let result = await client.scaleClusterNodePoolWithOptions(ctx.argv[0], ctx.argv[1], request, {}, runtime.getRuntimeOption());
     if (result) {
       result = result.body;
     }

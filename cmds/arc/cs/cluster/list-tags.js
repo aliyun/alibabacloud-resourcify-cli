@@ -73,12 +73,7 @@ module.exports = class extends Action {
     const request = new ListTagResourcesRequest(ctx.mappingValue.ListTagResourcesRequest);
 
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.listTagResourcesWithOptions(request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    const result = await client.listTagResourcesWithOptions(request, {}, runtime.getRuntimeOption());
     const data = JSON.stringify(result, null, 2);
     console.log(data);
   }

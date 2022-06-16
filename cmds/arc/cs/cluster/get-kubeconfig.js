@@ -45,12 +45,8 @@ module.exports = class extends Action {
     const DescribeClusterUserKubeconfigRequest = require(`@alicloud/cs20151215`).DescribeClusterUserKubeconfigRequest;
     const request = new DescribeClusterUserKubeconfigRequest(ctx.mappingValue.DescribeClusterUserKubeconfigRequest);
     const client = new Client(config);
-    let result;
-    try {
-      result = await client.describeClusterUserKubeconfigWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+
+    let result = await client.describeClusterUserKubeconfigWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
     if (result) {
       result = result.body;
     }

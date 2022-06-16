@@ -50,14 +50,9 @@ module.exports = class extends Action {
     });
 
     const client = new Client(config);
-    let result;
     const DescribeExternalAgentRequest = require(`@alicloud/cs20151215`).DescribeExternalAgentRequest;
     const request = new DescribeExternalAgentRequest(ctx.mappingValue.DescribeExternalAgentRequest);
-    try {
-      result = await client.describeExternalAgentWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    let result = await client.describeExternalAgentWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
     if (result) {
       result = result.body;
     }

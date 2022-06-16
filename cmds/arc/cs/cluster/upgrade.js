@@ -62,10 +62,6 @@ module.exports = class extends Action {
     const request = new UpgradeClusterRequest(ctx.mappingValue.UpgradeClusterRequest);
 
     const client = new Client(config);
-    try {
-      await client.upgradeClusterWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
-    } catch (e) {
-      console.error(e.message);
-    }
+    await client.upgradeClusterWithOptions(ctx.argv[0], request, {}, runtime.getRuntimeOption());
   }
 };
