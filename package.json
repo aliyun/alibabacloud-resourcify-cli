@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test-dev": "mocha -t 3000 -R spec",
-    "test": "mocha -t 3000 -R spec test/*.test.js",
+    "test": "mocha -t 3000 -R spec test/*.test.js test/**/*.test.js",
     "test-cov": "nyc -r=html -r=text -r=lcov npm run test",
     "lint": "eslint --fix ./bin ./cmds/ ./lib/ ./test",
     "ci": "eslint ./bin ./cmds/ ./lib/ ./test && npm run test-cov && codecov",
