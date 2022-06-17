@@ -50,7 +50,8 @@ describe('arc cs cluster', () => {
     "pageSize": 50,
     "totalCount": 0
   }
-}`);
+}
+`);
     assert.strictEqual(stderr, '');
     assert.strictEqual(code, 0);
   });
