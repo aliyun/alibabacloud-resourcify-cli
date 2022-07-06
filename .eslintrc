@@ -68,7 +68,9 @@
         "no-console": 0,
         "require-yield": 0,
         "prefer-const": "error",
-        "no-trailing-spaces": "error"
+        "no-trailing-spaces": "error",
+        "no-multiple-empty-lines": "error",
+        "no-mixed-spaces-and-tabs": "error"
     },
     "env": {
         "es6": true,

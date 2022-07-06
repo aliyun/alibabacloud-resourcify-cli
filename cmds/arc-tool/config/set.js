@@ -25,19 +25,13 @@ module.exports = class extends Command {
     });
   }
 
-  validate (args) {
-    // TODO
-    if (args.argv[0] && args.argv[1] === undefined) {
-      return 'value master be set';
-    }
-  }
-
   async run(args) {
     const ctx = loadContext(args);
-    if (!ctx.argv[1]) {
-      delete ctx.profile[ctx.argv[0]];
+    const [key, value] = ctx.argv;
+    if (typeof value === 'undefined') {
+      delete ctx.profile[key];
     } else {
-      ctx.profile[ctx.argv[0]] = ctx.argv[1];
+      ctx.profile[key] = value;
     }
     const config = new Config();
     config.updateProfile(ctx.profileName, ctx.profile);
