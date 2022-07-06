@@ -17,7 +17,6 @@
 [grade-image]:https://img.shields.io/lgtm/grade/javascript/g/aliyun/alibabacloud-resourcify-cli.svg?logo=lgtm&logoWidth=18
 [grade-url]:https://lgtm.com/projects/g/aliyun/alibabacloud-resourcify-cli/context:javascript
 
-
 ARC is a brand-new Alibaba Cloud CLI environment oriented to resourceization, and is a collection of multiple command line tools.
 
 ## Installation
@@ -67,7 +66,6 @@ ARC currently supports AK and StsToken certificates. The corresponding fields of
 `access_key_secret`: credential secret
 `sts_token`: certificate token
 
-
 Quickly configure AK credentials:
 `arc-tool config --access-key-id accessKeyId --access-key-secret accessKeySecret --region region`
 
@@ -76,7 +74,6 @@ ARC configures AK credentials by default. If you need other credentials, please 
 ```sh
 $ arc-tool config set access_key_id <value>
 $ arc-tool config set access_key_secret <value>
-$ arc-tool config set sts_token <value>
 ```
 
 For more configuration related commands, please use the configuration help command: `arc-tool config help`
@@ -86,8 +83,8 @@ For more configuration related commands, please use the configuration help comma
 ARC has built-in help information for all commands and their parameters. You can add the `help` command after the command to get help information for related commands, for example:
 1. Obtain the operational resource information of CS products supported by ARC:
 `arc cs help` or `arc-cs help`
-2. Obtain the related operations of the instance resource of CS product supported by ARC:
-`arc cs instance help` or `arc-cs instance help`
+2. Obtain the related operations of the cluster resource of CS product supported by ARC:
+`arc cs cluster help` or `arc-cs cluster help`
 3. Get configuration related operations supported by ARC:
 `arc-tool help`
 
@@ -102,7 +99,7 @@ Add `-i` or `--interaction` after any command to enable interactive mode. And at
 Use interactive input to configure the test configuration:
 
 ```sh
-$ arc-tool config --profile test
+$ arc-tool config -i --profile test
 ? Access Key ID
 access-key-id <accessKeyId>
 ? Access Key Secret
@@ -111,8 +108,6 @@ access-key-secret <accessKeySecret>
 region cn-hangzhou
 ? the language of CLI
 language en
-? Whether to execute Yes
-arc-tool config --access-key-id <accessKeyId> --access-key-secret <accessKeySecret> --region cn-hangzhou --language en
 ```
 
 ## Advantage
