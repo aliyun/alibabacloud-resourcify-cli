@@ -86,8 +86,8 @@ $ arc-tool config set sts_token <value>
 ARC 内置了所有命令及其参数的帮助信息，您可以在命令后面加上 `help` 命令以获取相关命令的帮助信息，例如：
 1. 获取ARC支持的CS产品可操作资源信息：  
 `arc cs help` 或者 `arc-cs help`
-2. 获取ARC支持的CS产品下 instance 资源的相关操作：  
-`arc cs instance help` 或者 `arc-cs instance help`
+2. 获取ARC支持的CS产品下 cluster 资源的相关操作：  
+`arc cs cluster help` 或者 `arc-cs cluster help`
 3. 获取ARC支持的配置相关操作：  
 `arc-tool help`
 
@@ -112,7 +112,7 @@ region cn-hangzhou
 ? CLI语言
 language zh
 ? 是否执行 Yes
-arc-tool config  --access-key-id accessKeyId --access-key-secret accessKeySecret --region cn-hangzhou --language zh
+arc-tool config --access-key-id accessKeyId --access-key-secret accessKeySecret --region cn-hangzhou --language zh
 ```
 
 ## 优势
