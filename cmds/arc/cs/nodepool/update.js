@@ -1,10 +1,10 @@
 'use strict';
 
 const { default: Client } = require(`@alicloud/cs20151215`);
-const Command = require('../../../../lib/command.js');
+const Action = require('../../../../lib/action.js');
 const runtime = require('../../../../lib/runtime.js');
 
-module.exports = class extends Command {
+module.exports = class extends Action {
   constructor(name) {
     super(name, {
       desc: {
