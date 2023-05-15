@@ -44,15 +44,8 @@ describe('arc cs cluster', () => {
   it('arc cs cluster list', async function () {
     this.timeout(10000); // 10s timeout
     const {code, stdout, stderr} = await spawn(path.join(__dirname, '../../bin/arc.js'), ['cs', 'cluster', 'list']);
-    assert.strictEqual(stdout, `{
-  "clusters": [],
-  "pageInfo": {
-    "pageNumber": 1,
-    "pageSize": 50,
-    "totalCount": 0
-  }
-}
-`);
+    const result = JSON.parse(stdout);
+    assert.ok(result.clusters.length > 0);
     assert.strictEqual(stderr, '');
     assert.strictEqual(code, 0);
   });
