@@ -1,13 +1,11 @@
 # AlibabaCloud Resourcify CLI（ARC）
 
 [![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
+[![Node.js CI](https://github.com/aliyun/alibabacloud-resourcify-cli/actions/workflows/node.js.yml/badge.svg)](https://github.com/aliyun/alibabacloud-resourcify-cli/actions/workflows/node.js.yml)
 [![codecov][cov-image]][cov-url]
 
 [npm-image]: https://img.shields.io/npm/v/@alicloud/arc.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@alicloud/arc
-[travis-image]: https://img.shields.io/travis/aliyun/alibabacloud-resourcify-cli/master.svg?style=flat-square
-[travis-url]: https://travis-ci.com/aliyun/alibabacloud-resourcify-cli
 [cov-image]: https://codecov.io/gh/aliyun/alibabacloud-resourcify-cli/branch/master/graph/badge.svg
 [cov-url]: https://codecov.io/gh/aliyun/alibabacloud-resourcify-cli
 
@@ -15,12 +13,12 @@ ARC 是面向资源化的全新阿里云 CLI 环境，是多个命令行工具�
 
 ## 安装
 
-> 安装前请确认具有 Node.js 开发环境，您可以从 https://nodejs.org/ 下载
+> 安装前请确认具有 Node.js 开发环境，您可以从 <https://nodejs.org/> 下载
 
 使用以下命令安装 ARC ：
 
 ```sh
-$ npm i @alicloud/arc -g
+npm i @alicloud/arc -g
 ```
 
 现有包含的命令行工具如下：
@@ -62,15 +60,15 @@ ARC目前支持AK，StsToken凭证，各类型对应字段如下：
 快速配置 AK 凭证：
 
 ```sh
-$ arc-tool config --access-key-id accessKeyId --access-key-secret accessKeySecret --region region
+arc-tool config --access-key-id accessKeyId --access-key-secret accessKeySecret --region region
 ```
 
 ARC 默认配置 AK 凭证，如需要其他凭证，请使用 `config` 的子命令对 ARC 配置进行操作以增删必要字段。如将默认配置变更为StsToken凭证：
 
 ```sh
-$ arc-tool config set access_key_id <value>
-$ arc-tool config set access_key_secret <value>
-$ arc-tool config set sts_token <value>
+arc-tool config set access_key_id <value>
+arc-tool config set access_key_secret <value>
+arc-tool config set sts_token <value>
 ```
 
 更多配置相关命令请使用配置帮助命令：`arc-tool config help`。
@@ -78,6 +76,7 @@ $ arc-tool config set sts_token <value>
 ## 使用帮助信息
 
 ARC 内置了所有命令及其参数的帮助信息，您可以在命令后面加上 `help` 命令以获取相关命令的帮助信息，例如：
+
 1. 获取ARC支持的CS产品可操作资源信息：  
 `arc cs help` 或者 `arc-cs help`
 2. 获取ARC支持的CS产品下 cluster 资源的相关操作：  
@@ -125,6 +124,7 @@ key-pair <keyPair>
 ```
 
 2. 对冲突参数进行提示
+
 ```sh
 ? 以下选项具有冲突，请选择其中一项 (Use arrow keys)
 ❯ login-password 
@@ -140,7 +140,6 @@ worker-system-disk-size <string>
 ```
 
 4. 参数值具有可选范围，使用箭头便于用户选择
-
 
 ```sh
 ? 数据盘类型

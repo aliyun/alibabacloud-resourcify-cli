@@ -13,12 +13,12 @@ ARC is a brand-new Alibaba Cloud CLI environment oriented to resourceization, an
 
 ## Installation
 
-> Please confirm that you have a Node.js development environment before installation. You can find it from https://nodejs.org/
+> Please confirm that you have a Node.js development environment before installation. You can find it from <https://nodejs.org/>
 
 Install ARC using the following command:
 
 ```sh
-$ npm i @alicloud/arc -g
+npm i @alicloud/arc -g
 ```
 
 The currently included command line tools are as follows:
@@ -64,8 +64,8 @@ Quickly configure AK credentials:
 ARC configures AK credentials by default. If you need other credentials, please use the subcommand of `config` to operate the arc configuration to add or delete necessary fields. If you change the default configuration to StsToken credentials:
 
 ```sh
-$ arc-tool config set access_key_id <value>
-$ arc-tool config set access_key_secret <value>
+arc-tool config set access_key_id <value>
+arc-tool config set access_key_secret <value>
 ```
 
 For more configuration related commands, please use the configuration help command: `arc-tool config help`
@@ -73,6 +73,7 @@ For more configuration related commands, please use the configuration help comma
 ## Use help information
 
 ARC has built-in help information for all commands and their parameters. You can add the `help` command after the command to get help information for related commands, for example:
+
 1. Obtain the operational resource information of CS products supported by ARC:
 `arc cs help` or `arc-cs help`
 2. Obtain the related operations of the cluster resource of CS product supported by ARC:
@@ -111,12 +112,14 @@ ARC has powerful advantages for complex command parameters and can assist user i
 *Angle brackets indicate user input*
 
 1. Prompt for parameter input and supplemented by parameter description, the user does not need to remember:
+
 ```sh
 ? The name of the key pair.
 key-pair <keyPair>
 ```
 
 2. Prompt for conflicting parameters
+
 ```sh
 ? The following options conflict, please select one (Use arrow keys)
 ❯ login-password
@@ -160,6 +163,7 @@ Default value: true. We recommend that you use the default value.
 ```
 
 6. Prompt the user to select a precondition
+
 ```sh
 ? Please select optional configuration or end configuration worker-data-disks
 worker-data-disks
