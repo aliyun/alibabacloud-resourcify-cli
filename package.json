@@ -23,7 +23,7 @@
     "@alicloud/credentials": "^2.1.1",
     "@alicloud/cs20151215": "^2.4.1",
     "@alicloud/pop-core": "^1.7.10",
-    "cliui": "^7.0.4",
+    "cliui": "^8.0.1",
     "commander": "^9.3.0",
     "console.table": "^0.10.0",
     "inquirer": "^7.3.3",
