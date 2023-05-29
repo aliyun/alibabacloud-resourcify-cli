@@ -31,4 +31,4 @@ jobs:
         ALIBABACLOUD_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
         ALIBABACLOUD_ACCESS_KEY_SECRET: ${{ secrets.ACCESS_KEY_SECRET }}
     - run: |
-        npm run build-ui
+        CI=false npm run build-ui
